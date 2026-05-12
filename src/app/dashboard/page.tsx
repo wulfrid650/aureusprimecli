@@ -1,0 +1,254 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { DashboardBottomNav } from "@/components/dashboard/bottom-nav";
+import { ServiceCard } from "@/components/dashboard/service-card";
+import { DashboardHeaderControls } from "@/components/dashboard/header-controls";
+import { fetchCatalogProducts, type CatalogProduct } from "@/lib/catalog";
+import { safeFetch } from "@/lib/fetch";
+import { useI18n } from "@/lib/i18n";
+
+export default function Dashboard() {
+  const { dateLocale, t } = useI18n();
+  const [balance, setBalance] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [services, setServices] = useState<CatalogProduct[]>([]);
+  const [isServicesLoading, setIsServicesLoading] = useState(true);
+  const [servicesError, setServicesError] = useState("");
+
+  useEffect(() => {
+    safeFetch<{ data?: { wallet?: { available_balance?: number | string } } }>("/api/v1/me/wallet")
+      .then((data) => {
+        const val = data?.data?.wallet?.available_balance;
+        const num = parseFloat(String(val ?? 0));
+        setBalance(!isNaN(num) ? num.toLocaleString(dateLocale).replace(/\s/g, ' ') : "0");
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to fetch wallet:", err);
+        setBalance("0");
+        setIsLoading(false);
+      });
+  }, [dateLocale]);
+
+  useEffect(() => {
+    let isActive = true;
+
+    fetchCatalogProducts(12)
+      .then((catalogServices) => {
+        if (!isActive) return;
+
+        setServices(catalogServices);
+        if (catalogServices.length === 0) {
+          setServicesError(t("dashboard.catalogEmpty"));
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to fetch services:", err);
+
+        if (isActive) {
+          setServicesError(t("dashboard.servicesLoadError"));
+        }
+      })
+      .finally(() => {
+        if (isActive) {
+          setIsServicesLoading(false);
+        }
+      });
+
+    return () => {
+      isActive = false;
+    };
+  }, [t]);
+
+  return (
+    <div className="dashboard-mode bg-[#f6f6f8] text-[#131118] min-h-screen flex justify-center sm:items-center sm:p-4">
+      {/* Mobile View Simulator */}
+      <div className="w-full sm:max-w-[420px] sm:h-[90vh] sm:max-h-[850px] bg-[#f6f6f8] sm:rounded-[40px] overflow-hidden relative shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] flex flex-col mx-auto h-[100dvh] sm:h-auto">
+        
+        {/* Sticky Header */}
+        <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#f2f0f4] px-5 py-4 flex items-center justify-between shadow-sm">
+          <div className="flex items-center gap-2">
+            <Link href="/dashboard" className="flex items-center">
+              <Image src="/logo-aureusprime.svg" alt="Aureusprime Logo" width={110} height={16} className="logo-dark h-4 w-auto object-contain" />
+              <Image src="/logo-aureusprime-light.svg" alt="Aureusprime Logo" width={110} height={16} className="logo-light h-4 w-auto object-contain" />
+            </Link>
+            <DashboardHeaderControls />
+          </div>
+
+          {/* Real-time Balance Box */}
+          <div className="flex h-7 items-center rounded-full bg-[#f2f0f4] pl-3 pr-1 shadow-inner border border-gray-200/50">
+            {isLoading ? (
+              <div className="h-3 w-8 animate-pulse rounded bg-gray-300/50 mr-2" />
+            ) : (
+              <span className="text-[12px] font-bold tracking-tight text-[#131118] mr-2">{balance} Auri</span>
+            )}
+            <Link
+              href="/dashboard/recharge"
+              className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[#eab308] text-white shadow-sm transition-transform duration-200 hover:scale-105 active:scale-95 hover:bg-[#ca8a04]"
+            >
+              <span className="material-symbols-outlined font-bold text-[14px]">add</span>
+            </Link>
+          </div>
+        </header>
+
+        {/* Scrollable Content */}
+        <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth">
+          {/* Hero Section */}
+          <section className="px-5 pt-8 pb-6 flex flex-col gap-6">
+            <div className="relative w-full aspect-[4/3] rounded-3xl overflow-hidden shadow-[0_10px_40px_-10px_rgba(91,19,236,0.1)] group">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#5b13ec] via-[#7e44f2] to-[#bca3f6]"></div>
+              <img 
+                alt="Abstract digital entertainment collage with vibrant colors" 
+                className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-40" 
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDy46r9P3bSQNOTP2f0afIN8cALGNnf8IpJYw9N7MvgLcJVsgi9b-nYHzgHRhwGupJWobpuiH4dCDOIgtRZ8tj-qF6DMymiYHSv9jv8RiCv06Pps7qaBgyaOQJ1RtSmKG6UpOqaDhsGMwHKMRMx_Cuu6TvmmXK5_97G9G3UyPl27HqNWHK86HqUemZO0dkAWUWKeT0ajVIqmrirzXNexbkpcWp8ErgUIdEqvR0EDF_QBxtaqd7HLscq6pYEtiXg5kOoUSPdXL4qvcE"
+              />
+              <div className="absolute inset-0 p-6 flex flex-col justify-end text-white">
+                <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-bold w-max mb-3 border border-white/30">
+                    {t("dashboard.heroBadge")}
+                </span>
+                <h1 className="text-3xl font-bold leading-tight tracking-tight mb-2">{t("dashboard.heroTitle")}</h1>
+                <p className="text-white/90 text-sm font-medium">{t("dashboard.heroSubtitle")}</p>
+              </div>
+            </div>
+            
+            <div className="flex flex-col gap-3">
+              <Link href="/dashboard/services" className="w-full h-14 bg-[#131118] text-white rounded-full font-bold text-lg shadow-lg shadow-black/20 active:scale-95 transition-transform flex items-center justify-center gap-2 hover:bg-[#221d2c]">
+                <span>{t("dashboard.subscribeNow")}</span>
+                <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
+              </Link>
+              <p className="text-center text-xs text-gray-500 font-medium">{t("dashboard.moneyBack")}</p>
+            </div>
+          </section>
+
+          {/* Popular Services Carousel */}
+          <section className="py-6">
+            <div className="px-5 mb-4 flex items-center justify-between">
+              <h2 className="text-xl font-bold text-[#131118]">{t("dashboard.ourServices")}</h2>
+              <Link className="text-sm font-semibold text-[#5b13ec]" href="/dashboard/services">{t("dashboard.seeAll")}</Link>
+            </div>
+
+            {/* Horizontal Scroll Container */}
+            <div className="flex overflow-x-auto gap-4 px-5 pb-6 no-scrollbar snap-x snap-mandatory">
+              {isServicesLoading &&
+                [0, 1, 2].map((item) => (
+                  <div key={item} className="snap-center shrink-0 w-[260px] rounded-3xl border border-gray-100 bg-white p-5 shadow-sm">
+                    <div className="h-32 w-full rounded-2xl bg-gray-100 animate-pulse" />
+                    <div className="mt-4 h-4 w-20 rounded bg-gray-100 animate-pulse" />
+                    <div className="mt-3 h-6 w-32 rounded bg-gray-200 animate-pulse" />
+                    <div className="mt-3 h-4 w-full rounded bg-gray-100 animate-pulse" />
+                    <div className="mt-2 h-4 w-4/5 rounded bg-gray-100 animate-pulse" />
+                  </div>
+                ))}
+
+              {!isServicesLoading && services.map((service) => <ServiceCard key={service.slug} service={service} compact />)}
+
+              {!isServicesLoading && services.length === 0 && (
+                <div className="snap-center shrink-0 w-full rounded-3xl border border-dashed border-gray-200 bg-white p-6 text-center">
+                  <p className="font-bold text-[#131118] mb-2">{t("dashboard.catalogUnavailable")}</p>
+                  <p className="text-sm text-gray-500">{servicesError || t("dashboard.noVisibleService")}</p>
+                </div>
+              )}
+            </div>
+          </section>
+
+          {/* Value Props List */}
+          <section className="px-5 pb-8">
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-4 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                <div className="size-10 rounded-full bg-[#5b13ec]/10 flex items-center justify-center text-[#5b13ec]">
+                  <span className="material-symbols-outlined">bolt</span>
+                </div>
+                <div>
+                  <h4 className="font-bold text-sm text-[#131118]">{t("dashboard.instantDelivery")}</h4>
+                  <p className="text-xs text-gray-500">{t("dashboard.instantDeliveryText")}</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-4 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                <div className="size-10 rounded-full bg-[#5b13ec]/10 flex items-center justify-center text-[#5b13ec]">
+                  <span className="material-symbols-outlined">lock</span>
+                </div>
+                <div>
+                  <h4 className="font-bold text-sm text-[#131118]">{t("dashboard.securePayment")}</h4>
+                  <p className="text-xs text-gray-500">{t("dashboard.securePaymentText")}</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-4 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                <div className="size-10 rounded-full bg-[#5b13ec]/10 flex items-center justify-center text-[#5b13ec]">
+                  <span className="material-symbols-outlined">support_agent</span>
+                </div>
+                <div>
+                  <h4 className="font-bold text-sm text-[#131118]">{t("dashboard.support")}</h4>
+                  <p className="text-xs text-gray-500">{t("dashboard.supportText")}</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Referral Program */}
+          <section className="px-5 pb-24">
+            <div className="bg-[#131118] rounded-3xl p-6 text-white relative overflow-hidden">
+              {/* Background blobs */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#5b13ec] blur-[60px] rounded-full opacity-40"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#7e44f2] blur-[50px] rounded-full opacity-30"></div>
+              
+              <div className="relative z-10">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold">{t("dashboard.inviteAndEarn")} <br/><span className="text-[#7e44f2]">{t("dashboard.earn")}</span></h2>
+                  <div className="size-12 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm">
+                    <span className="material-symbols-outlined text-yellow-400">emoji_events</span>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-6 relative">
+                  {/* Vertical connector line */}
+                  <div className="absolute left-[19px] top-4 bottom-4 w-0.5 bg-white/20"></div>
+                  
+                  {/* Step 1 */}
+                  <div className="flex items-start gap-4">
+                    <div className="size-10 rounded-full bg-white text-[#131118] flex items-center justify-center shrink-0 z-10 font-bold border-4 border-[#131118]">1</div>
+                    <div>
+                      <h4 className="font-bold text-sm mb-1">{t("dashboard.shareLink")}</h4>
+                      <p className="text-xs text-gray-400">{t("dashboard.shareLinkText")}</p>
+                    </div>
+                  </div>
+                  
+                  {/* Step 2 */}
+                  <div className="flex items-start gap-4">
+                    <div className="size-10 rounded-full bg-white text-[#131118] flex items-center justify-center shrink-0 z-10 font-bold border-4 border-[#131118]">2</div>
+                    <div>
+                      <h4 className="font-bold text-sm mb-1">{t("dashboard.friendsSubscribe")}</h4>
+                      <p className="text-xs text-gray-400">{t("dashboard.friendsSubscribeText")}</p>
+                    </div>
+                  </div>
+                  
+                  {/* Step 3 */}
+                  <div className="flex items-start gap-4">
+                    <div className="size-10 rounded-full bg-[#5b13ec] text-white flex items-center justify-center shrink-0 z-10 border-4 border-[#131118]">
+                      <span className="material-symbols-outlined text-sm">check</span>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-sm mb-1">{t("dashboard.auriReward")}</h4>
+                      <p className="text-xs text-gray-400">{t("dashboard.auriRewardText")}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <Link href="/dashboard/parrainage" className="block w-full mt-8 py-3 rounded-full bg-white text-[#131118] font-bold text-sm hover:bg-gray-100 transition-colors text-center">
+                  {t("dashboard.referralLink")}
+                </Link>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <DashboardBottomNav active="home" />
+
+      </div>
+    </div>
+  );
+}
