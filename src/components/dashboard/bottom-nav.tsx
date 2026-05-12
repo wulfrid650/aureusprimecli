@@ -27,7 +27,7 @@ export function DashboardBottomNav({ active }: { active?: DashboardNavItem }) {
   const { t } = useI18n();
 
   return (
-    <div className="sticky bottom-0 mt-auto w-full bg-white border-t border-[#f2f0f4] px-4 py-3 flex justify-between items-center z-50 sm:rounded-b-[40px] shadow-[0_-5px_20px_rgba(0,0,0,0.03)] pb-safe">
+    <div className="dashboard-bottom-nav sticky bottom-0 mt-auto w-full bg-white border-t border-[#f2f0f4] px-4 py-3 flex justify-between items-center z-50 sm:rounded-b-[40px] shadow-[0_-5px_20px_rgba(0,0,0,0.03)] pb-safe">
       {items.map((item) => {
         const isActive = item.id === active;
 

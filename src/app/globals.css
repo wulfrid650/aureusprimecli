@@ -290,7 +290,7 @@ input {
   .dashboard-mode {
     align-items: flex-start;
     overflow-y: auto;
-    padding-bottom: 1rem;
+    padding-bottom: calc(6.75rem + env(safe-area-inset-bottom));
     padding-top: 1rem;
   }
 
@@ -303,6 +303,15 @@ input {
 
   .dashboard-mode main {
     overflow: visible !important;
+  }
+
+  .dashboard-mode .dashboard-bottom-nav {
+    bottom: 1rem;
+    left: 50%;
+    max-width: 420px;
+    position: fixed !important;
+    transform: translateX(-50%);
+    width: min(calc(100vw - 2rem), 420px);
   }
 }
 
