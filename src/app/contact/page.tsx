@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PublicContactPage } from "@/components/marketing/public-pages";
+import { PublicContentPage } from "@/components/marketing/public-pages";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function ContactPage() {
-  return <PublicContactPage />;
+  return <PublicContentPage page="contact" />;
 }

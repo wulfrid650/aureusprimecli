@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { ServiceIllustration } from "@/components/dashboard/service-illustration";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -26,19 +25,12 @@ type StaticPageCopy = {
 const shellCopy = {
   fr: {
     navHome: "Accueil",
-    navOffers: "Catalogue",
-    navBenefits: "FAQ",
+    navOffers: "Nos offres",
+    navBenefits: "Avantages",
     login: "Se connecter",
-    order: "Commander",
     footerText: "Aureus Prime centralise vos abonnements digitaux, votre wallet Auri et la livraison de vos accès.",
     footerNavigation: "Navigation",
     footerSupport: "Support",
-    footerLegal: "Légal",
-    footerContact: "Contact",
-    supportHours: "Support 7j/7",
-    delivery: "Livraison après validation",
-    rechargeTitle: "Recharges acceptées",
-    rechargeText: "Mobile Money africain, cartes et paiements partenaires.",
     rights: "Tous droits réservés.",
     home: "Accueil",
     blog: "Blog",
@@ -50,19 +42,12 @@ const shellCopy = {
   },
   en: {
     navHome: "Home",
-    navOffers: "Catalog",
-    navBenefits: "FAQ",
+    navOffers: "Offers",
+    navBenefits: "Benefits",
     login: "Sign in",
-    order: "Order",
     footerText: "Aureus Prime centralizes your digital subscriptions, Auri wallet and access delivery.",
     footerNavigation: "Navigation",
     footerSupport: "Support",
-    footerLegal: "Legal",
-    footerContact: "Contact",
-    supportHours: "7-day support",
-    delivery: "Delivery after validation",
-    rechargeTitle: "Accepted top-ups",
-    rechargeText: "African Mobile Money, cards and partner payments.",
     rights: "All rights reserved.",
     home: "Home",
     blog: "Blog",
@@ -439,87 +424,24 @@ const blogCopy = {
 
 const offersCopy = {
   fr: {
-    eyebrow: "Catalogue complet",
-    title: "Tous nos services",
-    subtitle: "Explorez les abonnements streaming, musique, cloud, IA et outils disponibles avant de créer votre compte.",
+    eyebrow: "Catalogue",
+    title: "Nos offres premium",
+    subtitle: "Le catalogue public reprend les services disponibles sur Aureus Prime, avec les prix et formules issus de la plateforme.",
     loading: "Chargement du catalogue...",
     unavailable: "Le catalogue est indisponible pour le moment.",
     retry: "Réessayer",
     empty: "Aucune offre visible pour le moment.",
     start: "Créer un compte",
-    search: "Rechercher un service...",
-    all: "Tous",
-    count: "{count} service(s)",
-    choose: "Choisir",
   },
   en: {
-    eyebrow: "Full catalog",
-    title: "All our services",
-    subtitle: "Browse streaming, music, cloud, AI and tool subscriptions before creating your account.",
+    eyebrow: "Catalog",
+    title: "Premium offers",
+    subtitle: "The public catalog uses the services available on Aureus Prime, including platform prices and plans.",
     loading: "Loading catalog...",
     unavailable: "The catalog is unavailable right now.",
     retry: "Retry",
     empty: "No visible offer right now.",
     start: "Create account",
-    search: "Search for a service...",
-    all: "All",
-    count: "{count} service(s)",
-    choose: "Choose",
-  },
-} as const;
-
-const contactCopy = {
-  fr: {
-    eyebrow: "Support",
-    title: "Contactez-nous",
-    subtitle: "Disponibles pour répondre à vos questions et vous accompagner sur vos commandes, accès, wallet et KYC.",
-    back: "Retour à l'accueil",
-    whatsapp: "WhatsApp",
-    whatsappText: "Réponse rapide pour les commandes et accès",
-    email: "Email",
-    emailText: "Pour les demandes détaillées et documents",
-    phone: "Téléphone",
-    phoneText: "Assistance directe par appel",
-    sendMessage: "Envoyer un message",
-    sendEmail: "Envoyer un email",
-    callNow: "Appeler maintenant",
-    hoursTitle: "Horaires d'assistance",
-    serviceTitle: "Zone de service",
-    serviceText: "Aureus Prime est un service digital accessible depuis votre espace client. Les services sont livrés après validation de la commande.",
-    countries: "Pays principaux",
-    faqTitle: "Besoin d'aide supplémentaire ?",
-    faqText: "Consultez notre centre d'aide pour les réponses rapides aux questions fréquentes.",
-    faqButton: "Accéder à la FAQ",
-    guaranteed: "Réponse traitée en priorité pendant les heures d'ouverture",
-    mondayFriday: "Lundi - Vendredi",
-    saturday: "Samedi",
-    sunday: "Dimanche",
-  },
-  en: {
-    eyebrow: "Support",
-    title: "Contact us",
-    subtitle: "Available to answer questions and help with orders, access, wallet and KYC.",
-    back: "Back home",
-    whatsapp: "WhatsApp",
-    whatsappText: "Fast response for orders and access",
-    email: "Email",
-    emailText: "For detailed requests and documents",
-    phone: "Phone",
-    phoneText: "Direct assistance by call",
-    sendMessage: "Send message",
-    sendEmail: "Send email",
-    callNow: "Call now",
-    hoursTitle: "Support hours",
-    serviceTitle: "Service area",
-    serviceText: "Aureus Prime is a digital service available from your customer space. Services are delivered after order validation.",
-    countries: "Main countries",
-    faqTitle: "Need more help?",
-    faqText: "Check our help center for quick answers to frequent questions.",
-    faqButton: "Open FAQ",
-    guaranteed: "Priority response during opening hours",
-    mondayFriday: "Monday - Friday",
-    saturday: "Saturday",
-    sunday: "Sunday",
   },
 } as const;
 
@@ -537,56 +459,33 @@ function getShell(locale: "fr" | "en") {
 
 function PublicShell({ children }: { children: React.ReactNode }) {
   const { locale } = useI18n();
-  const pathname = usePathname();
   const copy = getShell(locale);
-  const navItems = [
-    { href: "/accueil", label: copy.navHome },
-    { href: "/catalogue", label: copy.navOffers },
-    { href: "/aide", label: copy.navBenefits },
-    { href: "/contact", label: copy.contact },
-  ];
 
   return (
     <main className="premium-page min-h-screen overflow-x-hidden selection:bg-primary-300 selection:text-[var(--premium-contrast)]">
       <div className="relative flex min-h-screen w-full flex-col">
-        <header className="sticky top-0 z-50 px-4 pt-4 sm:px-6 lg:px-8">
-          <div className="mx-auto grid max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-3">
-            <Link
-              href="/accueil"
-              className="inline-flex w-max items-center rounded-full border border-[var(--premium-card-border)] bg-[var(--premium-card-deep)] px-4 py-3 shadow-[var(--shadow-card)] backdrop-blur-md"
-            >
+        <header className="premium-header-surface sticky top-0 z-50 w-full border-b backdrop-blur-md">
+          <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+            <Link href="/accueil" className="flex items-center">
               <Image src="/logo-aureusprime.svg" alt="Aureus Prime" width={200} height={24} className="logo-dark h-6 w-auto" />
               <Image src="/logo-aureusprime-light.svg" alt="Aureus Prime" width={200} height={24} className="logo-light h-6 w-auto" />
             </Link>
-
-            <nav className="hidden rounded-full border border-[var(--premium-card-border)] bg-[var(--premium-card-deep)] p-1 shadow-[var(--shadow-card)] backdrop-blur-md md:flex">
-              {navItems.map((item) => {
-                const isActive =
-                  pathname === item.href ||
-                  (item.href === "/catalogue" && pathname === "/offres");
-
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={`rounded-full px-5 py-3 text-xs font-black uppercase tracking-[0.16em] transition-colors ${
-                      isActive
-                        ? "bg-primary-500 text-[var(--premium-contrast)]"
-                        : "text-[var(--premium-text-muted)] hover:text-primary-500"
-                    }`}
-                  >
-                    {item.label}
-                  </Link>
-                );
-              })}
+            <nav className="hidden items-center gap-8 md:flex">
+              <Link className="text-sm font-medium text-[var(--premium-text-muted)] transition-colors hover:text-primary-500" href="/accueil">
+                {copy.navHome}
+              </Link>
+              <Link className="text-sm font-medium text-[var(--premium-text-muted)] transition-colors hover:text-primary-500" href="/offres">
+                {copy.navOffers}
+              </Link>
+              <Link className="text-sm font-medium text-[var(--premium-text-muted)] transition-colors hover:text-primary-500" href="/accueil#avantages">
+                {copy.navBenefits}
+              </Link>
             </nav>
-
-            <div className="flex items-center justify-end gap-2">
+            <div className="flex items-center gap-3">
               <LanguageToggle />
               <ThemeToggle />
-              <Link href="/register" className="hidden h-11 items-center justify-center gap-2 rounded-full bg-primary-500 px-5 text-sm font-black text-[var(--premium-contrast)] shadow-[0_18px_45px_rgba(230,184,0,0.24)] transition-colors hover:bg-primary-400 sm:flex">
-                <MaterialIcon name="chat_bubble" className="text-[18px]" />
-                {copy.order}
+              <Link href="/login" className="hidden h-10 items-center justify-center rounded-full bg-primary-500 px-4 text-sm font-bold text-[var(--premium-contrast)] transition-colors hover:bg-primary-400 sm:flex">
+                {copy.login}
               </Link>
             </div>
           </div>
@@ -594,70 +493,33 @@ function PublicShell({ children }: { children: React.ReactNode }) {
 
         <div className="flex-1">{children}</div>
 
-        <footer className="relative overflow-hidden bg-[#040906] px-4 py-16 text-white sm:px-6 lg:px-8">
-          <div className="pointer-events-none absolute inset-x-0 bottom-[-3.5rem] text-center text-[18vw] font-black uppercase leading-none tracking-[-0.08em] text-transparent opacity-25 [-webkit-text-stroke:1px_rgba(230,184,0,0.22)]">
-            AureusPrime
-          </div>
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-primary-500/12 to-transparent" />
-
-          <div className="relative z-10 mx-auto grid max-w-7xl gap-10 border-b border-white/10 pb-12 md:grid-cols-4">
+        <footer className="premium-section-surface border-t border-[var(--premium-card-border)] py-10">
+          <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 md:grid-cols-3 lg:px-8">
             <div>
-              <Image src="/logo-aureusprime-light.svg" alt="Aureus Prime" width={200} height={24} className="h-6 w-auto" />
-              <p className="mt-5 max-w-sm text-sm leading-7 text-white/50">{copy.footerText}</p>
-              <div className="mt-6">
-                <h2 className="text-xs font-black uppercase tracking-[0.2em] text-white">{copy.rechargeTitle}</h2>
-                <p className="mt-2 text-xs leading-5 text-white/40">{copy.rechargeText}</p>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {["MTN MoMo", "Orange Money", "Wave", "Mobile Money", "Moneroo", "PayPal"].map((method) => (
-                    <span key={method} className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] font-bold text-white/70">
-                      <MaterialIcon name={method === "Wave" ? "waves" : method === "PayPal" ? "payments" : "phone_iphone"} className="text-[14px] text-primary-400" />
-                      {method}
-                    </span>
-                  ))}
-                </div>
+              <Image src="/logo-aureusprime.svg" alt="Aureus Prime" width={200} height={24} className="logo-dark mb-4 h-6 w-auto" />
+              <Image src="/logo-aureusprime-light.svg" alt="Aureus Prime" width={200} height={24} className="logo-light mb-4 h-6 w-auto" />
+              <p className="max-w-sm text-sm leading-relaxed text-[var(--premium-text-muted)]">{copy.footerText}</p>
+            </div>
+            <div>
+              <h2 className="mb-4 text-sm font-bold uppercase tracking-[0.18em] text-[var(--premium-text)]">{copy.footerNavigation}</h2>
+              <div className="grid gap-3 text-sm text-[var(--premium-text-muted)]">
+                <Link href="/accueil" className="hover:text-primary-500">{copy.home}</Link>
+                <Link href="/offres" className="hover:text-primary-500">{copy.navOffers}</Link>
+                <Link href="/blog" className="hover:text-primary-500">{copy.blog}</Link>
+                <Link href="/a-propos" className="hover:text-primary-500">{copy.about}</Link>
               </div>
             </div>
             <div>
-              <h2 className="mb-5 text-sm font-black uppercase tracking-[0.2em] text-white">{copy.footerNavigation}</h2>
-              <div className="grid gap-3 text-sm text-white/50">
-                <Link href="/accueil" className="hover:text-primary-500">{copy.home}</Link>
-                <Link href="/catalogue" className="hover:text-primary-500">{copy.navOffers}</Link>
-                <Link href="/aide" className="hover:text-primary-500">{copy.navBenefits}</Link>
+              <h2 className="mb-4 text-sm font-bold uppercase tracking-[0.18em] text-[var(--premium-text)]">{copy.footerSupport}</h2>
+              <div className="grid gap-3 text-sm text-[var(--premium-text-muted)]">
+                <Link href="/aide" className="hover:text-primary-500">{copy.help}</Link>
+                <Link href="/conditions-generales" className="hover:text-primary-500">{copy.terms}</Link>
+                <Link href="/confidentialite" className="hover:text-primary-500">{copy.privacy}</Link>
                 <Link href="/contact" className="hover:text-primary-500">{copy.contact}</Link>
               </div>
             </div>
-            <div>
-              <h2 className="mb-5 text-sm font-black uppercase tracking-[0.2em] text-white">{copy.footerLegal}</h2>
-              <div className="grid gap-3 text-sm text-white/50">
-                <Link href="/conditions-generales" className="hover:text-primary-500">{copy.terms}</Link>
-                <Link href="/confidentialite" className="hover:text-primary-500">{copy.privacy}</Link>
-                <Link href="/a-propos" className="hover:text-primary-500">{copy.about}</Link>
-                <Link href="/blog" className="hover:text-primary-500">{copy.blog}</Link>
-              </div>
-            </div>
-            <div>
-              <h2 className="mb-5 text-sm font-black uppercase tracking-[0.2em] text-white">{copy.footerContact}</h2>
-              <div className="grid gap-4 text-sm text-white/50">
-                <a href="https://wa.me/237695263203" className="inline-flex items-center gap-3 hover:text-primary-500">
-                  <MaterialIcon name="chat_bubble" className="text-[18px] text-primary-400" />
-                  +237 695 263 203
-                </a>
-                <a href="mailto:contact@aureusprime.com" className="inline-flex items-center gap-3 hover:text-primary-500">
-                  <MaterialIcon name="alternate_email" className="text-[18px] text-primary-400" />
-                  contact@aureusprime.com
-                </a>
-                <span className="inline-flex items-center gap-3">
-                  <MaterialIcon name="schedule" className="text-[18px] text-primary-400" />
-                  {copy.supportHours}
-                </span>
-                <span className="inline-flex items-center gap-3">
-                  <MaterialIcon name="bolt" className="text-[18px] text-primary-400" />
-                  {copy.delivery}
-                </span>
-              </div>
-            </div>
           </div>
-          <div className="relative z-10 mx-auto mt-8 max-w-7xl text-center text-xs text-white/35">
+          <div className="mx-auto mt-8 max-w-7xl px-4 text-xs text-[var(--premium-text-soft)] sm:px-6 lg:px-8">
             © {new Date().getFullYear()} Aureus Prime. {copy.rights}
           </div>
         </footer>
@@ -737,8 +599,6 @@ export function PublicOffersPage() {
   const [services, setServices] = useState<CatalogProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
-  const [query, setQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
 
   useEffect(() => {
     let isActive = true;
@@ -761,89 +621,34 @@ export function PublicOffersPage() {
     };
   }, [copy.unavailable]);
 
-  const categories = useMemo(
-    () => Array.from(new Set(services.map((service) => service.category))).filter(Boolean).sort(),
-    [services],
-  );
-
-  const filteredServices = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase();
-
-    return services.filter((service) => {
-      const matchesCategory = selectedCategory === "all" || service.category === selectedCategory;
-      const searchable = `${service.title} ${service.category} ${service.shortDescription}`.toLowerCase();
-      return matchesCategory && (!normalizedQuery || searchable.includes(normalizedQuery));
-    });
-  }, [query, selectedCategory, services]);
-
   const groupedServices = useMemo(
     () =>
-      filteredServices.reduce<Record<string, CatalogProduct[]>>((acc, service) => {
+      services.reduce<Record<string, CatalogProduct[]>>((acc, service) => {
         if (!acc[service.category]) acc[service.category] = [];
         acc[service.category].push(service);
         return acc;
       }, {}),
-    [filteredServices],
+    [services],
   );
-
-  const countLabel = copy.count.replace("{count}", String(filteredServices.length));
 
   return (
     <PublicShell>
-      <section className="px-4 py-16 text-center sm:px-6 sm:py-20 lg:px-8">
-        <div className="mx-auto max-w-5xl">
-          <p className="mb-4 text-xs font-black uppercase tracking-[0.24em] text-primary-500">{copy.eyebrow}</p>
-          <h1 className="text-5xl font-black tracking-tight text-[var(--premium-text)] sm:text-6xl">{copy.title}</h1>
-          <p className="mx-auto mt-5 max-w-3xl text-base leading-8 text-[var(--premium-text-muted)] sm:text-lg">{copy.subtitle}</p>
-
-          <div className="mx-auto mt-9 flex max-w-3xl flex-col gap-3 sm:flex-row">
-            <label className="flex h-14 flex-1 items-center gap-3 rounded-2xl border border-[var(--premium-card-border)] bg-[var(--premium-card-deep)] px-4 text-left shadow-[var(--shadow-card)]">
-              <MaterialIcon name="search" className="text-[22px] text-[var(--premium-text-soft)]" />
-              <input
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder={copy.search}
-                className="min-w-0 flex-1 bg-transparent text-sm font-bold text-[var(--premium-text)] outline-none placeholder:text-[var(--premium-text-soft)]"
-              />
-            </label>
-            <Link href="/register" className="inline-flex h-14 items-center justify-center gap-2 rounded-2xl bg-primary-500 px-6 text-sm font-black text-[var(--premium-contrast)] shadow-[0_18px_45px_rgba(230,184,0,0.24)] transition-colors hover:bg-primary-400">
-              <MaterialIcon name="chat_bubble" className="text-[18px]" />
+      <section className="py-16 sm:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <p className="mb-4 text-xs font-bold uppercase tracking-[0.24em] text-primary-500">{copy.eyebrow}</p>
+          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+            <div>
+              <h1 className="text-4xl font-black tracking-tight text-[var(--premium-text)] sm:text-5xl">{copy.title}</h1>
+              <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[var(--premium-text-muted)]">{copy.subtitle}</p>
+            </div>
+            <Link href="/register" className="inline-flex h-12 items-center justify-center rounded-full bg-primary-500 px-7 text-sm font-bold text-[var(--premium-contrast)] transition-colors hover:bg-primary-400">
               {copy.start}
             </Link>
           </div>
-
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
-            <button
-              type="button"
-              onClick={() => setSelectedCategory("all")}
-              className={`rounded-full border px-4 py-2 text-xs font-black uppercase tracking-[0.12em] ${
-                selectedCategory === "all"
-                  ? "border-primary-500 bg-primary-500 text-[var(--premium-contrast)]"
-                  : "border-[var(--premium-card-border)] bg-[var(--premium-card-deep)] text-[var(--premium-text-muted)] hover:text-primary-500"
-              }`}
-            >
-              {copy.all}
-            </button>
-            {categories.map((category) => (
-              <button
-                key={category}
-                type="button"
-                onClick={() => setSelectedCategory(category)}
-                className={`rounded-full border px-4 py-2 text-xs font-black uppercase tracking-[0.12em] ${
-                  selectedCategory === category
-                    ? "border-primary-500 bg-primary-500 text-[var(--premium-contrast)]"
-                    : "border-[var(--premium-card-border)] bg-[var(--premium-card-deep)] text-[var(--premium-text-muted)] hover:text-primary-500"
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-          {!isLoading && !error ? <p className="mt-4 text-xs font-bold text-[var(--premium-text-soft)]">{countLabel}</p> : null}
         </div>
       </section>
 
-      <section className="border-y border-[var(--premium-card-border)] bg-[var(--premium-section-bg)] py-12">
+      <section className="premium-section-surface border-y border-[var(--premium-card-border)] py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {isLoading ? (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -863,7 +668,7 @@ export function PublicOffersPage() {
                 {copy.retry}
               </button>
             </div>
-          ) : filteredServices.length === 0 ? (
+          ) : services.length === 0 ? (
             <div className="premium-card-surface rounded-2xl border p-8 text-center text-[var(--premium-text-muted)]">{copy.empty}</div>
           ) : (
             <div className="grid gap-10">
@@ -872,7 +677,7 @@ export function PublicOffersPage() {
                   <h2 className="mb-5 text-2xl font-black text-[var(--premium-text)]">{category}</h2>
                   <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     {categoryServices.map((service) => (
-                      <article key={service.slug} className="group premium-card-surface overflow-hidden rounded-2xl border shadow-[var(--shadow-card)] transition-all hover:-translate-y-1 hover:border-primary-400/45">
+                      <Link key={service.slug} href="/register" className="group premium-card-surface overflow-hidden rounded-2xl border shadow-[var(--shadow-card)] transition-all hover:-translate-y-1 hover:border-primary-400/45">
                         <div className="relative aspect-video overflow-hidden bg-[var(--premium-panel)]">
                           <ServiceIllustration service={service} className="transition-transform duration-500 group-hover:scale-[1.03]" />
                           <span className={`absolute right-3 top-3 rounded-full px-2.5 py-1 text-xs font-bold text-white ${service.badgeClassName}`}>
@@ -888,140 +693,18 @@ export function PublicOffersPage() {
                               <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--premium-text-soft)]">{service.priceHint}</p>
                               <p className="text-xl font-black text-primary-500">{service.currentPriceFormatted}</p>
                             </div>
-                            <Link href="/register" className="inline-flex h-10 items-center justify-center gap-2 rounded-full bg-primary-500 px-4 text-xs font-black text-[var(--premium-contrast)]">
-                              {copy.choose}
+                            <span className="flex size-10 items-center justify-center rounded-full bg-primary-500 text-[var(--premium-contrast)]">
                               <MaterialIcon name="arrow_forward" />
-                            </Link>
+                            </span>
                           </div>
                         </div>
-                      </article>
+                      </Link>
                     ))}
                   </div>
                 </div>
               ))}
             </div>
           )}
-        </div>
-      </section>
-    </PublicShell>
-  );
-}
-
-export function PublicContactPage() {
-  const { locale } = useI18n();
-  const copy = contactCopy[locale];
-  const whatsappUrl =
-    "https://wa.me/237695263203?text=Bonjour%20Aureus%20Prime%2C%20j%27ai%20besoin%20d%27aide%20sur%20une%20commande.";
-  const countries = ["Cameroun", "Côte d'Ivoire", "Sénégal", "Gabon", "Congo", "Mali"];
-
-  return (
-    <PublicShell>
-      <section className="px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-5xl">
-          <Link href="/accueil" className="inline-flex items-center gap-2 text-sm font-bold text-[var(--premium-text-muted)] hover:text-primary-500">
-            <MaterialIcon name="arrow_back" className="text-[18px]" />
-            {copy.back}
-          </Link>
-
-          <div className="mt-10 text-center">
-            <p className="text-xs font-black uppercase tracking-[0.24em] text-primary-500">{copy.eyebrow}</p>
-            <h1 className="mt-4 text-5xl font-black tracking-tight text-[var(--premium-text)] sm:text-6xl">{copy.title}</h1>
-            <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-[var(--premium-text-muted)]">{copy.subtitle}</p>
-          </div>
-
-          <div className="mt-12 grid gap-5 md:grid-cols-3">
-            <article className="premium-card-surface rounded-3xl border border-primary-500/45 p-6 text-center shadow-[var(--shadow-card)]">
-              <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-emerald-500/12 text-emerald-400">
-                <MaterialIcon name="chat_bubble" className="text-[28px]" />
-              </div>
-              <h2 className="mt-5 text-xl font-black text-[var(--premium-text)]">{copy.whatsapp}</h2>
-              <p className="mt-2 min-h-10 text-xs leading-5 text-[var(--premium-text-muted)]">{copy.whatsappText}</p>
-              <p className="mt-4 text-sm font-black text-[var(--premium-text)]">+237 695 263 203</p>
-              <a href={whatsappUrl} className="mt-5 inline-flex h-11 w-full items-center justify-center gap-2 rounded-2xl bg-primary-500 text-sm font-black text-[var(--premium-contrast)] hover:bg-primary-400">
-                <MaterialIcon name="chat_bubble" className="text-[17px]" />
-                {copy.sendMessage}
-              </a>
-            </article>
-
-            <article className="premium-card-surface rounded-3xl border p-6 text-center shadow-[var(--shadow-card)]">
-              <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-blue-500/12 text-blue-400">
-                <MaterialIcon name="mail" className="text-[28px]" />
-              </div>
-              <h2 className="mt-5 text-xl font-black text-[var(--premium-text)]">{copy.email}</h2>
-              <p className="mt-2 min-h-10 text-xs leading-5 text-[var(--premium-text-muted)]">{copy.emailText}</p>
-              <p className="mt-4 text-sm font-black text-[var(--premium-text)]">contact@aureusprime.com</p>
-              <a href="mailto:contact@aureusprime.com" className="mt-5 inline-flex h-11 w-full items-center justify-center gap-2 rounded-2xl bg-[var(--premium-panel)] text-sm font-black text-[var(--premium-text)] hover:text-primary-500">
-                <MaterialIcon name="mail" className="text-[17px]" />
-                {copy.sendEmail}
-              </a>
-            </article>
-
-            <article className="premium-card-surface rounded-3xl border p-6 text-center shadow-[var(--shadow-card)]">
-              <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-violet-500/12 text-violet-400">
-                <MaterialIcon name="call" className="text-[28px]" />
-              </div>
-              <h2 className="mt-5 text-xl font-black text-[var(--premium-text)]">{copy.phone}</h2>
-              <p className="mt-2 min-h-10 text-xs leading-5 text-[var(--premium-text-muted)]">{copy.phoneText}</p>
-              <p className="mt-4 text-sm font-black text-[var(--premium-text)]">+237 695 263 203</p>
-              <a href="tel:+237695263203" className="mt-5 inline-flex h-11 w-full items-center justify-center gap-2 rounded-2xl bg-[var(--premium-panel)] text-sm font-black text-[var(--premium-text)] hover:text-primary-500">
-                <MaterialIcon name="call" className="text-[17px]" />
-                {copy.callNow}
-              </a>
-            </article>
-          </div>
-
-          <div className="mt-10 grid gap-5 md:grid-cols-2">
-            <article className="premium-card-surface rounded-3xl border p-7 shadow-[var(--shadow-card)]">
-              <div className="mb-6 flex items-center gap-3">
-                <span className="flex size-10 items-center justify-center rounded-2xl bg-emerald-500/12 text-emerald-400">
-                  <MaterialIcon name="schedule" className="text-[22px]" />
-                </span>
-                <h2 className="text-lg font-black text-[var(--premium-text)]">{copy.hoursTitle}</h2>
-              </div>
-              {[
-                [copy.mondayFriday, "8h - 20h"],
-                [copy.saturday, "9h - 18h"],
-                [copy.sunday, "10h - 16h"],
-              ].map(([label, value]) => (
-                <div key={label} className="flex items-center justify-between border-b border-[var(--premium-card-border)] py-4 last:border-b-0">
-                  <span className="text-sm text-[var(--premium-text-muted)]">{label}</span>
-                  <span className="text-sm font-black text-[var(--premium-text)]">{value}</span>
-                </div>
-              ))}
-              <p className="mt-5 flex items-center gap-2 text-xs text-[var(--premium-text-soft)]">
-                <MaterialIcon name="bolt" className="text-[16px] text-primary-500" />
-                {copy.guaranteed}
-              </p>
-            </article>
-
-            <article className="premium-card-surface rounded-3xl border p-7 shadow-[var(--shadow-card)]">
-              <div className="mb-6 flex items-center gap-3">
-                <span className="flex size-10 items-center justify-center rounded-2xl bg-emerald-500/12 text-emerald-400">
-                  <MaterialIcon name="location_on" className="text-[22px]" />
-                </span>
-                <h2 className="text-lg font-black text-[var(--premium-text)]">{copy.serviceTitle}</h2>
-              </div>
-              <p className="text-sm leading-7 text-[var(--premium-text-muted)]">{copy.serviceText}</p>
-              <div className="mt-6 rounded-2xl border border-[var(--premium-card-border)] bg-[var(--premium-panel)] p-5">
-                <h3 className="text-xs font-black uppercase tracking-[0.18em] text-primary-500">{copy.countries}</h3>
-                <div className="mt-4 grid grid-cols-2 gap-2">
-                  {countries.map((country) => (
-                    <span key={country} className="text-sm text-[var(--premium-text-muted)]">
-                      <span className="text-primary-500">•</span> {country}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </article>
-          </div>
-
-          <div className="premium-card-surface mt-12 rounded-3xl border p-8 text-center shadow-[var(--shadow-card)]">
-            <h2 className="text-2xl font-black text-[var(--premium-text)]">{copy.faqTitle}</h2>
-            <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-[var(--premium-text-muted)]">{copy.faqText}</p>
-            <Link href="/aide" className="mt-6 inline-flex h-11 items-center justify-center rounded-2xl bg-[var(--premium-panel)] px-6 text-sm font-black text-[var(--premium-text)] hover:text-primary-500">
-              {copy.faqButton}
-            </Link>
-          </div>
         </div>
       </section>
     </PublicShell>
