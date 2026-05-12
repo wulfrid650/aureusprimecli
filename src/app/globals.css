@@ -10,7 +10,8 @@ html, body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
-  overscroll-behavior: none;
+  overscroll-behavior-x: none;
+  overscroll-behavior-y: auto;
 }
 
 body {
@@ -260,17 +261,49 @@ input {
 }
 
 .dashboard-mode {
-  height: var(--app-height, 100dvh);
   min-height: var(--app-height, 100dvh);
-  overflow: hidden;
-  overscroll-behavior: contain;
+  overflow: visible;
+  overscroll-behavior: auto;
 }
 
 .dashboard-mode main,
 .dashboard-mode .overflow-y-auto {
   min-height: 0;
   -webkit-overflow-scrolling: touch;
-  overscroll-behavior-y: contain;
+  overscroll-behavior-y: auto;
+}
+
+@media (max-width: 639px) {
+  .dashboard-mode {
+    height: var(--app-height, 100dvh);
+    overflow: hidden;
+    overscroll-behavior: contain;
+  }
+
+  .dashboard-mode main,
+  .dashboard-mode .overflow-y-auto {
+    overscroll-behavior-y: contain;
+  }
+}
+
+@media (min-width: 640px) {
+  .dashboard-mode {
+    align-items: flex-start;
+    overflow-y: auto;
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+  }
+
+  .dashboard-mode > div {
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  .dashboard-mode main {
+    overflow: visible !important;
+  }
 }
 
 [data-theme="dark"] .dashboard-mode {
