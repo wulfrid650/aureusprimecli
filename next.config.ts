@@ -13,6 +13,7 @@ const withPWA = nextPwa({
 
 const nextConfig = {
   reactStrictMode: true,
+  turbopack: {},
   allowedDevOrigins: ["192.168.1.121"],
   async rewrites() {
     return [
