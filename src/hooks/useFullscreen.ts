@@ -8,40 +8,19 @@ export function useFullscreen() {
       root.style.setProperty('--app-height', `${window.innerHeight}px`);
     };
 
-    const hideAddressBar = () => {
-      try {
-        updateAppHeight();
-        window.requestAnimationFrame(() => {
-          window.scrollTo({ top: 1, left: 0, behavior: 'auto' });
-        });
-      } catch (e) {
-        console.error('Error hiding address bar:', e);
-      }
-    };
+    updateAppHeight();
 
-    const handleUserGesture = () => {
-      hideAddressBar();
-    };
+    window.addEventListener('resize', updateAppHeight);
+    window.addEventListener('orientationchange', updateAppHeight);
+    window.visualViewport?.addEventListener('resize', updateAppHeight);
 
-    hideAddressBar();
-
-    window.addEventListener('resize', hideAddressBar);
-    window.addEventListener('orientationchange', hideAddressBar);
-    window.visualViewport?.addEventListener('resize', hideAddressBar);
-    window.addEventListener('scroll', hideAddressBar);
-    document.addEventListener('pointerdown', handleUserGesture);
-    document.addEventListener('touchstart', handleUserGesture);
-
-    const timeoutId = setTimeout(hideAddressBar, 500);
-    const timeoutId2 = setTimeout(hideAddressBar, 1000);
+    const timeoutId = setTimeout(updateAppHeight, 500);
+    const timeoutId2 = setTimeout(updateAppHeight, 1000);
 
     return () => {
-      window.removeEventListener('resize', hideAddressBar);
-      window.removeEventListener('orientationchange', hideAddressBar);
-      window.visualViewport?.removeEventListener('resize', hideAddressBar);
-      window.removeEventListener('scroll', hideAddressBar);
-      document.removeEventListener('pointerdown', handleUserGesture);
-      document.removeEventListener('touchstart', handleUserGesture);
+      window.removeEventListener('resize', updateAppHeight);
+      window.removeEventListener('orientationchange', updateAppHeight);
+      window.visualViewport?.removeEventListener('resize', updateAppHeight);
       clearTimeout(timeoutId);
       clearTimeout(timeoutId2);
     };

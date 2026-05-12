@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { PublicOffersPage } from "@/components/marketing/public-pages";
 
 export const metadata: Metadata = {
-  title: "Nos offres",
+  title: "Catalogue",
   description: "Découvrez le catalogue Aureus Prime et ses abonnements digitaux premium.",
 };
 

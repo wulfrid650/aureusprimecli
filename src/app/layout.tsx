@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
+import { CookieAuriNotice } from "@/components/cookie-auri-notice";
 import { DevServiceWorkerReset } from "@/components/dev-service-worker-reset";
 import { FullscreenManager } from "@/components/fullscreen-manager";
 import { I18nProvider } from "@/lib/i18n";
@@ -103,6 +104,7 @@ export default function RootLayout({
           <FullscreenManager />
           <DevServiceWorkerReset />
           {children}
+          <CookieAuriNotice />
           <Analytics />
         </I18nProvider>
       </body>
