@@ -484,7 +484,7 @@ function PublicShell({ children }: { children: React.ReactNode }) {
             <div className="flex items-center gap-3">
               <LanguageToggle />
               <ThemeToggle />
-              <Link href="/login" className="hidden h-10 items-center justify-center rounded-full bg-primary-500 px-4 text-sm font-bold text-[var(--premium-contrast)] transition-colors hover:bg-primary-400 sm:flex">
+              <Link href="/login" className="premium-primary-cta hidden h-10 items-center justify-center rounded-full px-4 text-sm font-bold transition-colors sm:flex">
                 {copy.login}
               </Link>
             </div>
@@ -536,7 +536,7 @@ export function PublicContentPage({ page }: { page: PublicPageId }) {
   return (
     <PublicShell>
       <section className="relative overflow-hidden py-16 sm:py-20">
-        <div className="absolute left-1/2 top-[-10rem] -z-10 h-[420px] w-[720px] -translate-x-1/2 rounded-full bg-primary-500/12 blur-[100px]" />
+        <div className="absolute left-1/2 top-[-10rem] -z-10 h-[420px] w-[720px] -translate-x-1/2 rounded-full bg-primary-500/4 blur-[100px]" />
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
             <div>
@@ -584,7 +584,7 @@ export function PublicContentPage({ page }: { page: PublicPageId }) {
         <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
           <h2 className="text-3xl font-black text-[var(--premium-text)]">{copy.ctaTitle}</h2>
           <p className="mx-auto mt-3 max-w-2xl text-[var(--premium-text-muted)]">{copy.ctaText}</p>
-          <Link href={ctaHref} className="mt-8 inline-flex h-12 items-center justify-center rounded-full bg-primary-500 px-7 text-sm font-bold text-[var(--premium-contrast)] shadow-[0_20px_60px_rgba(230,184,0,0.2)] transition-colors hover:bg-primary-400">
+          <Link href={ctaHref} className="premium-primary-cta mt-8 inline-flex h-12 items-center justify-center rounded-full px-7 text-sm font-bold transition-colors">
             {copy.ctaLabel}
           </Link>
         </div>
@@ -641,7 +641,7 @@ export function PublicOffersPage() {
               <h1 className="text-4xl font-black tracking-tight text-[var(--premium-text)] sm:text-5xl">{copy.title}</h1>
               <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[var(--premium-text-muted)]">{copy.subtitle}</p>
             </div>
-            <Link href="/register" className="inline-flex h-12 items-center justify-center rounded-full bg-primary-500 px-7 text-sm font-bold text-[var(--premium-contrast)] transition-colors hover:bg-primary-400">
+            <Link href="/register" className="premium-primary-cta inline-flex h-12 items-center justify-center rounded-full px-7 text-sm font-bold transition-colors">
               {copy.start}
             </Link>
           </div>
@@ -664,7 +664,7 @@ export function PublicOffersPage() {
             <div className="premium-card-surface rounded-2xl border p-8 text-center">
               <MaterialIcon name="cloud_off" className="text-4xl text-primary-500" />
               <p className="mt-4 font-bold text-[var(--premium-text)]">{error}</p>
-              <button type="button" onClick={() => window.location.reload()} className="mt-5 rounded-full bg-primary-500 px-5 py-2 text-sm font-bold text-[var(--premium-contrast)]">
+              <button type="button" onClick={() => window.location.reload()} className="premium-primary-cta mt-5 rounded-full px-5 py-2 text-sm font-bold">
                 {copy.retry}
               </button>
             </div>

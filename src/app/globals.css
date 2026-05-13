@@ -89,8 +89,12 @@ body {
   --premium-nav-shadow: 0 -10px 40px rgba(184, 147, 0, 0.12);
   --premium-progress-bg: rgba(46, 37, 0, 0.08);
   --premium-success: var(--trust-green);
+  --premium-cta-bg: #171200;
+  --premium-cta-bg-hover: #2c2518;
+  --premium-cta-text: #fffdf8;
+  --premium-cta-shadow: none;
   --premium-hero-radial: none;
-  --premium-glow-line: rgba(230, 184, 0, 0.3);
+  --premium-glow-line: rgba(230, 184, 0, 0.12);
 }
 
 @theme inline {
@@ -143,8 +147,12 @@ body {
   --premium-nav-shadow: 0 -10px 40px rgba(184, 147, 0, 0.18);
   --premium-progress-bg: rgba(255, 246, 232, 0.08);
   --premium-success: var(--trust-green);
+  --premium-cta-bg: #e6b800;
+  --premium-cta-bg-hover: #eacb4d;
+  --premium-cta-text: #171200;
+  --premium-cta-shadow: none;
   --premium-hero-radial: none;
-  --premium-glow-line: rgba(230, 184, 0, 0.24);
+  --premium-glow-line: rgba(230, 184, 0, 0.1);
 }
 
 html {
@@ -264,6 +272,16 @@ input {
   background: var(--premium-nav-bg);
   border-color: var(--premium-card-border);
   box-shadow: var(--premium-nav-shadow);
+}
+
+.premium-primary-cta {
+  background: var(--premium-cta-bg);
+  box-shadow: var(--premium-cta-shadow);
+  color: var(--premium-cta-text);
+}
+
+.premium-primary-cta:hover {
+  background: var(--premium-cta-bg-hover);
 }
 
 .dashboard-mode {

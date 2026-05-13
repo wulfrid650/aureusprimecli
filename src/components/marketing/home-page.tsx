@@ -145,7 +145,7 @@ export function MarketingHomePage() {
               </button>
               <LanguageToggle />
               <ThemeToggle />
-              <Link href="/login" className="group flex h-10 items-center justify-center gap-2 rounded-full bg-primary-500 px-4 text-sm font-semibold text-[var(--premium-contrast)] shadow-[0_18px_48px_rgba(230,184,0,0.24)] transition-all hover:bg-primary-400">
+              <Link href="/login" className="premium-primary-cta group flex h-10 items-center justify-center gap-2 rounded-full px-4 text-sm font-semibold transition-all">
                 <span className="hidden sm:inline">{t("marketing.login")}</span>
                 <MaterialIcon
                   name="login"
@@ -158,8 +158,8 @@ export function MarketingHomePage() {
 
         <main className="flex-1">
           <section className="relative overflow-hidden pb-20 pt-12 lg:pb-32 lg:pt-24" id="accueil">
-            <div className="absolute left-1/2 top-[-6rem] -z-10 h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-primary-500/16 blur-[100px]" />
-            <div className="absolute right-0 top-1/2 -z-10 h-[300px] w-[300px] translate-x-1/3 rounded-full bg-primary-300/12 blur-[80px]" />
+            <div className="absolute left-1/2 top-[-6rem] -z-10 h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-primary-500/5 blur-[100px]" />
+            <div className="absolute right-0 top-1/2 -z-10 h-[300px] w-[300px] translate-x-1/3 rounded-full bg-primary-300/4 blur-[80px]" />
 
             <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
               <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-primary-400/35 bg-primary-500/10 px-3 py-1 backdrop-blur-sm">
@@ -181,7 +181,7 @@ export function MarketingHomePage() {
               </p>
 
               <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <Link href="/offres" className="flex h-12 w-full items-center justify-center rounded-full bg-primary-500 px-8 text-base font-bold text-[var(--premium-contrast)] shadow-[0_20px_60px_rgba(230,184,0,0.22)] transition-all hover:scale-105 hover:bg-primary-400 active:scale-95 sm:w-auto">
+                <Link href="/offres" className="premium-primary-cta flex h-12 w-full items-center justify-center rounded-full px-8 text-base font-bold transition-all hover:scale-[1.02] active:scale-95 sm:w-auto">
                   {t("marketing.seeOffers")}
                 </Link>
                 <a href="#fonctionnement" className="flex h-12 w-full items-center justify-center rounded-full border border-[var(--premium-card-border)] bg-[var(--premium-panel)] px-8 text-base font-bold text-[var(--premium-text)] backdrop-blur-sm transition-all hover:border-primary-400/40 hover:bg-primary-500/10 sm:w-auto">
@@ -249,7 +249,7 @@ export function MarketingHomePage() {
                     <Link
                       key={service.slug}
                       href="/register"
-                      className="group premium-card-surface relative flex flex-col overflow-hidden rounded-2xl border shadow-[var(--shadow-card)] transition-all hover:-translate-y-1 hover:border-primary-400/45 hover:shadow-[0_24px_80px_rgba(230,184,0,0.16)]"
+                      className="group premium-card-surface relative flex flex-col overflow-hidden rounded-2xl border shadow-[var(--shadow-card)] transition-all hover:-translate-y-1 hover:border-primary-400/35"
                     >
                       <div className="relative aspect-video w-full overflow-hidden bg-[var(--premium-panel)]">
                         <div className="absolute inset-0 z-10 bg-black/10" />
@@ -306,7 +306,7 @@ export function MarketingHomePage() {
           </section>
 
           <section className="relative overflow-hidden py-24" id="avantages">
-            <div className="absolute right-0 top-0 -z-10 h-[600px] w-[600px] translate-x-1/2 -translate-y-1/4 rounded-full bg-primary-500/10 blur-[120px]" />
+            <div className="absolute right-0 top-0 -z-10 h-[600px] w-[600px] translate-x-1/2 -translate-y-1/4 rounded-full bg-primary-500/4 blur-[120px]" />
 
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <div className="mb-12 flex flex-col items-center text-center">
@@ -323,7 +323,7 @@ export function MarketingHomePage() {
                     className={`premium-glass-card group relative overflow-hidden rounded-2xl p-8 transition-colors hover:border-primary-400/35 hover:bg-primary-500/8 ${feature.featured ? "border border-primary-400/35" : ""}`}
                   >
                     {feature.featured ? (
-                      <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-primary-500/14 blur-2xl transition-all group-hover:bg-primary-500/20" />
+                      <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-primary-500/5 blur-2xl transition-all group-hover:bg-primary-500/8" />
                     ) : null}
                     <div
                       className={`mb-6 inline-flex size-14 items-center justify-center rounded-2xl transition-transform duration-300 group-hover:scale-110 ${feature.iconClassName}`}
@@ -365,7 +365,7 @@ export function MarketingHomePage() {
               </div>
 
               <div className="mt-16 text-center">
-                <button className="inline-flex h-12 items-center justify-center rounded-full bg-primary-500 px-8 text-base font-bold text-[var(--premium-contrast)] shadow-[0_24px_70px_rgba(230,184,0,0.2)] transition-all hover:scale-105 hover:bg-primary-400">
+                <button className="premium-primary-cta inline-flex h-12 items-center justify-center rounded-full px-8 text-base font-bold transition-all hover:scale-[1.02]">
                   {t("marketing.startNow")}
                 </button>
               </div>
@@ -456,7 +456,7 @@ export function MarketingHomePage() {
                     type="email"
                   />
                   <button
-                    className="h-10 w-full rounded-lg bg-primary-500 text-sm font-bold text-[var(--premium-contrast)] transition-colors hover:bg-primary-400"
+                    className="premium-primary-cta h-10 w-full rounded-lg text-sm font-bold transition-colors"
                     type="submit"
                   >
                     {t("marketing.newsletterSubmit")}
