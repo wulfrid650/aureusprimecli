@@ -12,6 +12,7 @@ import {
   getAssignedAccount,
   getDaysUntil,
   getSubscriptionOption,
+  getVisibleAccountPayload,
   isActiveSubscription,
   isOngoingSubscription,
   normalizeStatus,
@@ -127,13 +128,13 @@ function getExpiryMeta(subscription: Subscription, dateLocale: string, t: Transl
   };
 }
 
-function getPayloadTypeLabel(payloadType: string | null | undefined, t: TranslateFn): string {
+function getPayloadTypeLabel(payloadType: string | null | undefined, t: TranslateFn, locale: "fr" | "en"): string {
   if (payloadType === "link") {
     return t("subscriptions.payloadLink");
   }
 
   if (payloadType === "credentials") {
-    return t("subscriptions.payloadCredentials");
+    return locale === "en" ? "Credentials" : "Identifiants";
   }
 
   return t("subscriptions.payloadProtected");
@@ -235,9 +236,9 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
   }, [isValidSubscriptionId, subscriptionId, t]);
 
   const assignedAccount = subscription ? getAssignedAccount(subscription) : null;
-  const maskedPayloadEntries = useMemo(
+  const visiblePayloadEntries = useMemo(
     () =>
-      Object.entries(assignedAccount?.masked_payload ?? {})
+      Object.entries(getVisibleAccountPayload(assignedAccount))
         .filter(([, value]) => value !== null && value !== "")
         .map(([key, value]) => ({
           field: key,
@@ -384,10 +385,10 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
                       {t("common.secureAccess")}
                     </p>
                     <h3 className="mt-2 text-xl font-black text-[#131118]">
-                      {maskedPayloadEntries.length > 0 ? getPayloadTypeLabel(assignedAccount?.payload_type, t) : t("subscriptions.assignmentPending")}
+                      {visiblePayloadEntries.length > 0 ? getPayloadTypeLabel(assignedAccount?.payload_type, t, locale) : t("subscriptions.assignmentPending")}
                     </h3>
                     <p className="mt-1 text-sm font-medium text-gray-500">
-                      {maskedPayloadEntries.length > 0
+                      {visiblePayloadEntries.length > 0
                         ? t("subscriptions.accessFootnote")
                         : isActive
                           ? t("subscriptions.hintWaitingManual")
@@ -399,9 +400,9 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
                   </div>
                 </div>
 
-                {maskedPayloadEntries.length > 0 && (
+                {visiblePayloadEntries.length > 0 && (
                   <div className="mt-5 space-y-3">
-                    {maskedPayloadEntries.map((entry) => (
+                    {visiblePayloadEntries.map((entry) => (
                       <div key={entry.field} className="rounded-2xl border border-gray-100 bg-[#fcfcfd] px-4 py-3">
                         <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-400">{entry.label}</p>
                         {isUrlValue(entry.value) ? (

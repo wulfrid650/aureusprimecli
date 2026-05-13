@@ -79,22 +79,19 @@ export default function RechargePage() {
 
   return (
     <div className="dashboard-mode bg-[#f6f6f8] text-[#131118] min-h-screen flex justify-center sm:items-center sm:p-4">
-      {/* Mobile View Simulator */}
-      <div className="w-full sm:max-w-[420px] sm:h-[90vh] sm:max-h-[850px] bg-white sm:rounded-[40px] overflow-hidden relative shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] flex flex-col mx-auto min-h-screen sm:min-h-0">
+      <div className="w-full sm:max-w-[420px] sm:h-[90vh] sm:max-h-[850px] bg-[#f6f6f8] sm:rounded-[40px] overflow-hidden relative shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] flex flex-col mx-auto h-[100dvh] sm:h-auto">
         
-        {/* Sticky Header */}
-        <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md px-5 py-4 flex items-center justify-between shadow-sm">
-          <div className="flex items-center gap-2">
-            <Link href="/dashboard" className="flex items-center justify-center size-10 rounded-full bg-[#f2f0f4] text-[#131118] hover:bg-[#e8e6eb] transition-colors -ml-2 mr-3">
-              <span className="material-symbols-outlined">arrow_back</span>
+        <header className="sticky top-0 z-50 bg-[#f6f6f8]/95 backdrop-blur-md px-5 py-4 flex items-center justify-between gap-3 border-b border-transparent">
+          <div className="flex min-w-0 items-center gap-3">
+            <Link href="/dashboard" className="flex items-center justify-center size-9 shrink-0 rounded-full bg-white border border-gray-100 text-[#131118] hover:bg-gray-50 transition-colors">
+              <span className="material-symbols-outlined text-[20px]">arrow_back</span>
             </Link>
-            <h1 className="text-lg font-bold tracking-tight">{t("recharge.title")}</h1>
+            <h1 className="truncate text-lg font-bold tracking-tight">{t("recharge.title")}</h1>
           </div>
           <DashboardHeaderControls />
         </header>
 
-        {/* Scrollable Content */}
-        <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth p-5 flex flex-col gap-6 pb-32">
+        <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth px-5 pb-28 pt-3 flex flex-col gap-6">
           
           {/* Amount Selection */}
           <section className="flex flex-col gap-3">
@@ -185,7 +182,7 @@ export default function RechargePage() {
           )}
         </main>
 
-        <div className="p-5 border-t border-[#f2f0f4] bg-white">
+        <div className="shrink-0 border-t border-[#f2f0f4] bg-white px-5 py-4 pb-safe">
           <button
             type="button"
             onClick={handleTopup}

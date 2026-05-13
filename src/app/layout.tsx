@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { CookieAuriNotice } from "@/components/cookie-auri-notice";
 import { DevServiceWorkerReset } from "@/components/dev-service-worker-reset";
 import { FullscreenManager } from "@/components/fullscreen-manager";
+import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
 import { I18nProvider } from "@/lib/i18n";
 import "./globals.css";
 
@@ -113,6 +114,7 @@ export default function RootLayout({
           <FullscreenManager />
           <DevServiceWorkerReset />
           {children}
+          <PwaInstallPrompt />
           <CookieAuriNotice />
           <Analytics />
         </I18nProvider>

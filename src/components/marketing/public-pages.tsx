@@ -612,13 +612,13 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
     <main className="premium-page min-h-screen overflow-x-hidden selection:bg-primary-300 selection:text-[var(--premium-contrast)]">
       <div className="relative flex min-h-screen w-full flex-col">
         <header className="premium-header-surface sticky top-0 z-50 w-full border-b backdrop-blur-md">
-          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
+          <div className={`mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-2.5 sm:gap-3 sm:px-6 sm:py-3 lg:px-8 ${isMobileMenuOpen ? "flex-wrap" : "flex-nowrap"} md:flex-wrap`}>
             <Link
               href="/accueil"
-              className="flex h-10 items-center rounded-full border border-[var(--premium-card-border)] bg-[var(--premium-panel)] px-3.5 shadow-[var(--shadow-card)]"
+              className="flex h-9 shrink-0 items-center rounded-full border border-[var(--premium-card-border)] bg-[var(--premium-panel)] px-2.5 shadow-[var(--shadow-card)] sm:h-10 sm:px-3.5"
             >
-              <Image src="/logo-aureusprime.svg" alt="Aureus Prime" width={170} height={20} className="logo-dark h-5 w-auto" />
-              <Image src="/logo-aureusprime-light.svg" alt="Aureus Prime" width={170} height={20} className="logo-light h-5 w-auto" />
+              <Image src="/logo-aureusprime.svg" alt="Aureus Prime" width={170} height={20} className="logo-dark h-4 w-auto max-w-[112px] sm:h-5 sm:max-w-none" />
+              <Image src="/logo-aureusprime-light.svg" alt="Aureus Prime" width={170} height={20} className="logo-light h-4 w-auto max-w-[112px] sm:h-5 sm:max-w-none" />
             </Link>
             <nav className="hidden items-center gap-1 rounded-full border border-[var(--premium-card-border)] bg-[var(--premium-panel)] p-1 shadow-[var(--shadow-card)] md:flex">
               {navItems.map((item) => (
@@ -635,22 +635,22 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
                 </Link>
               ))}
             </nav>
-            <div className="flex items-center gap-2">
-              <LanguageToggle />
-              <ThemeToggle />
+            <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+              <LanguageToggle className="h-9 p-0.5 sm:h-11 sm:p-1 [&_button]:h-7 [&_button]:min-w-8 [&_button]:px-1.5 sm:[&_button]:h-8 sm:[&_button]:min-w-9 sm:[&_button]:px-2" />
+              <ThemeToggle className="size-9 sm:size-11" />
               <Link href="/login" className="premium-primary-cta hidden h-10 items-center justify-center gap-2 rounded-full px-4 text-sm font-bold sm:flex">
                 {copy.login}
                 <MaterialIcon name="login" className="text-[17px]" />
               </Link>
               <button
                 type="button"
-                className="flex size-10 items-center justify-center rounded-full border border-[var(--premium-card-border)] bg-[var(--premium-panel)] text-[var(--premium-text)] shadow-[var(--shadow-card)] transition-colors hover:bg-primary-500/10 md:hidden"
+                className="flex size-9 shrink-0 items-center justify-center rounded-full border border-[var(--premium-card-border)] bg-[var(--premium-panel)] text-[var(--premium-text)] shadow-[var(--shadow-card)] transition-colors hover:bg-primary-500/10 sm:size-10 md:hidden"
                 aria-label={isMobileMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
                 aria-expanded={isMobileMenuOpen}
                 aria-controls="public-mobile-menu"
                 onClick={() => setIsMobileMenuOpen((open) => !open)}
               >
-                <MaterialIcon name={isMobileMenuOpen ? "close" : "menu"} className="text-[22px]" />
+                <MaterialIcon name={isMobileMenuOpen ? "close" : "menu"} className="text-[21px] sm:text-[22px]" />
               </button>
             </div>
 

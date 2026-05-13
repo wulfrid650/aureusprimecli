@@ -10,7 +10,11 @@ import { getApiMessage, readApiResponse } from "@/lib/api-response";
 import { apiFetch } from "@/lib/fetch";
 import { fetchUserGiftCards, type GiftCardItem } from "@/lib/gift-cards";
 import { getPlural, useI18n, type TranslateFn } from "@/lib/i18n";
-import { getSubscriptionDetailsHref, regularizeSubscriptionsForTest } from "@/lib/subscriptions";
+import {
+  getSubscriptionDetailsHref,
+  getVisibleAccountPayload,
+  regularizeSubscriptionsForTest,
+} from "@/lib/subscriptions";
 
 type MaskedPayloadValue = string | number | boolean | null;
 
@@ -29,6 +33,7 @@ type SubscriptionOption = {
 type SubscriptionAssignedAccount = {
   id: number;
   payload_type?: string | null;
+  payload?: Record<string, MaskedPayloadValue> | null;
   masked_payload?: Record<string, MaskedPayloadValue> | null;
   notes?: string | null;
 };
@@ -209,7 +214,25 @@ function getExpiryMeta(subscription: Subscription, dateLocale: string, t: Transl
   };
 }
 
-function formatFieldLabel(field: string): string {
+function formatFieldLabel(field: string, t: TranslateFn): string {
+  const normalized = field.trim().toLowerCase();
+
+  if (["email", "mail", "username", "login", "user"].includes(normalized)) {
+    return t("common.emailAddress");
+  }
+
+  if (["password", "pass", "passwd", "pwd", "mot_de_passe"].includes(normalized)) {
+    return t("common.password");
+  }
+
+  if (["code", "pin"].includes(normalized)) {
+    return t("common.code");
+  }
+
+  if (["url", "link", "lien"].includes(normalized)) {
+    return t("subscriptions.payloadLink");
+  }
+
   const cleaned = field.replace(/[_-]+/g, " ").trim();
 
   if (!cleaned) {
@@ -219,13 +242,13 @@ function formatFieldLabel(field: string): string {
   return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
 }
 
-function getPayloadTypeLabel(payloadType: string | null | undefined, t: TranslateFn): string {
+function getPayloadTypeLabel(payloadType: string | null | undefined, t: TranslateFn, locale: "fr" | "en"): string {
   if (payloadType === "link") {
     return t("subscriptions.payloadLink");
   }
 
   if (payloadType === "credentials") {
-    return t("subscriptions.payloadCredentials");
+    return locale === "en" ? "Credentials" : "Identifiants";
   }
 
   return t("subscriptions.payloadProtected");
@@ -401,11 +424,11 @@ export default function SouscriptionsPage() {
 
   const openAccessSheet = (subscription: Subscription) => {
     const assignedAccount = getAssignedAccount(subscription);
-    const maskedPayload = assignedAccount?.masked_payload ?? {};
-    const entries = Object.entries(maskedPayload)
+    const visiblePayload = getVisibleAccountPayload(assignedAccount);
+    const entries = Object.entries(visiblePayload)
       .filter(([, value]) => value !== null && value !== "")
       .map(([key, value]) => ({
-        label: formatFieldLabel(key),
+        label: formatFieldLabel(key, t),
         value: String(value),
       }));
 
@@ -417,7 +440,7 @@ export default function SouscriptionsPage() {
       eyebrow: t("common.secureAccess"),
       title: subscription.product?.name?.trim() || t("subscriptions.accessAureus"),
       subtitle: getSubscriptionOption(subscription)?.name?.trim() || t("subscriptions.activeSubscription"),
-      payloadTypeLabel: getPayloadTypeLabel(assignedAccount?.payload_type, t),
+      payloadTypeLabel: getPayloadTypeLabel(assignedAccount?.payload_type, t, locale),
       entries,
       footnote: t("subscriptions.accessFootnote"),
     });
@@ -682,10 +705,10 @@ export default function SouscriptionsPage() {
                   : "/dashboard/services";
                 const optionLabel = getSubscriptionOption(subscription)?.name?.trim() || t("subscriptions.standardPlan");
                 const assignedAccount = getAssignedAccount(subscription);
-                const maskedPayloadEntries = Object.entries(assignedAccount?.masked_payload ?? {}).filter(
+                const visiblePayloadEntries = Object.entries(getVisibleAccountPayload(assignedAccount)).filter(
                   ([, value]) => value !== null && value !== "",
                 );
-                const canOpenAccessSheet = isActiveSubscription(subscription.status) && maskedPayloadEntries.length > 0;
+                const canOpenAccessSheet = isActiveSubscription(subscription.status) && visiblePayloadEntries.length > 0;
                 const illustrationService = {
                   title: subscription.product?.name?.trim() || "Aureus Prime",
                   category: subscription.product?.category?.name?.trim() || t("subscriptions.subscriptionCategory"),

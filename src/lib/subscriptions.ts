@@ -1,7 +1,8 @@
 import { getApiMessage, readApiResponse } from "@/lib/api-response";
 import { apiFetch } from "@/lib/fetch";
 
-export type MaskedPayloadValue = string | number | boolean | null;
+export type SubscriptionPayloadValue = string | number | boolean | null;
+export type SubscriptionPayload = Record<string, SubscriptionPayloadValue>;
 
 export type SubscriptionProduct = {
   id?: number;
@@ -21,7 +22,8 @@ export type SubscriptionOption = {
 export type SubscriptionAssignedAccount = {
   id: number;
   payload_type?: string | null;
-  masked_payload?: Record<string, MaskedPayloadValue> | null;
+  payload?: SubscriptionPayload | null;
+  masked_payload?: SubscriptionPayload | null;
   notes?: string | null;
 };
 
@@ -217,6 +219,18 @@ export function getAssignedAccount(subscription: Subscription): SubscriptionAssi
   return subscription.assignedAccount ?? subscription.assigned_account ?? null;
 }
 
+export function getVisibleAccountPayload(
+  assignedAccount?: SubscriptionAssignedAccount | null,
+): SubscriptionPayload {
+  const payload = assignedAccount?.payload ?? {};
+
+  if (Object.keys(payload).length > 0) {
+    return payload;
+  }
+
+  return assignedAccount?.masked_payload ?? {};
+}
+
 type SubscriptionSelectionInput = {
   productId?: number | null;
   variantId?: number | null;
@@ -273,7 +287,7 @@ function getTimestampScore(dateStr?: string | null): number {
 
 function getAssignedAccessScore(subscription: Subscription): number {
   const assignedAccount = getAssignedAccount(subscription);
-  const entryCount = Object.keys(assignedAccount?.masked_payload ?? {}).length;
+  const entryCount = Object.keys(getVisibleAccountPayload(assignedAccount)).length;
 
   if (entryCount > 0) {
     return 2;

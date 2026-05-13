@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { PublicShell } from "@/components/marketing/public-pages";
+import { useI18n } from "@/lib/i18n";
 
-type LegalPageId = "terms" | "privacy" | "refund";
+type LegalPageId = "usage" | "terms" | "privacy" | "refund";
 
 type LegalBlock =
   | { type: "paragraph"; text: string }
@@ -27,6 +28,102 @@ type LegalDocument = {
 };
 
 const legalDocs: Record<LegalPageId, LegalDocument> = {
+  usage: {
+    title: "Conditions Générales d'Utilisation (CGU)",
+    subtitle: "aureusprime.com - Règles d'utilisation de la plateforme",
+    effectiveDate: "Mai 2026",
+    intro: [
+      "Les présentes Conditions Générales d'Utilisation définissent les règles d'accès et d'utilisation du site, du dashboard, du wallet Auri et des applications Aureus Prime.",
+      "Toute création de compte, connexion ou utilisation de la plateforme vaut acceptation pleine et entière des présentes CGU, des CGV et de la Politique de Confidentialité en vigueur.",
+    ],
+    sections: [
+      {
+        title: "1. Accès à la plateforme",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "Aureus Prime permet à ses utilisateurs de consulter un catalogue de services numériques, de gérer un wallet interne en Auri et de suivre leurs commandes et abonnements.",
+          },
+          {
+            type: "list",
+            items: [
+              "l'utilisateur doit fournir des informations exactes lors de l'inscription ;",
+              "l'utilisateur est responsable de la confidentialité de ses identifiants ;",
+              "Aureus Prime peut suspendre un accès en cas d'usage frauduleux, abusif ou contraire aux règles de la plateforme.",
+            ],
+          },
+        ],
+      },
+      {
+        title: "2. Compte utilisateur",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "Le compte utilisateur centralise les informations de profil, le wallet Auri, les commandes, les abonnements, les demandes KYC et les accès livrés.",
+          },
+          {
+            type: "list",
+            items: [
+              "un compte est personnel et ne doit pas être partagé sans autorisation ;",
+              "l'utilisateur doit maintenir son adresse e-mail et son numéro de téléphone à jour ;",
+              "l'utilisateur doit signaler rapidement toute connexion ou activité suspecte.",
+            ],
+          },
+        ],
+      },
+      {
+        title: "3. Wallet Auri",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "Le wallet Auri est une unité de compte interne à Aureus Prime. 1 Auri = 1 XAF. Les Auri servent uniquement aux achats et opérations internes à la plateforme.",
+          },
+          {
+            type: "note",
+            text: "Les Auri ne sont pas une cryptomonnaie, ne constituent pas un compte bancaire et ne peuvent pas être échangés en dehors d'Aureus Prime.",
+          },
+        ],
+      },
+      {
+        title: "4. Utilisation loyale",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "L'utilisateur s'engage à ne pas perturber le fonctionnement de la plateforme, contourner les systèmes de paiement, revendre les accès livrés ou utiliser les services à des fins illicites.",
+          },
+          {
+            type: "list",
+            items: [
+              "ne pas publier ou revendre des identifiants fournis ;",
+              "ne pas modifier les accès partagés lorsqu'une règle l'interdit ;",
+              "ne pas tenter d'accéder aux comptes ou données d'autres utilisateurs.",
+            ],
+          },
+        ],
+      },
+      {
+        title: "5. Acceptation automatique",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "L'acceptation des CGU, CGV et de la Politique de Confidentialité est enregistrée automatiquement lors de la création du compte et lors de la connexion, pour les versions légales en vigueur.",
+          },
+          {
+            type: "paragraph",
+            text: "Aureus Prime conserve la version acceptée, la date, l'adresse IP, le user-agent, la source de l'acceptation et la langue transmise par le navigateur.",
+          },
+        ],
+      },
+      {
+        title: "6. Contact",
+        blocks: [
+          { type: "paragraph", text: "Pour toute question relative aux présentes CGU :" },
+          { type: "list", items: ["contact@aureusprime.com", "+237 676 025 127", "aureusprime.com"] },
+        ],
+      },
+    ],
+    closing: "Aureus Prime reste simple à utiliser, mais l'usage doit rester clair, loyal et sécurisé.",
+  },
   terms: {
     title: "Conditions Générales de Vente (CGV)",
     subtitle: "aureusprime.com - Plateforme d'abonnements digitaux",
@@ -664,6 +761,623 @@ const legalDocs: Record<LegalPageId, LegalDocument> = {
   },
 };
 
+const englishLegalDocs: Record<LegalPageId, LegalDocument> = {
+  usage: {
+    title: "Terms of Use",
+    subtitle: "aureusprime.com - Platform usage rules",
+    effectiveDate: "May 2026",
+    intro: [
+      "These Terms of Use define the rules for accessing and using the Aureus Prime website, dashboard, Auri wallet and related applications.",
+      "Creating an account, signing in or using the platform means that you accept these Terms of Use, the Terms of Sale and the Privacy Policy in force.",
+    ],
+    sections: [
+      {
+        title: "1. Access to the platform",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "Aureus Prime lets users browse a catalog of digital services, manage an internal Auri wallet and track orders and subscriptions.",
+          },
+          {
+            type: "list",
+            items: [
+              "users must provide accurate information during registration;",
+              "users are responsible for keeping their login details confidential;",
+              "Aureus Prime may suspend access in case of fraudulent, abusive or non-compliant use.",
+            ],
+          },
+        ],
+      },
+      {
+        title: "2. User account",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "The user account centralizes profile information, the Auri wallet, orders, subscriptions, KYC requests and delivered access details.",
+          },
+          {
+            type: "list",
+            items: [
+              "an account is personal and must not be shared without authorization;",
+              "users must keep their email address and phone number up to date;",
+              "users must report any suspicious login or activity promptly.",
+            ],
+          },
+        ],
+      },
+      {
+        title: "3. Auri wallet",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "The Auri wallet is an internal unit of account used by Aureus Prime. 1 Auri = 1 XAF. Auri can only be used for purchases and internal operations on the platform.",
+          },
+          {
+            type: "note",
+            text: "Auri is not cryptocurrency, is not a bank account and cannot be exchanged outside Aureus Prime.",
+          },
+        ],
+      },
+      {
+        title: "4. Fair use",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "Users agree not to disrupt the platform, bypass payment systems, resell delivered access or use the services for illegal purposes.",
+          },
+          {
+            type: "list",
+            items: [
+              "do not publish or resell delivered credentials;",
+              "do not modify shared access when this is prohibited;",
+              "do not attempt to access other users' accounts or data.",
+            ],
+          },
+        ],
+      },
+      {
+        title: "5. Automatic acceptance",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "Acceptance of the Terms of Use, Terms of Sale and Privacy Policy is recorded automatically when an account is created and when a user signs in.",
+          },
+          {
+            type: "paragraph",
+            text: "Aureus Prime may keep the accepted version, date, IP address, user agent, source of acceptance and browser language.",
+          },
+        ],
+      },
+      {
+        title: "6. Contact",
+        blocks: [
+          { type: "paragraph", text: "For questions about these Terms of Use:" },
+          { type: "list", items: ["contact@aureusprime.com", "+237 676 025 127", "aureusprime.com"] },
+        ],
+      },
+    ],
+    closing: "Aureus Prime is designed to be simple to use, but usage must remain clear, fair and secure.",
+  },
+  terms: {
+    title: "Terms of Sale",
+    subtitle: "aureusprime.com - Digital subscription platform",
+    effectiveDate: "May 2026",
+    intro: [
+      "These Terms of Sale govern the contractual relationship between Aureus Prime and any person or entity using the services offered through the website and related applications.",
+      "Accessing and using the services implies full acceptance of these Terms. If you do not accept them, you must not use Aureus Prime services.",
+    ],
+    sections: [
+      {
+        title: "1. Purpose",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "These Terms define how Aureus Prime provides facilitation, management and payment services for subscriptions to third-party digital services.",
+          },
+          {
+            type: "paragraph",
+            text: "Aureus Prime acts only as an intermediary and payment facilitator and is not the provider of third-party digital services.",
+          },
+        ],
+      },
+      {
+        title: "2. Definitions",
+        blocks: [
+          {
+            type: "list",
+            items: [
+              "Aureus Prime: the platform operating the website and services.",
+              "Site: aureusprime.com, its subdomains and related applications.",
+              "User: any person using Aureus Prime services.",
+              "Services: subscription facilitation, management and payment services offered by Aureus Prime.",
+              "Third-party digital services: services provided by external publishers or platforms.",
+              "Auri wallet: internal wallet denominated in Auri and used only for platform payments.",
+              "Auri: internal unit of account. 1 Auri = 1 XAF. Auri is not cryptocurrency and cannot be exchanged outside the platform.",
+              "Mobile Money / PayPal: payment methods used only to top up the Aureus Prime wallet.",
+            ],
+          },
+        ],
+      },
+      {
+        title: "3. Acceptance of the Terms",
+        blocks: [
+          { type: "paragraph", text: "These Terms are accepted through account creation, order confirmation or use of the services." },
+          {
+            type: "paragraph",
+            text: "The applicable Terms are those in force on the date of use. Aureus Prime may update them at any time, with changes taking effect once published on the site.",
+          },
+        ],
+      },
+      {
+        title: "4. Description of services",
+        blocks: [
+          {
+            type: "list",
+            items: [
+              "a catalog of third-party digital subscriptions;",
+              "Auri wallet top-ups, history and payments;",
+              "subscription payment facilitation through the wallet;",
+              "user account management;",
+              "referral and loyalty features;",
+              "customer support.",
+            ],
+          },
+          {
+            type: "note",
+            text: "Aureus Prime is not responsible for the content, quality or availability of third-party digital services.",
+          },
+        ],
+      },
+      {
+        title: "5. Subscription types",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "Services available through Aureus Prime may include personal subscriptions intended for individual use and shared subscriptions allowing access to several users under third-party provider rules.",
+          },
+          {
+            type: "paragraph",
+            text: "When available, shared subscriptions may provide separate user experiences such as profiles, history or preferences. This depends entirely on the third-party provider.",
+          },
+        ],
+      },
+      {
+        title: "6. Order process",
+        blocks: [
+          {
+            type: "ordered",
+            items: [
+              "Create a user account.",
+              "Top up the Aureus Prime wallet through Mobile Money or PayPal.",
+              "Select the third-party digital service.",
+              "Confirm the order.",
+              "Pay from the wallet in Auri.",
+              "Activate the subscription and receive access details when available.",
+            ],
+          },
+        ],
+      },
+      {
+        title: "7. Prices and payment",
+        blocks: [
+          {
+            type: "list",
+            items: [
+              "Prices are displayed in Auri, with 1 Auri = 1 XAF, taxes included where applicable.",
+              "Subscription payments go through the Aureus Prime wallet.",
+              "Mobile Money and PayPal are used only to top up the wallet.",
+              "Aureus Prime does not store payment PINs or secret payment credentials.",
+            ],
+          },
+          {
+            type: "paragraph",
+            text: "The total price may include the subscription cost and Aureus Prime service fees for intermediation, technical management, transaction security and support.",
+          },
+        ],
+      },
+      {
+        title: "8. User obligations",
+        blocks: [
+          {
+            type: "list",
+            items: [
+              "provide accurate account information;",
+              "use the services in compliance with applicable law;",
+              "respect the terms of third-party providers;",
+              "keep Aureus Prime login credentials secure;",
+              "ensure sufficient wallet balance before confirming an order;",
+              "contact third-party providers directly for issues related to their own service.",
+            ],
+          },
+        ],
+      },
+      {
+        title: "9. Aureus Prime liability",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "Aureus Prime acts as an intermediary. Its liability is limited to payment and management facilitation.",
+          },
+          {
+            type: "list",
+            items: [
+              "Aureus Prime is not liable for third-party services;",
+              "interruptions or failures of third-party platforms;",
+              "Mobile Money or PayPal operator incidents;",
+              "indirect damages;",
+              "force majeure events.",
+            ],
+          },
+        ],
+      },
+      {
+        title: "10. Refund policy",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "Refund conditions are described in the separate Refund Policy available on the website.",
+          },
+        ],
+      },
+      {
+        title: "11. Intellectual property",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "Website content, text, images, logos, interface elements and the Auri mascot are protected by intellectual property law. Unauthorized reproduction or use is prohibited.",
+          },
+        ],
+      },
+      {
+        title: "12. Personal data",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "Personal data collection and processing are governed by the Aureus Prime Privacy Policy.",
+          },
+        ],
+      },
+      {
+        title: "13. Applicable law and jurisdiction",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "These Terms are governed by the laws of the Republic of Cameroon. Disputes fall under the competent courts of Douala, Cameroon, after an attempt at amicable resolution.",
+          },
+        ],
+      },
+      {
+        title: "14. Contact",
+        blocks: [
+          { type: "paragraph", text: "For questions about these Terms of Sale:" },
+          { type: "list", items: ["contact@aureusprime.com", "+237 676 025 127", "aureusprime.com"] },
+        ],
+      },
+    ],
+    closing: "Aureus Prime simplifies, secures and centralizes subscriptions. The service is clear, and so are the rules.",
+  },
+  privacy: {
+    title: "Privacy Policy",
+    subtitle: "aureusprime.com - Digital subscription platform",
+    effectiveDate: "May 2026",
+    intro: [
+      "At Aureus Prime, privacy is a core part of trust. We collect only the data needed to operate our services, without abusive use, resale or hidden geolocation.",
+      "This Privacy Policy explains how we collect, use, share and protect data when you use our website, subdomains and applications.",
+    ],
+    sections: [
+      {
+        title: "1. Who we are",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "Aureus Prime is a Cameroonian digital platform that facilitates management, payment and tracking of third-party digital subscriptions.",
+          },
+          {
+            type: "paragraph",
+            text: "Aureus Prime is not the provider of the listed digital services and acts as an intermediary and payment facilitator.",
+          },
+        ],
+      },
+      {
+        title: "2. Data we collect",
+        blocks: [
+          { type: "paragraph", text: "We apply a minimal and useful collection approach." },
+          { type: "subheading", text: "2.1 Data provided directly by users" },
+          {
+            type: "paragraph",
+            text: "When creating and using an account, we may collect a customer identifier, optional username, first name, last name, email address and phone number with country code.",
+          },
+          { type: "subheading", text: "2.2 Payment and wallet data" },
+          {
+            type: "paragraph",
+            text: "We collect top-up history, amounts, dates, transaction statuses and subscriptions paid through the wallet.",
+          },
+          {
+            type: "list",
+            items: ["we never store Mobile Money PINs;", "we never store PayPal credentials;", "we never store sensitive bank details."],
+          },
+          { type: "subheading", text: "2.3 Subscription data" },
+          {
+            type: "list",
+            items: ["active or expired subscriptions;", "Auri payment history;", "referral and loyalty data."],
+          },
+          { type: "subheading", text: "2.4 Limited technical data" },
+          {
+            type: "paragraph",
+            text: "For security and performance, we may collect device type, browser, operating system, technical login logs and locally stored cache or Service Worker data.",
+          },
+        ],
+      },
+      {
+        title: "3. How we use your data",
+        blocks: [
+          {
+            type: "list",
+            items: [
+              "create and manage the user account;",
+              "manage the Auri wallet;",
+              "facilitate subscription payment and tracking;",
+              "manage referrals and loyalty;",
+              "secure the platform and prevent fraud;",
+              "provide customer support;",
+              "comply with legal obligations.",
+            ],
+          },
+          { type: "note", text: "No hidden commercial exploitation." },
+        ],
+      },
+      {
+        title: "4. Data sharing",
+        blocks: [
+          { type: "paragraph", text: "Aureus Prime does not sell or rent personal data." },
+          {
+            type: "list",
+            items: [
+              "data may be shared with payment providers for top-up processing;",
+              "with third-party digital services only when needed to activate or manage a subscription;",
+              "with technical providers under confidentiality obligations;",
+              "when required by law or legal proceedings;",
+              "in case of business restructuring or transfer.",
+            ],
+          },
+        ],
+      },
+      {
+        title: "5. Data security",
+        blocks: [
+          {
+            type: "list",
+            items: [
+              "HTTPS/TLS encryption for sensitive exchanges;",
+              "strict access controls;",
+              "HMAC verification for payment webhooks;",
+              "atomic wallet transactions to avoid loss or duplication;",
+              "appropriate organizational safeguards.",
+            ],
+          },
+          {
+            type: "paragraph",
+            text: "No system is infallible, but we apply strict and responsible standards.",
+          },
+        ],
+      },
+      {
+        title: "6. Your rights",
+        blocks: [
+          {
+            type: "list",
+            items: [
+              "right of access;",
+              "right to rectification;",
+              "right to deletion;",
+              "right to restriction of processing;",
+              "right to portability;",
+              "right to object, especially to marketing communications.",
+            ],
+          },
+          { type: "paragraph", text: "Requests can be sent to contact@aureusprime.com." },
+        ],
+      },
+      {
+        title: "7. Data retention",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "Data is kept while the account is active, according to legal requirements for financial records, and for the period strictly needed for support and security.",
+          },
+        ],
+      },
+      {
+        title: "8. Cookies and similar technologies",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "We use mainly functional and technical storage: secure session cookies, localStorage for authentication persistence and Service Worker storage for offline app behavior.",
+          },
+        ],
+      },
+      {
+        title: "9. Policy updates",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "This Privacy Policy may be updated at any time. Updates are published with a new effective date on the website.",
+          },
+        ],
+      },
+      {
+        title: "10. Contact",
+        blocks: [
+          { type: "paragraph", text: "For questions about privacy:" },
+          { type: "list", items: ["contact@aureusprime.com", "+237 676 025 127", "aureusprime.com"] },
+        ],
+      },
+    ],
+    closing: "Your data is not a bargaining chip. It is used only to operate the service properly.",
+  },
+  refund: {
+    title: "Refund Policy",
+    subtitle: "aureusprime.com - Digital subscription platform",
+    effectiveDate: "May 2026",
+    intro: [
+      "Aureus Prime works to ensure user satisfaction. This Refund Policy defines when a refund may be granted for subscriptions purchased through the platform.",
+      "Please read this policy carefully before making a purchase.",
+    ],
+    sections: [
+      {
+        title: "1. Nature of Aureus Prime services",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "Aureus Prime acts only as a payment facilitator for subscriptions to third-party digital services.",
+          },
+          {
+            type: "list",
+            items: [
+              "Aureus Prime is not the direct provider of these services.",
+              "The subscription relationship is between the user and the third-party provider.",
+            ],
+          },
+          {
+            type: "paragraph",
+            text: "Once a subscription is activated and access details are delivered, access and use are managed by the third-party provider.",
+          },
+        ],
+      },
+      {
+        title: "2. General refund conditions",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "Because Aureus Prime acts as an intermediary, a refund may be considered only in limited cases.",
+          },
+          { type: "subheading", text: "Possible refund - non-delivery of service" },
+          {
+            type: "list",
+            items: [
+              "payment was successfully completed through Aureus Prime;",
+              "access details were not delivered within 24 hours after payment;",
+              "the non-delivery is attributable to Aureus Prime or a platform technical issue.",
+            ],
+          },
+          { type: "subheading", text: "Request deadline" },
+          {
+            type: "paragraph",
+            text: "A refund request must be submitted within 7 calendar days from the transaction date if the service was not delivered.",
+          },
+          { type: "subheading", text: "Required evidence" },
+          {
+            type: "list",
+            items: [
+              "screenshots showing no access details in the subscriptions area;",
+              "any error messages;",
+              "payment confirmation without corresponding delivery.",
+            ],
+          },
+        ],
+      },
+      {
+        title: "3. Cases where no refund is granted",
+        blocks: [
+          {
+            type: "list",
+            items: [
+              "change of mind after successful delivery of access details;",
+              "issues related to third-party services such as quality, content, availability, bugs or regional restrictions;",
+              "violation of third-party provider terms;",
+              "user error, such as selecting the wrong subscription or entering incorrect information;",
+              "expired subscription or already consumed period;",
+              "user internet connection or device issues;",
+              "suspension due to improper use of a shared subscription;",
+              "service fees, except in case of proven platform failure preventing service delivery.",
+            ],
+          },
+        ],
+      },
+      {
+        title: "4. Refund request process",
+        blocks: [
+          { type: "subheading", text: "Step 1 - Contact Aureus Prime support" },
+          { type: "list", items: ["WhatsApp: +237 676 025 127", "Email: contact@aureusprime.com"] },
+          { type: "subheading", text: "Step 2 - Provide the following information" },
+          {
+            type: "list",
+            items: [
+              "name and email address linked to the Aureus Prime account;",
+              "transaction or order number;",
+              "third-party digital service concerned;",
+              "transaction date and time;",
+              "clear description of the issue;",
+              "useful evidence such as screenshots or error messages.",
+            ],
+          },
+          { type: "subheading", text: "Step 3 - Review" },
+          {
+            type: "paragraph",
+            text: "Our team reviews requests within a maximum of 48 business hours. Additional information may be requested if necessary.",
+          },
+          { type: "subheading", text: "Step 4 - Decision" },
+          {
+            type: "paragraph",
+            text: "The decision is communicated by email or WhatsApp. If approved, the refund is initiated according to the methods below.",
+          },
+        ],
+      },
+      {
+        title: "5. Refund methods",
+        blocks: [
+          { type: "paragraph", text: "If approved, the user may choose between:" },
+          { type: "subheading", text: "Option A - Refund in Auri" },
+          {
+            type: "paragraph",
+            text: "The amount is credited back immediately to the user's Auri wallet and can be used for another available service.",
+          },
+          { type: "subheading", text: "Option B - Mobile Money refund" },
+          {
+            type: "paragraph",
+            text: "The amount is credited back to the Mobile Money account used for the initial payment. Receipt time depends on the operator, usually 1 to 3 business days after validation.",
+          },
+          {
+            type: "note",
+            text: "Any transfer fees charged by the Mobile Money operator are borne by the user for option B.",
+          },
+        ],
+      },
+      {
+        title: "6. Aureus Prime commitment",
+        blocks: [
+          {
+            type: "list",
+            items: [
+              "respond to support requests within 2 business hours via WhatsApp;",
+              "process legitimate refund requests within 48 business hours;",
+              "offer an alternative solution, such as reassignment or replacement service, before refunding where appropriate;",
+              "maintain an automatic delivery rate above 95%.",
+            ],
+          },
+        ],
+      },
+      {
+        title: "7. Policy updates",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "Aureus Prime may update this Refund Policy at any time. Any change is published on the site with a new effective date.",
+          },
+        ],
+      },
+      {
+        title: "8. Contact",
+        blocks: [
+          { type: "paragraph", text: "For questions about this Refund Policy:" },
+          { type: "list", items: ["contact@aureusprime.com", "WhatsApp: +237 676 025 127", "aureusprime.com"] },
+        ],
+      },
+    ],
+    closing: "We refund when the service was not delivered. We do not refund a delivered service simply because it is no longer wanted.",
+  },
+};
+
 function renderBlock(block: LegalBlock) {
   if (block.type === "subheading") {
     return <h3 className="mt-7 text-lg font-black text-primary-500">{block.text}</h3>;
@@ -704,7 +1418,11 @@ function renderBlock(block: LegalBlock) {
 }
 
 export function PublicLegalDocumentPage({ page }: { page: LegalPageId }) {
-  const document = legalDocs[page];
+  const { locale } = useI18n();
+  const document = locale === "en" ? englishLegalDocs[page] : legalDocs[page];
+  const effectiveDateLabel = locale === "en" ? "Effective date" : "Date d'entrée en vigueur";
+  const legalEntityLocation = locale === "en" ? "Douala, Cameroon" : "Douala, Cameroun";
+  const contactLabel = locale === "en" ? "Contact Aureus Prime" : "Contacter Aureus Prime";
 
   return (
     <PublicShell>
@@ -719,7 +1437,7 @@ export function PublicLegalDocumentPage({ page }: { page: LegalPageId }) {
               {document.subtitle}
             </p>
             <div className="mt-6 inline-flex rounded-full border border-[var(--premium-card-border)] bg-[var(--premium-panel)] px-4 py-2 text-sm font-bold text-[var(--premium-text-muted)]">
-              Date d&apos;entrée en vigueur : {document.effectiveDate}
+              {effectiveDateLabel} : {document.effectiveDate}
             </div>
           </header>
 
@@ -744,9 +1462,9 @@ export function PublicLegalDocumentPage({ page }: { page: LegalPageId }) {
 
           <footer className="mt-8 rounded-3xl border border-primary-400/25 bg-primary-500/10 p-6 text-center sm:p-8">
             <p className="text-lg font-black leading-relaxed text-[var(--premium-text)]">{document.closing}</p>
-            <p className="mt-5 text-sm text-[var(--premium-text-muted)]">© 2026 Aureus Prime - MBC SARL - Douala, Cameroun</p>
+            <p className="mt-5 text-sm text-[var(--premium-text-muted)]">© 2026 Aureus Prime - MBC SARL - {legalEntityLocation}</p>
             <Link href="/contact" className="premium-primary-cta mt-6 inline-flex h-11 items-center justify-center rounded-full px-6 text-sm font-bold">
-              Contacter Aureus Prime
+              {contactLabel}
             </Link>
           </footer>
         </div>
