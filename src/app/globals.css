@@ -55,6 +55,7 @@ body {
 
 :root {
   color-scheme: light;
+  /* Brand balance: gold carries the Aureus identity (~10% of the UI); green stays a rare trust/success signal (~2%). */
   --background: #fafafa;
   --foreground: #15110d;
   --muted: #6b6257;
@@ -66,6 +67,8 @@ body {
   --gold-strong: #efd083;
   --gold-deep: #987329;
   --gold-soft: rgba(201, 168, 76, 0.16);
+  --trust-green: #0f766e;
+  --trust-green-soft: rgba(15, 118, 110, 0.08);
   --border: rgba(21, 17, 13, 0.11);
   --shadow-soft: 0 30px 90px rgba(16, 12, 8, 0.08);
   --shadow-card: 0 20px 50px rgba(16, 12, 8, 0.08);
@@ -85,7 +88,7 @@ body {
   --premium-nav-bg: rgba(255, 251, 240, 0.9);
   --premium-nav-shadow: 0 -10px 40px rgba(184, 147, 0, 0.12);
   --premium-progress-bg: rgba(46, 37, 0, 0.08);
-  --premium-success: #15803d;
+  --premium-success: var(--trust-green);
   --premium-hero-radial: none;
   --premium-glow-line: rgba(230, 184, 0, 0.3);
 }
@@ -106,6 +109,7 @@ body {
 
 [data-theme="dark"] {
   color-scheme: dark;
+  /* Keep the same ratio in dark mode: gold first, green only for confirmation/trust cues. */
   --background: #080705;
   --foreground: #f7f2e8;
   --muted: #a79e93;
@@ -117,6 +121,8 @@ body {
   --gold-strong: #f1d791;
   --gold-deep: #b98d2e;
   --gold-soft: rgba(211, 177, 91, 0.17);
+  --trust-green: #5eead4;
+  --trust-green-soft: rgba(94, 234, 212, 0.1);
   --border: rgba(255, 246, 232, 0.09);
   --shadow-soft: 0 30px 100px rgba(0, 0, 0, 0.42);
   --shadow-card: 0 24px 60px rgba(0, 0, 0, 0.35);
@@ -136,7 +142,7 @@ body {
   --premium-nav-bg: rgba(19, 16, 12, 0.92);
   --premium-nav-shadow: 0 -10px 40px rgba(184, 147, 0, 0.18);
   --premium-progress-bg: rgba(255, 246, 232, 0.08);
-  --premium-success: #86efac;
+  --premium-success: var(--trust-green);
   --premium-hero-radial: none;
   --premium-glow-line: rgba(230, 184, 0, 0.24);
 }
