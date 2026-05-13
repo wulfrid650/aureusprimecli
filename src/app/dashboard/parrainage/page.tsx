@@ -189,47 +189,44 @@ export default function ReferralPage() {
   return (
     <div className="dashboard-mode bg-[#f6f6f8] text-[#131118] min-h-screen flex justify-center sm:items-center sm:p-4">
       <div className="w-full sm:max-w-[420px] sm:h-[90vh] sm:max-h-[850px] bg-[#f6f6f8] sm:rounded-[40px] overflow-hidden relative shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] flex flex-col mx-auto h-[100dvh] sm:h-auto">
-        <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#f2f0f4] px-5 py-4 flex items-center justify-between gap-3 shadow-sm">
+        <header className="sticky top-0 z-50 bg-[#f6f6f8]/95 backdrop-blur-md px-5 py-4 flex items-center justify-between gap-3 border-b border-transparent">
           <div className="flex min-w-0 items-center gap-3">
-            <Link href="/dashboard" className="flex items-center justify-center size-9 rounded-full bg-[#f2f0f4] text-[#131118] hover:bg-[#e8e6eb] transition-colors">
+            <Link href="/dashboard" className="flex items-center justify-center size-9 shrink-0 rounded-full bg-white border border-gray-100 text-[#131118] hover:bg-gray-50 transition-colors">
               <span className="material-symbols-outlined text-[20px]">arrow_back</span>
             </Link>
             <div className="min-w-0">
-              <h1 className="text-lg font-bold tracking-tight">{t("referral.title")}</h1>
+              <h1 className="truncate text-lg font-bold tracking-tight">{t("referral.title")}</h1>
               <p className="truncate text-xs text-gray-500">{t("referral.subtitle")}</p>
             </div>
           </div>
           <DashboardHeaderControls />
         </header>
 
-        <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth px-5 py-6 pb-24">
-          <section className="bg-[#131118] rounded-3xl p-6 text-white relative overflow-hidden mb-5">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-[#5b13ec] blur-[60px] rounded-full opacity-40" />
-            <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#7e44f2] blur-[50px] rounded-full opacity-30" />
-
+        <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth px-5 pb-28 pt-3">
+          <section className="mb-4 overflow-hidden rounded-[30px] bg-[#131118] p-5 text-white shadow-xl shadow-black/15">
             <div className="relative z-10">
-              <div className="flex items-start justify-between gap-4 mb-6">
+              <div className="mb-5 flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-xs uppercase tracking-[0.28em] text-white/60 mb-2">{t("referral.program")}</p>
-                  <h2 className="text-3xl font-black leading-tight">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-[0.24em] text-white/55">{t("referral.program")}</p>
+                  <h2 className="text-2xl font-black leading-tight">
                     {t("referral.heroTitleLine1")}
                     <br />
-                    <span className="text-[#9f7aea]">{t("referral.heroTitleLine2")}</span>
+                    <span className="text-[#eab308]">{t("referral.heroTitleLine2")}</span>
                   </h2>
                   <p className="mt-3 text-sm text-white/70">{t("referral.heroText")}</p>
                 </div>
-                <div className="size-12 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center shrink-0">
+                <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-white/10">
                   <span className="material-symbols-outlined text-yellow-400">emoji_events</span>
                 </div>
               </div>
 
-              <div className="rounded-2xl bg-white/10 backdrop-blur-sm border border-white/10 p-4 mb-4">
-                <p className="text-[11px] uppercase tracking-[0.24em] text-white/60 mb-2">{t("referral.yourCode")}</p>
+              <div className="mb-4 rounded-2xl border border-white/10 bg-white/[0.08] p-4">
+                <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/55">{t("referral.yourCode")}</p>
                 {isLoading ? (
                   <div className="h-8 w-36 rounded-xl bg-white/10 animate-pulse" />
                 ) : (
                   <div className="flex items-center justify-between gap-3">
-                    <span className="text-2xl font-black tracking-[0.24em]">{referralCode || "--------"}</span>
+                    <span className="min-w-0 break-all text-2xl font-black tracking-[0.16em]">{referralCode || "--------"}</span>
                     <button
                       type="button"
                       onClick={() => copyValue(referralCode, t("referral.codeCopied"))}
@@ -246,7 +243,7 @@ export default function ReferralPage() {
                 <button
                   type="button"
                   onClick={() => copyValue(shareLink, t("referral.linkCopied"))}
-                  className="rounded-2xl bg-white text-[#131118] py-3 text-sm font-bold hover:bg-gray-100 transition-colors disabled:opacity-50"
+                  className="min-h-12 rounded-2xl bg-white px-3 py-3 text-sm font-bold text-[#131118] transition-colors hover:bg-gray-100 disabled:opacity-50"
                   disabled={!shareLink}
                 >
                   {t("referral.copyLink")}
@@ -254,7 +251,7 @@ export default function ReferralPage() {
                 <button
                   type="button"
                   onClick={shareReferralLink}
-                  className="rounded-2xl bg-[#5b13ec] py-3 text-sm font-bold hover:bg-[#4a0ebb] transition-colors disabled:opacity-50"
+                  className="min-h-12 rounded-2xl bg-[#5b13ec] px-3 py-3 text-sm font-bold transition-colors hover:bg-[#4a0ebb] disabled:opacity-50"
                   disabled={!shareLink}
                 >
                   {t("referral.share")}
@@ -265,52 +262,59 @@ export default function ReferralPage() {
             </div>
           </section>
 
-          <section className="grid grid-cols-2 gap-3 mb-5">
-              {[
-                { label: t("referral.referrals"), value: stats.totalReferrals, tone: "bg-white" },
-                { label: t("referral.valid"), value: stats.completedReferrals, tone: "bg-white" },
-                { label: t("referral.confirmedEarnings"), value: formatMoney(stats.totalCommission, dateLocale), tone: "bg-[#fff7ed]" },
-                { label: t("referral.pending"), value: formatMoney(stats.pendingCommission, dateLocale), tone: "bg-[#eff6ff]" },
+          <section className="mb-4 grid grid-cols-2 gap-3">
+            {[
+              { label: t("referral.referrals"), value: stats.totalReferrals, icon: "groups", accent: "bg-[#f7f3ff] text-[#5b13ec]" },
+              { label: t("referral.valid"), value: stats.completedReferrals, icon: "verified", accent: "bg-emerald-50 text-emerald-700" },
+              { label: t("referral.confirmedEarnings"), value: formatMoney(stats.totalCommission, dateLocale), icon: "payments", accent: "bg-amber-50 text-amber-700" },
+              { label: t("referral.pending"), value: formatMoney(stats.pendingCommission, dateLocale), icon: "hourglass_top", accent: "bg-sky-50 text-sky-700" },
             ].map((item) => (
-              <div key={item.label} className={`${item.tone} rounded-2xl border border-gray-100 p-4 shadow-sm`}>
-                <p className="text-xs uppercase tracking-[0.24em] text-gray-400">{item.label}</p>
-                <p className="mt-3 text-2xl font-black text-[#131118]">{item.value}</p>
+              <div key={item.label} className="flex min-h-[122px] flex-col justify-between rounded-[24px] border border-gray-100 bg-white p-4 shadow-sm">
+                <div className="flex items-start justify-between gap-3">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-400">{item.label}</p>
+                  <span className={`flex size-9 shrink-0 items-center justify-center rounded-2xl ${item.accent}`}>
+                    <span className="material-symbols-outlined text-[20px]">{item.icon}</span>
+                  </span>
+                </div>
+                <p className="mt-4 break-words text-2xl font-black leading-tight text-[#131118]">{item.value}</p>
               </div>
             ))}
           </section>
 
-          <section className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5 mb-5">
-            <div className="flex items-center justify-between gap-4 mb-5">
+          <section className="mb-4 rounded-[30px] border border-gray-100 bg-white p-5 shadow-sm">
+            <div className="mb-5 flex items-start justify-between gap-4">
               <div>
-                <h3 className="text-lg font-bold">{t("referral.howTitle")}</h3>
-                <p className="text-sm text-gray-500">{t("referral.howText")}</p>
+                <h3 className="text-lg font-black text-[#131118]">{t("referral.howTitle")}</h3>
+                <p className="mt-1 text-sm text-gray-500">{t("referral.howText")}</p>
               </div>
-              <span className="material-symbols-outlined text-[#5b13ec]">send</span>
+              <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-[#f7f3ff] text-[#5b13ec]">
+                <span className="material-symbols-outlined text-[24px]">send</span>
+              </div>
             </div>
 
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3">
               {[
-	                {
-	                  step: "1",
-	                  title: t("referral.step1Title"),
-	                  body: t("referral.step1Body"),
-	                },
-	                {
-	                  step: "2",
-	                  title: t("referral.step2Title"),
-	                  body: t("referral.step2Body"),
-	                },
-	                {
-	                  step: "3",
-	                  title: t("referral.step3Title"),
-	                  body: t("referral.step3Body"),
-	                },
+                {
+                  step: "1",
+                  title: t("referral.step1Title"),
+                  body: t("referral.step1Body"),
+                },
+                {
+                  step: "2",
+                  title: t("referral.step2Title"),
+                  body: t("referral.step2Body"),
+                },
+                {
+                  step: "3",
+                  title: t("referral.step3Title"),
+                  body: t("referral.step3Body"),
+                },
               ].map((item) => (
-                <div key={item.step} className="flex items-start gap-4">
-                  <div className="size-10 rounded-full bg-[#5b13ec]/10 text-[#5b13ec] font-bold flex items-center justify-center shrink-0">
+                <div key={item.step} className="flex items-start gap-4 rounded-2xl border border-gray-100 bg-[#fcfcfd] p-4">
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-[#5b13ec]/10 font-bold text-[#5b13ec]">
                     {item.step}
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <h4 className="font-bold text-sm text-[#131118]">{item.title}</h4>
                     <p className="text-sm text-gray-500 mt-1">{item.body}</p>
                   </div>
@@ -319,13 +323,15 @@ export default function ReferralPage() {
             </div>
           </section>
 
-          <section className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5">
-            <div className="flex items-center justify-between gap-4 mb-5">
+          <section className="rounded-[30px] border border-gray-100 bg-white p-5 shadow-sm">
+            <div className="mb-5 flex items-start justify-between gap-4">
               <div>
-                <h3 className="text-lg font-bold">{t("referral.history")}</h3>
-                <p className="text-sm text-gray-500">{t("referral.historyText")}</p>
+                <h3 className="text-lg font-black text-[#131118]">{t("referral.history")}</h3>
+                <p className="mt-1 text-sm text-gray-500">{t("referral.historyText")}</p>
               </div>
-              <span className="material-symbols-outlined text-[#131118]">history</span>
+              <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-[#f2f0f4] text-[#131118]">
+                <span className="material-symbols-outlined text-[24px]">history</span>
+              </div>
             </div>
 
             {error && (
@@ -366,23 +372,23 @@ export default function ReferralPage() {
                   const status = getStatusLabel(referral.status, referral.confirmed, t);
 
                   return (
-                    <div key={referral.id} className="rounded-2xl border border-gray-100 p-4">
+                    <div key={referral.id} className="rounded-2xl border border-gray-100 bg-[#fcfcfd] p-4">
                       <div className="flex items-start justify-between gap-4">
-                        <div>
+                        <div className="min-w-0">
                           <p className="font-bold text-[#131118]">{referral.referred_user_masked_name || t("referral.maskedReferral")}</p>
                           <p className="text-xs text-gray-500 mt-1">
                             ID {referral.referred_user_masked_id || "N/A"} • {formatReferralDate(referral.created_at, dateLocale, t)}
                           </p>
                         </div>
-                        <span className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${status.className}`}>{status.label}</span>
+                        <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold ${status.className}`}>{status.label}</span>
                       </div>
 
                       <div className="mt-4 grid grid-cols-2 gap-3">
-                        <div className="rounded-2xl bg-[#f6f6f8] px-3 py-3">
+                        <div className="rounded-2xl bg-white px-3 py-3">
                           <p className="text-[11px] uppercase tracking-[0.18em] text-gray-400">{t("referral.commission")}</p>
                           <p className="mt-1 font-bold text-[#131118]">{formatMoney(referral.commission_amount, dateLocale)}</p>
                         </div>
-                        <div className="rounded-2xl bg-[#f6f6f8] px-3 py-3">
+                        <div className="rounded-2xl bg-white px-3 py-3">
                           <p className="text-[11px] uppercase tracking-[0.18em] text-gray-400">{t("referral.order")}</p>
                           <p className="mt-1 font-bold text-[#131118]">{formatMoney(referral.order_amount, dateLocale)}</p>
                         </div>
