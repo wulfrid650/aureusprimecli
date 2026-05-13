@@ -14,7 +14,7 @@ export function LanguageToggle({ className = "" }: { className?: string }) {
     <div
       role="group"
       aria-label={t("common.languageSelector")}
-      className={`inline-flex h-11 items-center rounded-full border border-[var(--premium-card-border,rgba(0,0,0,0.08))] bg-[var(--premium-panel,#fff)] p-1 text-xs font-bold text-[var(--premium-text,#131118)] shadow-sm ${className}`}
+      className={`inline-flex h-11 items-center rounded-full border border-[var(--premium-card-border,rgba(0,0,0,0.08))] bg-[var(--premium-panel,#F7F8F8)] p-1 text-xs font-bold text-[var(--premium-text,#1F2937)] shadow-sm ${className}`}
     >
       {options.map((option) => {
         const isSelected = option.locale === locale;
@@ -29,8 +29,8 @@ export function LanguageToggle({ className = "" }: { className?: string }) {
             onClick={() => setLocale(option.locale)}
             className={`h-8 min-w-9 rounded-full px-2 transition-colors ${
               isSelected
-                ? "bg-[#131118] text-white shadow-sm"
-                : "text-[var(--premium-text-muted,#6b7280)] hover:bg-black/5 hover:text-[var(--premium-text,#131118)]"
+                ? "bg-[#1F2937] text-[#F7F8F8] shadow-sm"
+                : "text-[var(--premium-text-muted,#6b7280)] hover:bg-black/5 hover:text-[var(--premium-text,#1F2937)]"
             }`}
           >
             {option.label}
