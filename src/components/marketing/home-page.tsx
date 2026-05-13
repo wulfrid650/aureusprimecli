@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ServiceIllustration } from "@/components/dashboard/service-illustration";
 import { LanguageToggle } from "@/components/ui/language-toggle";
+import { PaymentMethodLogos } from "@/components/ui/payment-method-logos";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { fetchCatalogProducts, type CatalogProduct } from "@/lib/catalog";
 import { useI18n } from "@/lib/i18n";
@@ -40,23 +41,154 @@ const features = [
   },
 ];
 
-const steps = [
-  {
-    icon: "touch_app",
-    titleKey: "marketing.steps.chooseTitle",
-    descriptionKey: "marketing.steps.chooseDescription",
+const processCopy = {
+  fr: {
+    eyebrow: "Simple comme bonjour",
+    title: "Comment ça marche ?",
+    cta: "Commencer maintenant",
+    steps: [
+      {
+        icon: "account_balance_wallet",
+        title: "Rechargez",
+        description: "Utilisez votre Mobile Money, Wave ou PayPal pour créditer votre wallet Aureus Prime.",
+      },
+      {
+        icon: "apps",
+        title: "Choisissez",
+        description: "Sélectionnez le service voulu dans le catalogue. Pas d'abonnement forcé.",
+      },
+      {
+        icon: "bolt",
+        title: "Profitez",
+        description: "Recevez vos accès après validation. Vous ne dépensez jamais plus que votre solde.",
+      },
+    ],
+    points: [
+      {
+        title: "Pas de carte bancaire. Pas de stress.",
+        description: "Votre numéro de téléphone suffit pour recharger et payer depuis votre wallet.",
+        tone: "soft",
+      },
+      {
+        title: "Gérez votre budget au franc près.",
+        description: "1 Auri = 1 XAF. Rechargez 1000F, dépensez 1000F, sans découvert.",
+        tone: "cool",
+      },
+      {
+        title: "Des services officiels.",
+        description: "Aureus Prime travaille avec des accès suivis et une livraison contrôlée.",
+        tone: "soft",
+      },
+      {
+        title: "Assistance locale, réponse rapide.",
+        description: "Notre équipe vous accompagne par WhatsApp et email en cas de blocage.",
+        tone: "cool",
+      },
+    ],
   },
-  {
-    icon: "verified_user",
-    titleKey: "marketing.steps.payTitle",
-    descriptionKey: "marketing.steps.payDescription",
+  en: {
+    eyebrow: "As simple as it gets",
+    title: "How does it work?",
+    cta: "Start now",
+    steps: [
+      {
+        icon: "account_balance_wallet",
+        title: "Top up",
+        description: "Use Mobile Money, Wave or PayPal to credit your Aureus Prime wallet.",
+      },
+      {
+        icon: "apps",
+        title: "Choose",
+        description: "Pick the service you want from the catalog. No forced subscription.",
+      },
+      {
+        icon: "bolt",
+        title: "Enjoy",
+        description: "Receive your access after validation. You never spend more than your balance.",
+      },
+    ],
+    points: [
+      {
+        title: "No bank card. No stress.",
+        description: "Your phone number is enough to top up and pay from your wallet.",
+        tone: "soft",
+      },
+      {
+        title: "Control your budget precisely.",
+        description: "1 Auri = 1 XAF. Top up 1000F, spend 1000F, no overdraft.",
+        tone: "cool",
+      },
+      {
+        title: "Official services.",
+        description: "Aureus Prime works with tracked access and controlled delivery.",
+        tone: "soft",
+      },
+      {
+        title: "Local assistance, fast replies.",
+        description: "Our team supports you by WhatsApp and email when something is blocked.",
+        tone: "cool",
+      },
+    ],
   },
-  {
-    icon: "mark_email_read",
-    titleKey: "marketing.steps.accessTitle",
-    descriptionKey: "marketing.steps.accessDescription",
+} as const;
+
+const referralCopy = {
+  fr: {
+    title: "Qui t'a dit que ton réseau ne valait rien ?",
+    description: "Chaque 6 amis parrainés, c'est environ 2 000 Auri qui glissent directement dans ton wallet.",
+    cta: "Découvrir le parrainage",
   },
-];
+  en: {
+    title: "Who said your network was worth nothing?",
+    description: "Every 6 referred friends can bring about 2,000 Auri directly into your wallet.",
+    cta: "Explore referrals",
+  },
+} as const;
+
+const faqCopy = {
+  fr: {
+    title: "Questions fréquentes",
+    items: [
+      {
+        question: "Est-ce vraiment sans carte bancaire ?",
+        answer: "Oui. Vous rechargez votre wallet avec Mobile Money, Wave ou PayPal, puis vous payez vos services avec votre solde Auri.",
+      },
+      {
+        question: "Les abonnements sont-ils officiels ?",
+        answer: "Aureus Prime livre des accès suivis, des codes ou des liens selon le service. Chaque commande reste visible depuis votre espace.",
+      },
+      {
+        question: "Les abonnements partagés sont-ils autorisés ?",
+        answer: "Certains services fonctionnent avec des slots partagés, d'autres avec des clés ou liens dédiés. Le type d'accès est géré côté plateforme.",
+      },
+      {
+        question: "Puis-je annuler à tout moment ?",
+        answer: "Vous gardez le contrôle de vos achats. Les annulations, réassignations ou remboursements en Auri dépendent du statut de la commande et du service livré.",
+      },
+    ],
+  },
+  en: {
+    title: "Frequently asked questions",
+    items: [
+      {
+        question: "Is it really bank-card free?",
+        answer: "Yes. Top up your wallet with Mobile Money, Wave or PayPal, then pay for services with your Auri balance.",
+      },
+      {
+        question: "Are the subscriptions official?",
+        answer: "Aureus Prime delivers tracked access, codes or links depending on the service. Each order remains visible from your space.",
+      },
+      {
+        question: "Are shared subscriptions allowed?",
+        answer: "Some services use shared slots, others use dedicated keys or links. The access type is handled by the platform.",
+      },
+      {
+        question: "Can I cancel anytime?",
+        answer: "You stay in control of your purchases. Cancellations, reassignments or Auri refunds depend on order status and delivered service.",
+      },
+    ],
+  },
+} as const;
 
 function MaterialIcon({
   name,
@@ -79,9 +211,12 @@ function MaterialIcon({
 }
 
 export function MarketingHomePage() {
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const [services, setServices] = useState<CatalogProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const process = processCopy[locale];
+  const referral = referralCopy[locale];
+  const faq = faqCopy[locale];
 
   useEffect(() => {
     let isActive = true;
@@ -109,40 +244,46 @@ export function MarketingHomePage() {
     <main className="premium-page min-h-screen overflow-x-hidden selection:bg-primary-300 selection:text-[var(--premium-contrast)]">
       <div className="relative flex min-h-screen w-full flex-col">
         <header className="premium-header-surface sticky top-0 z-50 w-full border-b backdrop-blur-md">
-          <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center">
-              <Image src="/logo-aureusprime.svg" alt="Aureusprime Logo" width={200} height={24} className="logo-dark h-6 w-auto" />
-              <Image src="/logo-aureusprime-light.svg" alt="Aureusprime Logo" width={200} height={24} className="logo-light h-6 w-auto" />
-            </div>
+          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
+            <Link
+              href="/accueil"
+              className="flex h-10 items-center rounded-full border border-[var(--premium-card-border)] bg-[var(--premium-panel)] px-3.5 shadow-[var(--shadow-card)]"
+            >
+              <Image src="/logo-aureusprime.svg" alt="Aureusprime Logo" width={170} height={20} className="logo-dark h-5 w-auto" />
+              <Image src="/logo-aureusprime-light.svg" alt="Aureusprime Logo" width={170} height={20} className="logo-light h-5 w-auto" />
+            </Link>
 
-            <nav className="hidden items-center gap-8 md:flex">
-              <a className="text-sm font-medium text-[var(--premium-text)] transition-colors hover:text-primary-500" href="#accueil">
+            <nav className="order-3 flex w-full items-center gap-1 overflow-x-auto rounded-full border border-[var(--premium-card-border)] bg-[var(--premium-panel)] p-1 shadow-[var(--shadow-card)] sm:order-none sm:w-auto md:flex">
+              <a className="shrink-0 rounded-full bg-[var(--premium-cta-bg)] px-4 py-2 text-xs font-bold uppercase tracking-[0.08em] text-[var(--premium-cta-text)] transition-colors" href="#accueil">
                 {t("marketing.navHome")}
               </a>
               <a
-                className="text-sm font-medium text-[var(--premium-text-muted)] transition-colors hover:text-[var(--premium-text)]"
+                className="shrink-0 rounded-full px-4 py-2 text-xs font-bold uppercase tracking-[0.08em] text-[var(--premium-text-muted)] transition-colors hover:bg-primary-500/10 hover:text-[var(--premium-text)]"
                 href="#abonnements"
               >
                 {t("marketing.navSubscriptions")}
               </a>
               <a
-                className="text-sm font-medium text-[var(--premium-text-muted)] transition-colors hover:text-[var(--premium-text)]"
+                className="shrink-0 rounded-full px-4 py-2 text-xs font-bold uppercase tracking-[0.08em] text-[var(--premium-text-muted)] transition-colors hover:bg-primary-500/10 hover:text-[var(--premium-text)]"
                 href="#avantages"
               >
                 {t("marketing.navTraining")}
               </a>
               <a
-                className="text-sm font-medium text-[var(--premium-text-muted)] transition-colors hover:text-[var(--premium-text)]"
-                href="#contact"
+                className="shrink-0 rounded-full px-4 py-2 text-xs font-bold uppercase tracking-[0.08em] text-[var(--premium-text-muted)] transition-colors hover:bg-primary-500/10 hover:text-[var(--premium-text)]"
+                href="/catalogue"
+              >
+                {locale === "fr" ? "Catalogue" : "Catalog"}
+              </a>
+              <a
+                className="shrink-0 rounded-full px-4 py-2 text-xs font-bold uppercase tracking-[0.08em] text-[var(--premium-text-muted)] transition-colors hover:bg-primary-500/10 hover:text-[var(--premium-text)]"
+                href="/contact"
               >
                 {t("marketing.navContact")}
               </a>
             </nav>
 
             <div className="flex items-center gap-3">
-              <button className="hidden items-center gap-2 text-sm font-medium text-[var(--premium-text-muted)] transition-colors hover:text-[var(--premium-text)] sm:flex">
-                <MaterialIcon name="search" className="text-[20px]" />
-              </button>
               <LanguageToggle />
               <ThemeToggle />
               <Link href="/login" className="premium-primary-cta group flex h-10 items-center justify-center gap-2 rounded-full px-4 text-sm font-semibold transition-all">
@@ -181,10 +322,12 @@ export function MarketingHomePage() {
               </p>
 
               <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <Link href="/offres" className="premium-primary-cta flex h-12 w-full items-center justify-center rounded-full px-8 text-base font-bold transition-all hover:scale-[1.02] active:scale-95 sm:w-auto">
+                <Link href="/offres" className="premium-primary-cta flex h-12 w-full items-center justify-center gap-2 rounded-full px-8 text-base font-bold sm:w-auto">
                   {t("marketing.seeOffers")}
+                  <MaterialIcon name="arrow_forward" className="text-[18px]" />
                 </Link>
-                <a href="#fonctionnement" className="flex h-12 w-full items-center justify-center rounded-full border border-[var(--premium-card-border)] bg-[var(--premium-panel)] px-8 text-base font-bold text-[var(--premium-text)] backdrop-blur-sm transition-all hover:border-primary-400/40 hover:bg-primary-500/10 sm:w-auto">
+                <a href="#fonctionnement" className="premium-secondary-cta flex h-12 w-full items-center justify-center gap-2 rounded-full px-8 text-base font-bold sm:w-auto">
+                  <MaterialIcon name="help" className="text-[18px]" />
                   {t("marketing.howItWorks")}
                 </a>
               </div>
@@ -298,7 +441,7 @@ export function MarketingHomePage() {
               </div>
 
               <div className="mt-8 text-center md:hidden">
-                <Link href="/offres" className="inline-flex w-full justify-center rounded-full border border-[var(--premium-card-border)] bg-[var(--premium-panel)] px-6 py-3 text-sm font-bold text-[var(--premium-text)]">
+                <Link href="/offres" className="premium-secondary-cta inline-flex w-full justify-center rounded-full px-6 py-3 text-sm font-bold">
                   {t("marketing.fullCatalog")}
                 </Link>
               </div>
@@ -349,25 +492,89 @@ export function MarketingHomePage() {
           </section>
 
           <section className="border-t border-[var(--premium-card-border)] py-20" id="fonctionnement">
-            <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-              <div className="relative grid grid-cols-1 gap-8 md:grid-cols-3">
-                <div className="absolute left-0 top-1/2 z-0 hidden h-px w-full -translate-y-1/2 bg-primary-500/20 md:block" />
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+              <div className="mb-10 text-center">
+                <p className="mb-3 text-xs font-black uppercase tracking-[0.24em] text-[var(--trust-green)]">
+                  {process.eyebrow}
+                </p>
+                <h2 className="text-3xl font-black tracking-tight text-[var(--premium-text)] sm:text-5xl">
+                  {process.title}
+                </h2>
+              </div>
 
-                {steps.map((step) => (
-                  <div key={step.titleKey} className="group relative z-10 flex flex-col items-center text-center">
-                    <div className="mb-6 flex size-16 items-center justify-center rounded-full border-2 border-[var(--premium-card-border)] bg-[var(--premium-card-deep)] text-[var(--premium-text-muted)] shadow-[var(--shadow-card)] transition-all duration-300 group-hover:scale-110 group-hover:border-primary-400 group-hover:text-primary-500">
-                      <MaterialIcon name={step.icon} className="text-3xl" />
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+                {process.steps.map((step, index) => (
+                  <article
+                    key={step.title}
+                    className="premium-card-surface relative min-h-[260px] overflow-hidden rounded-3xl border p-8 shadow-[var(--shadow-card)]"
+                  >
+                    <span className="pointer-events-none absolute right-7 top-5 text-7xl font-black leading-none text-[var(--premium-text)] opacity-[0.06] sm:text-8xl">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <div className="mb-8 flex size-14 items-center justify-center rounded-2xl border border-[var(--premium-card-border)] bg-[var(--premium-panel)] text-[var(--trust-green)]">
+                      <MaterialIcon name={step.icon} className="text-[30px]" />
                     </div>
-                    <h3 className="mb-2 text-lg font-bold text-[var(--premium-text)]">{t(step.titleKey)}</h3>
-                    <p className="px-4 text-sm text-[var(--premium-text-muted)]">{t(step.descriptionKey)}</p>
-                  </div>
+                    <h3 className="text-xl font-black text-[var(--premium-text)]">{step.title}</h3>
+                    <p className="mt-4 max-w-[17rem] leading-relaxed text-[var(--premium-text-muted)]">{step.description}</p>
+                  </article>
                 ))}
               </div>
 
-              <div className="mt-16 text-center">
-                <button className="premium-primary-cta inline-flex h-12 items-center justify-center rounded-full px-8 text-base font-bold transition-all hover:scale-[1.02]">
-                  {t("marketing.startNow")}
-                </button>
+              <div className="mt-14 grid gap-5 md:grid-cols-2">
+                {process.points.map((point) => (
+                  <article
+                    key={point.title}
+                    className={`rounded-3xl border border-[var(--premium-card-border)] p-8 ${
+                      point.tone === "cool"
+                        ? "bg-[var(--premium-panel)]"
+                        : "bg-[rgba(212,169,15,0.06)]"
+                    }`}
+                  >
+                    <h3 className="text-xl font-black text-[var(--premium-text)]">{point.title}</h3>
+                    <p className="mt-4 leading-relaxed text-[var(--premium-text-muted)]">{point.description}</p>
+                  </article>
+                ))}
+              </div>
+
+              <div className="mt-14 text-center">
+                <Link href="/register" className="premium-primary-cta inline-flex h-12 items-center justify-center gap-2 rounded-full px-8 text-base font-bold">
+                  {process.cta}
+                  <MaterialIcon name="arrow_forward" className="text-[18px]" />
+                </Link>
+              </div>
+            </div>
+          </section>
+
+          <section className="px-4 py-16 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-[#111315] px-6 py-16 text-center text-[#F7F8F8] shadow-[var(--shadow-card)] sm:px-10 lg:py-20">
+              <h2 className="mx-auto max-w-4xl text-3xl font-black tracking-tight sm:text-5xl">
+                {referral.title}
+              </h2>
+              <p className="mx-auto mt-8 max-w-2xl text-base leading-relaxed text-[#F7F8F8]/70">
+                {referral.description}
+              </p>
+              <Link href="/register" className="premium-primary-cta mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-full px-7 text-sm font-bold">
+                {referral.cta}
+                <MaterialIcon name="arrow_forward" className="text-[18px]" />
+              </Link>
+            </div>
+          </section>
+
+          <section className="premium-section-surface border-y border-[var(--premium-card-border)] py-16">
+            <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+              <h2 className="mb-8 text-3xl font-black tracking-tight text-[var(--premium-text)] sm:text-4xl">
+                {faq.title}
+              </h2>
+              <div className="grid gap-3">
+                {faq.items.map((item) => (
+                  <details key={item.question} className="group rounded-3xl border border-[var(--premium-card-border)] bg-[var(--premium-card-deep)] shadow-[var(--shadow-card)]">
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-5 text-base font-black text-[var(--premium-text)]">
+                      {item.question}
+                      <MaterialIcon name="add" className="text-[22px] text-[var(--premium-text-muted)] transition-transform group-open:rotate-45" />
+                    </summary>
+                    <p className="px-6 pb-6 leading-relaxed text-[var(--premium-text-muted)]">{item.answer}</p>
+                  </details>
+                ))}
               </div>
             </div>
           </section>
@@ -375,11 +582,11 @@ export function MarketingHomePage() {
 
         <footer className="premium-section-surface border-t border-[var(--premium-card-border)] pb-8 pt-16" id="contact">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="mb-12 grid grid-cols-1 gap-12 lg:grid-cols-4 lg:gap-8">
+            <div className="mb-12 grid grid-cols-1 gap-12 lg:grid-cols-3 lg:gap-8">
               <div className="col-span-1 lg:col-span-1">
                 <div className="mb-6 flex items-center">
-                  <Image src="/logo-aureusprime.svg" alt="Aureusprime Logo" width={200} height={24} className="logo-dark h-6 w-auto" />
-                  <Image src="/logo-aureusprime-light.svg" alt="Aureusprime Logo" width={200} height={24} className="logo-light h-6 w-auto" />
+                  <Image src="/logo-aureusprime.svg" alt="Aureusprime Logo" width={170} height={20} className="logo-dark h-5 w-auto" />
+                  <Image src="/logo-aureusprime-light.svg" alt="Aureusprime Logo" width={170} height={20} className="logo-light h-5 w-auto" />
                 </div>
                 <p className="mb-6 text-sm leading-relaxed text-[var(--premium-text-muted)]">
                   {t("marketing.footerDescription")}
@@ -391,6 +598,12 @@ export function MarketingHomePage() {
                   <Link className="text-[var(--premium-text-muted)] transition-colors hover:text-primary-500" href="/contact">
                     <MaterialIcon name="alternate_email" />
                   </Link>
+                </div>
+                <div className="mt-7">
+                  <p className="mb-3 text-xs font-bold uppercase tracking-[0.16em] text-[var(--premium-text-muted)]">
+                    {t("marketing.paymentMethodsTitle")}
+                  </p>
+                  <PaymentMethodLogos moreLabel={t("marketing.paymentMethodsMore")} />
                 </div>
               </div>
 
@@ -439,29 +652,16 @@ export function MarketingHomePage() {
                     </Link>
                   </li>
                   <li>
+                    <Link className="text-sm text-[var(--premium-text-muted)] transition-colors hover:text-primary-500" href="/remboursement">
+                      {t("marketing.refund")}
+                    </Link>
+                  </li>
+                  <li>
                     <Link className="text-sm text-[var(--premium-text-muted)] transition-colors hover:text-primary-500" href="/contact">
                       {t("marketing.navContact")}
                     </Link>
                   </li>
                 </ul>
-              </div>
-
-              <div>
-                <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-[var(--premium-text)]">{t("marketing.newsletter")}</h3>
-                <p className="mb-4 text-sm text-[var(--premium-text-muted)]">{t("marketing.newsletterText")}</p>
-                <form className="flex flex-col gap-2">
-                  <input
-                    className="h-10 w-full rounded-lg border border-[var(--premium-card-border)] bg-[var(--premium-panel)] px-3 text-sm text-[var(--premium-text)] placeholder:text-[var(--premium-text-soft)] focus:border-primary-400 focus:outline-none focus:ring-1 focus:ring-primary-400"
-                    placeholder={t("marketing.newsletterPlaceholder")}
-                    type="email"
-                  />
-                  <button
-                    className="premium-primary-cta h-10 w-full rounded-lg text-sm font-bold transition-colors"
-                    type="submit"
-                  >
-                    {t("marketing.newsletterSubmit")}
-                  </button>
-                </form>
               </div>
             </div>
 

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PublicContentPage } from "@/components/marketing/public-pages";
+import { PublicLegalDocumentPage } from "@/components/marketing/legal-doc-pages";
 
 export const metadata: Metadata = {
   title: "Politique de confidentialité",
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function PrivacyPage() {
-  return <PublicContentPage page="privacy" />;
+  return <PublicLegalDocumentPage page="privacy" />;
 }

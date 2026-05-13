@@ -276,12 +276,64 @@ input {
 
 .premium-primary-cta {
   background: var(--premium-cta-bg);
-  box-shadow: var(--premium-cta-shadow);
+  border: 1px solid rgba(31, 41, 55, 0.16);
+  box-shadow:
+    inset 0 1px 0 rgba(247, 248, 248, 0.12),
+    0 14px 34px rgba(31, 41, 55, 0.14);
   color: var(--premium-cta-text);
+  letter-spacing: 0.01em;
+  transform: translateY(0);
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
 }
 
 .premium-primary-cta:hover {
   background: var(--premium-cta-bg-hover);
+  border-color: rgba(212, 169, 15, 0.28);
+  transform: translateY(-1px);
+}
+
+.premium-primary-cta:active {
+  transform: translateY(0);
+}
+
+.premium-secondary-cta {
+  background: var(--premium-panel);
+  border: 1px solid var(--premium-card-border);
+  box-shadow:
+    inset 0 1px 0 rgba(247, 248, 248, 0.08),
+    0 10px 28px rgba(31, 41, 55, 0.08);
+  color: var(--premium-text);
+  letter-spacing: 0.01em;
+  transform: translateY(0);
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.premium-secondary-cta:hover {
+  background: var(--gold-soft);
+  border-color: rgba(212, 169, 15, 0.28);
+  transform: translateY(-1px);
+}
+
+[data-theme="dark"] .premium-primary-cta {
+  border-color: rgba(212, 169, 15, 0.34);
+  box-shadow:
+    inset 0 1px 0 rgba(247, 248, 248, 0.18),
+    0 14px 34px rgba(0, 0, 0, 0.18);
+}
+
+[data-theme="dark"] .premium-secondary-cta {
+  box-shadow:
+    inset 0 1px 0 rgba(247, 248, 248, 0.06),
+    0 12px 32px rgba(0, 0, 0, 0.16);
 }
 
 .dashboard-mode {

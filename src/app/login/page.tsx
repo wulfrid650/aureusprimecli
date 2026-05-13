@@ -94,8 +94,8 @@ function LoginContent() {
           {/* Logo Section */}
           <div className="mb-8 flex flex-col items-center">
             <Link href="/accueil" className="mb-6 block transition-transform hover:scale-105">
-              <Image src="/logo-aureusprime.svg" alt="Aureus Prime Logo" width={220} height={28} className="logo-dark h-8 w-auto" />
-              <Image src="/logo-aureusprime-light.svg" alt="Aureus Prime Logo" width={220} height={28} className="logo-light h-8 w-auto" />
+              <Image src="/logo-aureusprime.svg" alt="Aureus Prime Logo" width={170} height={20} className="logo-dark h-6 w-auto" />
+              <Image src="/logo-aureusprime-light.svg" alt="Aureus Prime Logo" width={170} height={20} className="logo-light h-6 w-auto" />
             </Link>
             <h1 className="text-2xl font-bold tracking-tight text-[var(--premium-text)]">{t("auth.loginTitle")}</h1>
             <p className="mt-2 text-sm text-[var(--premium-text-muted)]">{t("auth.loginSubtitle")}</p>
