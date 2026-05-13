@@ -4,11 +4,29 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getStoredAuthToken } from "@/lib/auth-token";
 
+function isStandalonePwa() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  return (
+    window.matchMedia("(display-mode: standalone)").matches ||
+    window.matchMedia("(display-mode: fullscreen)").matches ||
+    // Safari iOS exposes this non-standard flag for installed web apps.
+    (window.navigator as Navigator & { standalone?: boolean }).standalone === true
+  );
+}
+
 export default function AppEntryPage() {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace(getStoredAuthToken() ? "/dashboard" : "/accueil");
+    if (getStoredAuthToken()) {
+      router.replace("/dashboard");
+      return;
+    }
+
+    router.replace(isStandalonePwa() ? "/login" : "/accueil");
   }, [router]);
 
   return (

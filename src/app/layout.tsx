@@ -40,6 +40,7 @@ const displayFont = localFont({
 });
 
 export const metadata: Metadata = {
+  applicationName: "Aureus Prime",
   title: {
     default: "Aureus Prime",
     template: "%s | Aureus Prime",
@@ -47,6 +48,14 @@ export const metadata: Metadata = {
   description:
     "Aureus Prime centralise vos abonnements, vos paiements et votre wallet dans une interface claire, rapide et premium.",
   manifest: "/manifest.json",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",

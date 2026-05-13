@@ -52,6 +52,7 @@ const shellCopy = {
     blog: "Blog",
     about: "À propos",
     help: "Centre d'aide",
+    cgu: "CGU",
     terms: "Conditions générales",
     privacy: "Politique de confidentialité",
     refund: "Politique de remboursement",
@@ -74,6 +75,7 @@ const shellCopy = {
     blog: "Blog",
     about: "About",
     help: "Help center",
+    cgu: "Terms of use",
     terms: "Terms",
     privacy: "Privacy policy",
     refund: "Refund policy",
@@ -598,6 +600,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
   const { locale } = useI18n();
   const copy = getShell(locale);
   const pathname = usePathname();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navItems = [
     { href: "/accueil", label: copy.navHome, active: pathname === "/accueil" || pathname === "/" },
     { href: "/catalogue", label: copy.navOffers, active: pathname === "/catalogue" || pathname === "/offres" },
@@ -617,7 +620,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
               <Image src="/logo-aureusprime.svg" alt="Aureus Prime" width={170} height={20} className="logo-dark h-5 w-auto" />
               <Image src="/logo-aureusprime-light.svg" alt="Aureus Prime" width={170} height={20} className="logo-light h-5 w-auto" />
             </Link>
-            <nav className="order-3 flex w-full items-center gap-1 overflow-x-auto rounded-full border border-[var(--premium-card-border)] bg-[var(--premium-panel)] p-1 shadow-[var(--shadow-card)] sm:order-none sm:w-auto">
+            <nav className="hidden items-center gap-1 rounded-full border border-[var(--premium-card-border)] bg-[var(--premium-panel)] p-1 shadow-[var(--shadow-card)] md:flex">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
@@ -632,14 +635,54 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
                 </Link>
               ))}
             </nav>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <LanguageToggle />
               <ThemeToggle />
               <Link href="/login" className="premium-primary-cta hidden h-10 items-center justify-center gap-2 rounded-full px-4 text-sm font-bold sm:flex">
                 {copy.login}
                 <MaterialIcon name="login" className="text-[17px]" />
               </Link>
+              <button
+                type="button"
+                className="flex size-10 items-center justify-center rounded-full border border-[var(--premium-card-border)] bg-[var(--premium-panel)] text-[var(--premium-text)] shadow-[var(--shadow-card)] transition-colors hover:bg-primary-500/10 md:hidden"
+                aria-label={isMobileMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+                aria-expanded={isMobileMenuOpen}
+                aria-controls="public-mobile-menu"
+                onClick={() => setIsMobileMenuOpen((open) => !open)}
+              >
+                <MaterialIcon name={isMobileMenuOpen ? "close" : "menu"} className="text-[22px]" />
+              </button>
             </div>
+
+            {isMobileMenuOpen ? (
+              <nav
+                id="public-mobile-menu"
+                className="order-3 grid w-full gap-1 rounded-2xl border border-[var(--premium-card-border)] bg-[var(--premium-panel)] p-2 shadow-[var(--shadow-card)] md:hidden"
+              >
+                {navItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    className={`flex min-h-11 items-center rounded-xl px-4 text-sm font-bold uppercase tracking-[0.08em] transition-colors ${
+                      item.active
+                        ? "bg-[var(--premium-cta-bg)] text-[var(--premium-cta-text)]"
+                        : "text-[var(--premium-text-muted)] hover:bg-primary-500/10 hover:text-[var(--premium-text)]"
+                    }`}
+                    href={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+                <Link
+                  className="premium-primary-cta flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-bold sm:hidden"
+                  href="/login"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {copy.login}
+                  <MaterialIcon name="login" className="text-[17px]" />
+                </Link>
+              </nav>
+            ) : null}
           </div>
         </header>
 
@@ -671,6 +714,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
               <h2 className="mb-4 text-sm font-bold uppercase tracking-[0.18em] text-[var(--premium-text)]">{copy.footerSupport}</h2>
               <div className="grid gap-3 text-sm text-[var(--premium-text-muted)]">
                 <Link href="/aide" className="hover:text-primary-500">{copy.help}</Link>
+                <Link href="/conditions-utilisation" className="hover:text-primary-500">{copy.cgu}</Link>
                 <Link href="/conditions-generales" className="hover:text-primary-500">{copy.terms}</Link>
                 <Link href="/confidentialite" className="hover:text-primary-500">{copy.privacy}</Link>
                 <Link href="/remboursement" className="hover:text-primary-500">{copy.refund}</Link>

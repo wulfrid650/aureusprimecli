@@ -41,6 +41,57 @@ const features = [
   },
 ];
 
+const featuredCatalogAliases = [
+  ["netflix"],
+  ["canva"],
+  ["capcut pro", "capcut", "cap cut"],
+  ["duolingo"],
+  ["crunchyroll"],
+  ["spotify"],
+  ["prime video", "amazon prime", "primevideo"],
+  ["icloud+", "icloud plus", "icloud"],
+];
+
+function normalizeCatalogMatch(value: string): string {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[+]/g, " plus ")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+function selectFeaturedCatalogServices(products: CatalogProduct[], limit = 8): CatalogProduct[] {
+  const selected: CatalogProduct[] = [];
+  const selectedIds = new Set<string>();
+
+  const matchesProduct = (product: CatalogProduct, aliases: string[]) => {
+    const searchable = normalizeCatalogMatch(`${product.title} ${product.slug} ${product.category}`);
+
+    return aliases.some((alias) => searchable.includes(normalizeCatalogMatch(alias)));
+  };
+
+  for (const aliases of featuredCatalogAliases) {
+    const match = products.find((product) => !selectedIds.has(product.id) && matchesProduct(product, aliases));
+
+    if (match) {
+      selected.push(match);
+      selectedIds.add(match.id);
+    }
+  }
+
+  for (const product of products) {
+    if (selected.length >= limit) break;
+    if (selectedIds.has(product.id)) continue;
+
+    selected.push(product);
+    selectedIds.add(product.id);
+  }
+
+  return selected.slice(0, limit);
+}
+
 const processCopy = {
   fr: {
     eyebrow: "Simple comme bonjour",
@@ -214,17 +265,25 @@ export function MarketingHomePage() {
   const { locale, t } = useI18n();
   const [services, setServices] = useState<CatalogProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const process = processCopy[locale];
   const referral = referralCopy[locale];
   const faq = faqCopy[locale];
+  const navItems = [
+    { href: "#accueil", label: t("marketing.navHome"), active: true },
+    { href: "#abonnements", label: t("marketing.navSubscriptions") },
+    { href: "#avantages", label: t("marketing.navTraining") },
+    { href: "/catalogue", label: locale === "fr" ? "Catalogue" : "Catalog" },
+    { href: "/contact", label: t("marketing.navContact") },
+  ];
 
   useEffect(() => {
     let isActive = true;
 
-    fetchCatalogProducts(8)
+    fetchCatalogProducts(48)
       .then((catalogServices) => {
         if (!isActive) return;
-        setServices(catalogServices);
+        setServices(selectFeaturedCatalogServices(catalogServices));
       })
       .catch((error) => {
         console.error("Failed to load marketing catalog:", error);
@@ -253,37 +312,23 @@ export function MarketingHomePage() {
               <Image src="/logo-aureusprime-light.svg" alt="Aureusprime Logo" width={170} height={20} className="logo-light h-5 w-auto" />
             </Link>
 
-            <nav className="order-3 flex w-full items-center gap-1 overflow-x-auto rounded-full border border-[var(--premium-card-border)] bg-[var(--premium-panel)] p-1 shadow-[var(--shadow-card)] sm:order-none sm:w-auto md:flex">
-              <a className="shrink-0 rounded-full bg-[var(--premium-cta-bg)] px-4 py-2 text-xs font-bold uppercase tracking-[0.08em] text-[var(--premium-cta-text)] transition-colors" href="#accueil">
-                {t("marketing.navHome")}
-              </a>
-              <a
-                className="shrink-0 rounded-full px-4 py-2 text-xs font-bold uppercase tracking-[0.08em] text-[var(--premium-text-muted)] transition-colors hover:bg-primary-500/10 hover:text-[var(--premium-text)]"
-                href="#abonnements"
-              >
-                {t("marketing.navSubscriptions")}
-              </a>
-              <a
-                className="shrink-0 rounded-full px-4 py-2 text-xs font-bold uppercase tracking-[0.08em] text-[var(--premium-text-muted)] transition-colors hover:bg-primary-500/10 hover:text-[var(--premium-text)]"
-                href="#avantages"
-              >
-                {t("marketing.navTraining")}
-              </a>
-              <a
-                className="shrink-0 rounded-full px-4 py-2 text-xs font-bold uppercase tracking-[0.08em] text-[var(--premium-text-muted)] transition-colors hover:bg-primary-500/10 hover:text-[var(--premium-text)]"
-                href="/catalogue"
-              >
-                {locale === "fr" ? "Catalogue" : "Catalog"}
-              </a>
-              <a
-                className="shrink-0 rounded-full px-4 py-2 text-xs font-bold uppercase tracking-[0.08em] text-[var(--premium-text-muted)] transition-colors hover:bg-primary-500/10 hover:text-[var(--premium-text)]"
-                href="/contact"
-              >
-                {t("marketing.navContact")}
-              </a>
+            <nav className="hidden items-center gap-1 rounded-full border border-[var(--premium-card-border)] bg-[var(--premium-panel)] p-1 shadow-[var(--shadow-card)] md:flex">
+              {navItems.map((item) => (
+                <a
+                  key={item.href}
+                  className={`shrink-0 rounded-full px-4 py-2 text-xs font-bold uppercase tracking-[0.08em] transition-colors ${
+                    item.active
+                      ? "bg-[var(--premium-cta-bg)] text-[var(--premium-cta-text)]"
+                      : "text-[var(--premium-text-muted)] hover:bg-primary-500/10 hover:text-[var(--premium-text)]"
+                  }`}
+                  href={item.href}
+                >
+                  {item.label}
+                </a>
+              ))}
             </nav>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <LanguageToggle />
               <ThemeToggle />
               <Link href="/login" className="premium-primary-cta group flex h-10 items-center justify-center gap-2 rounded-full px-4 text-sm font-semibold transition-all">
@@ -293,7 +338,39 @@ export function MarketingHomePage() {
                   className="text-[18px] transition-transform sm:group-hover:translate-x-0.5"
                 />
               </Link>
+              <button
+                type="button"
+                className="flex size-10 items-center justify-center rounded-full border border-[var(--premium-card-border)] bg-[var(--premium-panel)] text-[var(--premium-text)] shadow-[var(--shadow-card)] transition-colors hover:bg-primary-500/10 md:hidden"
+                aria-label={isMobileMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+                aria-expanded={isMobileMenuOpen}
+                aria-controls="home-mobile-menu"
+                onClick={() => setIsMobileMenuOpen((open) => !open)}
+              >
+                <MaterialIcon name={isMobileMenuOpen ? "close" : "menu"} className="text-[22px]" />
+              </button>
             </div>
+
+            {isMobileMenuOpen ? (
+              <nav
+                id="home-mobile-menu"
+                className="order-3 grid w-full gap-1 rounded-2xl border border-[var(--premium-card-border)] bg-[var(--premium-panel)] p-2 shadow-[var(--shadow-card)] md:hidden"
+              >
+                {navItems.map((item) => (
+                  <a
+                    key={item.href}
+                    className={`flex min-h-11 items-center rounded-xl px-4 text-sm font-bold uppercase tracking-[0.08em] transition-colors ${
+                      item.active
+                        ? "bg-[var(--premium-cta-bg)] text-[var(--premium-cta-text)]"
+                        : "text-[var(--premium-text-muted)] hover:bg-primary-500/10 hover:text-[var(--premium-text)]"
+                    }`}
+                    href={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {item.label}
+                  </a>
+                ))}
+              </nav>
+            ) : null}
           </div>
         </header>
 
@@ -335,11 +412,13 @@ export function MarketingHomePage() {
               <div className="mt-16 flex flex-wrap justify-center gap-8 opacity-70 transition-all duration-500">
                 {[
                   "Netflix",
-                  "Spotify",
                   "Canva",
-                  "Prime Video",
+                  "CapCut Pro",
+                  "Duolingo",
                   "Crunchyroll",
-                  "Capcut Pro",
+                  "Spotify",
+                  "Prime Video",
+                  "iCloud+",
                   t("marketing.moreBrands")
                 ].map((brand) => (
                   <div
@@ -639,6 +718,11 @@ export function MarketingHomePage() {
                   <li>
                     <Link className="text-sm text-[var(--premium-text-muted)] transition-colors hover:text-primary-500" href="/aide">
                       {t("marketing.helpCenter")}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link className="text-sm text-[var(--premium-text-muted)] transition-colors hover:text-primary-500" href="/conditions-utilisation">
+                      {t("marketing.cgu")}
                     </Link>
                   </li>
                   <li>
