@@ -1,22 +1,14 @@
-"use client";
-
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
-
-type RecaptchaRenderOptions = {
-  sitekey: string;
-  callback: (token: string) => void;
-  "expired-callback": () => void;
-  "error-callback": () => void;
-};
-
-type Grecaptcha = {
-  render: (container: HTMLElement, options: RecaptchaRenderOptions) => number;
-  reset: (widgetId?: number) => void;
-};
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 
 declare global {
   interface Window {
-    grecaptcha?: Grecaptcha;
+    grecaptcha?: any;
   }
 }
 
@@ -24,112 +16,91 @@ export type RecaptchaFieldHandle = {
   reset: () => void;
 };
 
-type RecaptchaFieldProps = {
-  onTokenChange: (token: string) => void;
-};
-
-const productionSiteKey = "6LciwOgsAAAAAMqLezFOK7ubvTovPMCYOUjl-RfB";
-const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY?.trim() || (process.env.NODE_ENV === "production" ? productionSiteKey : "");
-let recaptchaScriptPromise: Promise<void> | null = null;
+const SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY?.trim() || "";
 
 export function isRecaptchaEnabled(): boolean {
-  return siteKey.length > 0;
+  return SITE_KEY.length > 0;
 }
 
-function loadRecaptchaScript(): Promise<void> {
-  if (typeof window === "undefined") {
-    return Promise.resolve();
-  }
+export const RecaptchaField = forwardRef<RecaptchaFieldHandle, { onTokenChange: (token: string) => void }>(
+  function RecaptchaField({ onTokenChange }, ref) {
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const widgetIdRef = useRef<number | null>(null);
+    const [loadError, setLoadError] = useState(false);
 
-  if (window.grecaptcha) {
-    return Promise.resolve();
-  }
+    useImperativeHandle(ref, () => ({
+      reset() {
+        onTokenChange("");
+        try {
+          if (window.grecaptcha && widgetIdRef.current !== null) {
+            window.grecaptcha.reset(widgetIdRef.current);
+          }
+        } catch (e) {
+          // noop
+        }
+      },
+    }));
 
-  if (recaptchaScriptPromise) {
-    return recaptchaScriptPromise;
-  }
+    useEffect(() => {
+      if (!SITE_KEY || !containerRef.current || widgetIdRef.current !== null) return;
 
-  recaptchaScriptPromise = new Promise((resolve, reject) => {
-    const existingScript = document.querySelector<HTMLScriptElement>('script[src^="https://www.google.com/recaptcha/api.js"]');
+      let mounted = true;
 
-    if (existingScript) {
-      existingScript.addEventListener("load", () => resolve(), { once: true });
-      existingScript.addEventListener("error", () => reject(new Error("reCAPTCHA script failed")), { once: true });
-      return;
-    }
-
-    const script = document.createElement("script");
-    script.src = "https://www.google.com/recaptcha/api.js?render=explicit";
-    script.async = true;
-    script.defer = true;
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error("reCAPTCHA script failed"));
-    document.head.appendChild(script);
-  });
-
-  return recaptchaScriptPromise;
-}
-
-export const RecaptchaField = forwardRef<RecaptchaFieldHandle, RecaptchaFieldProps>(function RecaptchaField(
-  { onTokenChange },
-  ref,
-) {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const widgetIdRef = useRef<number | null>(null);
-  const [isUnavailable, setIsUnavailable] = useState(false);
-
-  useImperativeHandle(ref, () => ({
-    reset() {
-      onTokenChange("");
-      if (window.grecaptcha && widgetIdRef.current !== null) {
-        window.grecaptcha.reset(widgetIdRef.current);
-      }
-    },
-  }));
-
-  useEffect(() => {
-    if (!siteKey || !containerRef.current || widgetIdRef.current !== null) {
-      return;
-    }
-
-    let mounted = true;
-
-    loadRecaptchaScript()
-      .then(() => {
-        if (!mounted || !containerRef.current || !window.grecaptcha) {
-          return;
+      const loadScript = () => {
+        const existing = document.querySelector('script[src^="https://www.google.com/recaptcha/api.js"]');
+        if (existing) {
+          if ((window as any).grecaptcha) return Promise.resolve();
+          return new Promise<void>((resolve, reject) => {
+            existing.addEventListener("load", () => resolve(), { once: true });
+            existing.addEventListener("error", () => reject(new Error("reCAPTCHA script failed")), { once: true });
+          });
         }
 
-        widgetIdRef.current = window.grecaptcha.render(containerRef.current, {
-          sitekey: siteKey,
-          callback: (token: string) => onTokenChange(token),
-          "expired-callback": () => onTokenChange(""),
-          "error-callback": () => onTokenChange(""),
+        return new Promise<void>((resolve, reject) => {
+          const script = document.createElement("script");
+          script.src = "https://www.google.com/recaptcha/api.js?render=explicit";
+          script.async = true;
+          script.defer = true;
+          script.onload = () => resolve();
+          script.onerror = () => reject(new Error("reCAPTCHA script failed"));
+          document.head.appendChild(script);
         });
-      })
-      .catch(() => {
-        if (mounted) {
-          setIsUnavailable(true);
-        }
-      });
+      };
 
-    return () => {
-      mounted = false;
-    };
-  }, [onTokenChange]);
+      loadScript()
+        .then(() => {
+          if (!mounted || !containerRef.current || !window.grecaptcha) return;
+          try {
+            widgetIdRef.current = window.grecaptcha.render(containerRef.current, {
+              sitekey: SITE_KEY,
+              callback: (token: string) => onTokenChange(token),
+              "expired-callback": () => onTokenChange(""),
+              "error-callback": () => onTokenChange(""),
+            });
+          } catch (e) {
+            setLoadError(true);
+          }
+        })
+        .catch(() => {
+          setLoadError(true);
+        });
 
-  if (!siteKey) {
-    return null;
+      return () => {
+        mounted = false;
+      };
+    }, [onTokenChange]);
+
+    if (!SITE_KEY) return null;
+
+    return (
+      <div className="space-y-2">
+        <div ref={containerRef} className="min-h-[78px]" />
+        {loadError && (
+          <p className="text-xs font-medium text-red-600">Impossible de charger reCAPTCHA. Vérifiez votre connexion puis réessayez.</p>
+        )}
+      </div>
+    );
   }
+);
 
-  return (
-    <div className="space-y-2">
-      <div ref={containerRef} className="min-h-[78px]" />
-      {isUnavailable && (
-        <p className="text-xs font-medium text-red-600">
-          Impossible de charger reCAPTCHA. Vérifiez votre connexion puis réessayez.
-        </p>
-      )}
-    </div>
-  );
-});
+export default RecaptchaField;

@@ -1,0 +1,898 @@
+▲ Next.js 16.2.4 (webpack)
+- Local:         http://localhost:3000
+- Network:       http://10.209.123.180:3000
+- Environments: .env.local
+✓ Ready in 843ms
+> [PWA] PWA support is disabled
+> [PWA] PWA support is disabled
+
+○ Compiling / ...
+ GET / 200 in 11.8s (next.js: 11.4s, application-code: 414ms)
+ HEAD /accueil 200 in 3.3s (next.js: 3.0s, application-code: 345ms)
+ GET / 200 in 276ms (next.js: 43ms, application-code: 232ms)
+ GET /dashboard 200 in 2.4s (next.js: 2.3s, application-code: 106ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior (app-pages-browser)
+[browser] Image with src "http://localhost:3000/logo-aureusprime.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio. (app-pages-browser)
+○ Compiling /api/catalog/products ...
+ GET /api/catalog/products?per_page=12 200 in 5.5s (next.js: 4.9s, application-code: 624ms)
+ GET /dashboard/services 200 in 1176ms (next.js: 1058ms, application-code: 118ms)
+ GET /api/catalog/products?per_page=100 200 in 426ms (next.js: 23ms, application-code: 403ms)
+ GET /dashboard/services/proton-vpn 200 in 3.6s (next.js: 3.5s, application-code: 134ms)
+ GET /api/catalog/products/proton-vpn 200 in 3.4s (next.js: 3.2s, application-code: 156ms)
+ GET /dashboard/services 200 in 215ms (next.js: 122ms, application-code: 93ms)
+ GET /api/catalog/products?per_page=100 200 in 1111ms (next.js: 840ms, application-code: 271ms)
+ GET /dashboard/services/spotify 200 in 193ms (next.js: 106ms, application-code: 87ms)
+ GET /api/catalog/products/spotify 200 in 212ms (next.js: 81ms, application-code: 131ms)
+ GET /dashboard/services 200 in 82ms (next.js: 21ms, application-code: 61ms)
+ GET /dashboard/souscriptions 200 in 1598ms (next.js: 1526ms, application-code: 72ms)
+ GET /dashboard/wallet 200 in 2.1s (next.js: 1921ms, application-code: 154ms)
+ GET /dashboard/compte 200 in 1495ms (next.js: 1412ms, application-code: 83ms)
+ GET /invalid-link 404 in 3.0s (next.js: 2.6s, application-code: 415ms)
+ GET /dashboard/compte 200 in 197ms (next.js: 31ms, application-code: 167ms)
+ GET /dashboard/services 200 in 114ms (next.js: 22ms, application-code: 92ms)
+ GET /api/catalog/products?per_page=100 200 in 1980ms (next.js: 1662ms, application-code: 318ms)
+ GET /invalid-link 404 in 500ms (next.js: 182ms, application-code: 317ms)
+ GET /dashboard/wallet 200 in 118ms (next.js: 34ms, application-code: 84ms)
+ GET /dashboard/services 200 in 65ms (next.js: 15ms, application-code: 49ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /api/catalog/products?per_page=100 200 in 287ms (next.js: 10ms, application-code: 277ms)
+ GET /dashboard/services/canva 200 in 151ms (next.js: 81ms, application-code: 71ms)
+ GET /api/catalog/products/canva 200 in 2.7s (next.js: 2.5s, application-code: 143ms)
+ GET /dashboard/checkout/canva?variant=10 200 in 3.1s (next.js: 3.0s, application-code: 108ms)
+ GET /dashboard/services 200 in 79ms (next.js: 27ms, application-code: 51ms)
+ GET /dashboard/services/prime-video 200 in 107ms (next.js: 51ms, application-code: 56ms)
+ GET /api/catalog/products/prime-video 200 in 251ms (next.js: 104ms, application-code: 147ms)
+ GET /dashboard/checkout/prime-video?variant=7 200 in 118ms (next.js: 61ms, application-code: 57ms)
+ GET /dashboard/wallet 200 in 66ms (next.js: 23ms, application-code: 43ms)
+ GET /dashboard/souscriptions 200 in 1755ms (next.js: 1641ms, application-code: 114ms)
+ GET /dashboard/wallet 200 in 119ms (next.js: 38ms, application-code: 82ms)
+ GET /dashboard/wallet 200 in 444ms (next.js: 7ms, application-code: 437ms)
+ GET /invalid-link 404 in 197ms (next.js: 29ms, application-code: 168ms)
+ GET /dashboard/wallet 200 in 151ms (next.js: 14ms, application-code: 137ms)
+ GET /dashboard/wallet 200 in 123ms (next.js: 12ms, application-code: 111ms)
+ GET /dashboard/wallet 200 in 131ms (next.js: 3ms, application-code: 128ms)
+ GET /dashboard/souscriptions 200 in 67ms (next.js: 9ms, application-code: 59ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /dashboard/souscriptions 200 in 156ms (next.js: 5ms, application-code: 152ms)
+ GET /dashboard/wallet 200 in 57ms (next.js: 5ms, application-code: 53ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /dashboard/wallet 200 in 251ms (next.js: 27ms, application-code: 223ms)
+ GET /invalid-link 404 in 672ms (next.js: 444ms, application-code: 228ms)
+ GET /dashboard/wallet 200 in 452ms (next.js: 30ms, application-code: 422ms)
+ GET /invalid-link 404 in 316ms (next.js: 7ms, application-code: 310ms)
+ GET /dashboard/wallet 200 in 405ms (next.js: 290ms, application-code: 115ms)
+ GET /dashboard/wallet 200 in 816ms (next.js: 65ms, application-code: 751ms)
+ GET /invalid-link 404 in 636ms (next.js: 367ms, application-code: 269ms)
+ GET /dashboard/wallet 200 in 136ms (next.js: 47ms, application-code: 90ms)
+ GET /invalid-link 404 in 329ms (next.js: 6ms, application-code: 324ms)
+ GET /dashboard/wallet 200 in 1210ms (next.js: 18ms, application-code: 1192ms)
+ GET /invalid-link 404 in 442ms (next.js: 323ms, application-code: 118ms)
+ GET /invalid-link 404 in 256ms (next.js: 7ms, application-code: 249ms)
+ GET /dashboard/wallet 200 in 253ms (next.js: 49ms, application-code: 204ms)
+ GET /dashboard/wallet 200 in 102ms (next.js: 5ms, application-code: 97ms)
+ GET /dashboard/wallet 200 in 573ms (next.js: 5ms, application-code: 568ms)
+ GET /dashboard/wallet 200 in 1174ms (next.js: 792ms, application-code: 382ms)
+ GET /invalid-link 404 in 3.3s (next.js: 3.1s, application-code: 151ms)
+ GET /invalid-link 404 in 383ms (next.js: 225ms, application-code: 158ms)
+ GET /invalid-link 404 in 561ms (next.js: 21ms, application-code: 540ms)
+ GET /dashboard/wallet 200 in 434ms (next.js: 6ms, application-code: 428ms)
+ GET /invalid-link 404 in 514ms (next.js: 230ms, application-code: 284ms)
+ GET /dashboard/wallet 200 in 188ms (next.js: 53ms, application-code: 135ms)
+ GET /invalid-link 404 in 343ms (next.js: 5ms, application-code: 338ms)
+ GET /dashboard/wallet 200 in 180ms (next.js: 4ms, application-code: 175ms)
+○ Compiling / ...
+ GET / 200 in 5.9s (next.js: 5.1s, application-code: 806ms)
+ GET /dashboard/wallet 200 in 203ms (next.js: 70ms, application-code: 133ms)
+ GET /dashboard 200 in 3.5s (next.js: 3.2s, application-code: 242ms)
+ GET /dashboard/wallet 200 in 192ms (next.js: 25ms, application-code: 167ms)
+ GET /dashboard 200 in 89ms (next.js: 7ms, application-code: 82ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+[browser] Image with src "http://localhost:3000/logo-aureusprime.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /api/catalog/products?per_page=12 200 in 2.4s (next.js: 1960ms, application-code: 454ms)
+ GET /dashboard/wallet 200 in 194ms (next.js: 114ms, application-code: 80ms)
+ GET /dashboard/wallet 200 in 450ms (next.js: 312ms, application-code: 137ms)
+ GET /dashboard/wallet 200 in 62ms (next.js: 4ms, application-code: 58ms)
+ GET /dashboard/wallet 200 in 245ms (next.js: 152ms, application-code: 93ms)
+ GET /dashboard/wallet 200 in 71ms (next.js: 5ms, application-code: 65ms)
+ GET /dashboard/wallet 200 in 342ms (next.js: 4ms, application-code: 337ms)
+ GET /dashboard/wallet 200 in 163ms (next.js: 6ms, application-code: 156ms)
+ GET /dashboard/compte 200 in 1348ms (next.js: 1198ms, application-code: 149ms)
+ GET /dashboard/wallet 200 in 163ms (next.js: 18ms, application-code: 145ms)
+ GET /dashboard/compte 200 in 87ms (next.js: 4ms, application-code: 83ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /dashboard/souscriptions 200 in 56ms (next.js: 27ms, application-code: 29ms)
+ GET /dashboard/wallet 200 in 27ms (next.js: 2ms, application-code: 25ms)
+ GET /dashboard/wallet 200 in 288ms (next.js: 159ms, application-code: 129ms)
+ GET /dashboard/wallet 200 in 60ms (next.js: 7ms, application-code: 53ms)
+ GET /dashboard/souscriptions 200 in 79ms (next.js: 29ms, application-code: 51ms)
+ GET /dashboard/souscriptions 200 in 392ms (next.js: 6ms, application-code: 385ms)
+ GET /dashboard/wallet 200 in 226ms (next.js: 7ms, application-code: 219ms)
+ GET /dashboard/wallet 200 in 50ms (next.js: 4ms, application-code: 46ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /dashboard/souscriptions 200 in 80ms (next.js: 10ms, application-code: 71ms)
+ GET /dashboard/services 200 in 2.3s (next.js: 2.1s, application-code: 218ms)
+ GET /dashboard/wallet 200 in 149ms (next.js: 24ms, application-code: 125ms)
+ GET /dashboard/services 200 in 69ms (next.js: 4ms, application-code: 65ms)
+ GET /api/catalog/products?per_page=100 200 in 2.2s (next.js: 1879ms, application-code: 349ms)
+ GET /dashboard/souscriptions 200 in 199ms (next.js: 111ms, application-code: 88ms)
+ GET /dashboard/wallet 200 in 270ms (next.js: 22ms, application-code: 248ms)
+[browser] [safeFetch] HTTP 401 from /api/v1/me/wallet?per_page=100 
+
+ GET /dashboard/souscriptions 200 in 166ms (next.js: 15ms, application-code: 151ms)
+ GET /dashboard/services/icloud 200 in 2.1s (next.js: 1884ms, application-code: 241ms)
+ GET /dashboard/wallet 200 in 113ms (next.js: 19ms, application-code: 94ms)
+ GET /dashboard/services/icloud 200 in 113ms (next.js: 7ms, application-code: 107ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /api/catalog/products/icloud 200 in 1838ms (next.js: 1687ms, application-code: 151ms)
+ GET /dashboard/services 200 in 240ms (next.js: 152ms, application-code: 87ms)
+ GET /api/catalog/products?per_page=100 200 in 1314ms (next.js: 1021ms, application-code: 293ms)
+ GET /dashboard/souscriptions 200 in 170ms (next.js: 101ms, application-code: 70ms)
+ GET /dashboard/souscriptions 200 in 492ms (next.js: 292ms, application-code: 200ms)
+ GET /dashboard/wallet 200 in 90ms (next.js: 22ms, application-code: 67ms)
+ GET /dashboard/services 200 in 104ms (next.js: 41ms, application-code: 64ms)
+ GET /api/catalog/products?per_page=100 200 in 2.7s (next.js: 2.3s, application-code: 362ms)
+ GET /dashboard/wallet 200 in 195ms (next.js: 119ms, application-code: 76ms)
+ GET /dashboard/services 200 in 86ms (next.js: 33ms, application-code: 54ms)
+ GET /dashboard/services/spotify 200 in 151ms (next.js: 69ms, application-code: 82ms)
+ GET /api/catalog/products/spotify 200 in 1899ms (next.js: 1728ms, application-code: 171ms)
+ GET /dashboard/checkout/spotify?variant=17 200 in 2.9s (next.js: 2.8s, application-code: 128ms)
+ GET /api/catalog/products/duolingo 200 in 130ms (next.js: 56ms, application-code: 74ms)
+ GET /dashboard/checkout/spotify?variant=17 200 in 436ms (next.js: 62ms, application-code: 374ms)
+ GET /dashboard/wallet 200 in 163ms (next.js: 28ms, application-code: 135ms)
+ GET /api/catalog/products/spotify 200 in 206ms (next.js: 97ms, application-code: 109ms)
+○ Compiling /login ...
+ GET /login 200 in 5.1s (next.js: 4.8s, application-code: 330ms)
+[browser] Image with src "/logo-aureusprime.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading (app-pages-browser)
+[browser] [safeFetch] HTTP 401 from /api/v1/me/wallet?per_page=100 
+    at async*WalletPage.useEffect (src/app/dashboard/wallet/page.tsx:32:14)
+  30 |
+  31 |   useEffect(() => {
+> 32 |     safeFetch<{ data?: { wallet?: { available_balance?: number }; transactions?: { data?: ...
+     |              ^
+  33 |       .then((data) => {
+  34 |         const walletData = data?.data?.wallet;
+  35 |         const txData = data?.data?.transactions?.data || []; (src/app/dashboard/wallet/page.tsx:32:14)
+ GET /dashboard 200 in 2.8s (next.js: 2.7s, application-code: 106ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior (app-pages-browser)
+[browser] Image with src "http://localhost:3000/logo-aureusprime.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /api/catalog/products?per_page=12 200 in 2.2s (next.js: 2.0s, application-code: 181ms)
+ GET /dashboard/souscriptions 200 in 230ms (next.js: 133ms, application-code: 97ms)
+○ Compiling /dashboard/services ...
+ GET /dashboard/services 200 in 4.0s (next.js: 3.9s, application-code: 93ms)
+ GET /api/catalog/products?per_page=100 200 in 300ms (next.js: 25ms, application-code: 275ms)
+ GET /dashboard/services/spotify 200 in 1854ms (next.js: 1723ms, application-code: 131ms)
+ GET /api/catalog/products/spotify 200 in 3.0s (next.js: 2.9s, application-code: 139ms)
+ GET /dashboard/checkout/spotify?variant=17 200 in 1493ms (next.js: 1396ms, application-code: 97ms)
+ GET /dashboard/wallet 200 in 143ms (next.js: 73ms, application-code: 70ms)
+ GET /dashboard/souscriptions 200 in 129ms (next.js: 60ms, application-code: 69ms)
+ GET /dashboard/services/spotify 200 in 155ms (next.js: 86ms, application-code: 69ms)
+ GET /dashboard/services 200 in 157ms (next.js: 56ms, application-code: 101ms)
+ GET /dashboard/wallet 200 in 67ms (next.js: 6ms, application-code: 61ms)
+ GET /dashboard/souscriptions 200 in 57ms (next.js: 4ms, application-code: 53ms)
+ GET /dashboard/souscriptions 200 in 525ms (next.js: 14ms, application-code: 511ms)
+ GET /dashboard/souscriptions 200 in 205ms (next.js: 6ms, application-code: 199ms)
+ GET /dashboard/wallet 200 in 143ms (next.js: 4ms, application-code: 139ms)
+ GET /dashboard/souscriptions 200 in 441ms (next.js: 4ms, application-code: 436ms)
+ GET /dashboard/wallet 200 in 397ms (next.js: 5ms, application-code: 393ms)
+ GET /dashboard/wallet 200 in 716ms (next.js: 386ms, application-code: 330ms)
+ GET /dashboard/souscriptions 200 in 158ms (next.js: 33ms, application-code: 125ms)
+ GET /dashboard/souscriptions 200 in 2.1s (next.js: 79ms, application-code: 1978ms)
+ GET /dashboard/wallet 200 in 1397ms (next.js: 33ms, application-code: 1364ms)
+ GET /dashboard/wallet 200 in 429ms (next.js: 22ms, application-code: 407ms)
+ GET /dashboard/souscriptions 200 in 232ms (next.js: 14ms, application-code: 218ms)
+ GET /dashboard/souscriptions 200 in 631ms (next.js: 57ms, application-code: 574ms)
+ GET /dashboard/wallet 200 in 136ms (next.js: 27ms, application-code: 109ms)
+ GET /dashboard/souscriptions 200 in 802ms (next.js: 17ms, application-code: 785ms)
+ GET /dashboard/wallet 200 in 657ms (next.js: 7ms, application-code: 649ms)
+ GET /dashboard/souscriptions 200 in 906ms (next.js: 544ms, application-code: 362ms)
+ GET /dashboard/wallet 200 in 218ms (next.js: 78ms, application-code: 140ms)
+ GET /dashboard/souscriptions 200 in 373ms (next.js: 6ms, application-code: 366ms)
+ GET /dashboard/wallet 200 in 327ms (next.js: 4ms, application-code: 322ms)
+ GET /dashboard/souscriptions 200 in 782ms (next.js: 260ms, application-code: 522ms)
+ GET /dashboard/wallet 200 in 298ms (next.js: 103ms, application-code: 195ms)
+ GET /dashboard/wallet 200 in 619ms (next.js: 295ms, application-code: 324ms)
+ GET /dashboard/souscriptions 200 in 127ms (next.js: 30ms, application-code: 97ms)
+ GET /dashboard/souscriptions 200 in 124ms (next.js: 8ms, application-code: 115ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+○ Compiling /dashboard/souscriptions/[id] ...
+ GET /dashboard/souscriptions/8 200 in 7.9s (next.js: 7.5s, application-code: 387ms)
+ GET /dashboard/souscriptions 200 in 96ms (next.js: 29ms, application-code: 66ms)
+ GET /dashboard/souscriptions/3 200 in 201ms (next.js: 89ms, application-code: 112ms)
+ GET /dashboard/souscriptions 200 in 90ms (next.js: 9ms, application-code: 81ms)
+ GET /dashboard/services 200 in 81ms (next.js: 31ms, application-code: 50ms)
+○ Compiling /api/catalog/products ...
+ GET /api/catalog/products?per_page=100 200 in 6.3s (next.js: 5.9s, application-code: 418ms)
+ GET /dashboard/services/duolingo 200 in 313ms (next.js: 201ms, application-code: 112ms)
+ GET /api/catalog/products/duolingo 200 in 3.3s (next.js: 3.2s, application-code: 149ms)
+ GET /dashboard/services/duolingo 200 in 526ms (next.js: 251ms, application-code: 275ms)
+ GET /dashboard/souscriptions 200 in 144ms (next.js: 29ms, application-code: 115ms)
+ GET /dashboard/checkout/duolingo?variant=39 200 in 151ms (next.js: 66ms, application-code: 85ms)
+ GET /dashboard/souscriptions 200 in 973ms (next.js: 154ms, application-code: 819ms)
+ GET /dashboard/checkout/duolingo?variant=39 200 in 775ms (next.js: 197ms, application-code: 578ms)
+Failed to proxy http://api.aureusprime.local/api/v1/checkout Error: socket hang up
+    at ignore-listed frames {
+  code: 'ECONNRESET'
+}
+Error: socket hang up
+    at ignore-listed frames {
+  code: 'ECONNRESET'
+}
+○ Compiling /_error ...
+ GET /dashboard/souscriptions 200 in 4.5s (next.js: 4.3s, application-code: 247ms)
+ GET /dashboard/checkout/duolingo?variant=39 200 in 4.8s (next.js: 4.5s, application-code: 264ms)
+ GET /dashboard/souscriptions 200 in 95ms (next.js: 9ms, application-code: 85ms)
+ GET /dashboard/checkout/duolingo?variant=39 200 in 87ms (next.js: 7ms, application-code: 80ms)
+ GET /api/catalog/products/duolingo 200 in 2.3s (next.js: 1977ms, application-code: 366ms)
+ GET /dashboard/souscriptions 200 in 499ms (next.js: 154ms, application-code: 345ms)
+ GET /dashboard/checkout/duolingo?variant=39 200 in 198ms (next.js: 85ms, application-code: 113ms)
+ GET /dashboard/souscriptions 200 in 321ms (next.js: 128ms, application-code: 193ms)
+ GET /dashboard/checkout/duolingo?variant=39 200 in 137ms (next.js: 65ms, application-code: 72ms)
+ GET /dashboard/souscriptions 200 in 340ms (next.js: 135ms, application-code: 205ms)
+ GET /dashboard/checkout/duolingo?variant=39 200 in 155ms (next.js: 67ms, application-code: 88ms)
+ GET /dashboard/souscriptions/9 200 in 184ms (next.js: 83ms, application-code: 100ms)
+ GET /dashboard/souscriptions/9 200 in 824ms (next.js: 72ms, application-code: 752ms)
+ GET /dashboard/souscriptions 200 in 247ms (next.js: 13ms, application-code: 235ms)
+ GET /dashboard/souscriptions/9 200 in 358ms (next.js: 64ms, application-code: 295ms)
+ GET /dashboard/souscriptions/9 200 in 716ms (next.js: 497ms, application-code: 219ms)
+ GET /dashboard/souscriptions 200 in 123ms (next.js: 45ms, application-code: 79ms)
+ GET /dashboard/souscriptions 200 in 543ms (next.js: 215ms, application-code: 328ms)
+ GET /dashboard/souscriptions/9 200 in 172ms (next.js: 77ms, application-code: 95ms)
+ GET /dashboard/souscriptions/9 200 in 419ms (next.js: 65ms, application-code: 354ms)
+ GET /dashboard/souscriptions 200 in 367ms (next.js: 5ms, application-code: 362ms)
+ GET /dashboard/souscriptions 200 in 596ms (next.js: 347ms, application-code: 249ms)
+ GET /dashboard/souscriptions/9 200 in 158ms (next.js: 67ms, application-code: 91ms)
+ GET /dashboard/souscriptions 200 in 465ms (next.js: 12ms, application-code: 453ms)
+ GET /dashboard/souscriptions/9 200 in 393ms (next.js: 105ms, application-code: 288ms)
+ GET /dashboard/souscriptions/4 200 in 158ms (next.js: 54ms, application-code: 105ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /dashboard/souscriptions 200 in 197ms (next.js: 18ms, application-code: 178ms)
+ GET /dashboard/souscriptions/9 200 in 141ms (next.js: 66ms, application-code: 75ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /dashboard/souscriptions 200 in 55ms (next.js: 4ms, application-code: 51ms)
+ GET /dashboard/souscriptions 200 in 697ms (next.js: 375ms, application-code: 322ms)
+ GET /dashboard/souscriptions/9 200 in 201ms (next.js: 91ms, application-code: 110ms)
+ GET /dashboard/souscriptions 200 in 362ms (next.js: 144ms, application-code: 218ms)
+ GET /dashboard/souscriptions/9 200 in 168ms (next.js: 68ms, application-code: 100ms)
+ GET /dashboard/souscriptions/4 200 in 132ms (next.js: 59ms, application-code: 73ms)
+ GET /dashboard/services 200 in 70ms (next.js: 23ms, application-code: 46ms)
+○ Compiling /api/catalog/products ...
+ GET /api/catalog/products?per_page=100 200 in 5.1s (next.js: 4.7s, application-code: 400ms)
+ GET /dashboard/services/spotify 200 in 277ms (next.js: 170ms, application-code: 107ms)
+ GET /api/catalog/products/spotify 200 in 2.9s (next.js: 2.7s, application-code: 137ms)
+ GET /dashboard/checkout/spotify?variant=17&subscription=4 200 in 371ms (next.js: 238ms, application-code: 133ms)
+ GET /api/catalog/products/spotify 200 in 353ms (next.js: 100ms, application-code: 253ms)
+ GET /dashboard/checkout/spotify?variant=17&subscription=4 200 in 565ms (next.js: 64ms, application-code: 501ms)
+ GET /dashboard/souscriptions/9 200 in 661ms (next.js: 149ms, application-code: 511ms)
+ GET /api/catalog/products/spotify 200 in 260ms (next.js: 110ms, application-code: 151ms)
+ GET /dashboard/souscriptions/4 200 in 128ms (next.js: 53ms, application-code: 75ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /dashboard/services/spotify 200 in 202ms (next.js: 86ms, application-code: 116ms)
+ GET /dashboard/services 200 in 61ms (next.js: 23ms, application-code: 38ms)
+ GET /api/catalog/products?per_page=100 200 in 281ms (next.js: 16ms, application-code: 265ms)
+ GET /dashboard/souscriptions 200 in 63ms (next.js: 25ms, application-code: 38ms)
+ GET /dashboard/wallet 200 in 3.4s (next.js: 3.3s, application-code: 85ms)
+ GET /dashboard 200 in 2.5s (next.js: 2.4s, application-code: 96ms)
+ GET /dashboard 200 in 45ms (next.js: 8ms, application-code: 37ms)
+ GET /api/catalog/products?per_page=12 200 in 474ms (next.js: 35ms, application-code: 439ms)
+[browser] Image with src "http://localhost:3000/logo-aureusprime.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio. (app-pages-browser)
+ GET /dashboard/services 200 in 165ms (next.js: 63ms, application-code: 102ms)
+ GET /api/catalog/products?per_page=100 200 in 311ms (next.js: 4ms, application-code: 307ms)
+ GET /dashboard/services/robux-100 200 in 136ms (next.js: 72ms, application-code: 64ms)
+ GET /api/catalog/products/robux-100 200 in 1645ms (next.js: 1546ms, application-code: 99ms)
+ GET /dashboard/souscriptions/9 200 in 642ms (next.js: 275ms, application-code: 367ms)
+ GET /dashboard/services/robux-100 200 in 203ms (next.js: 71ms, application-code: 132ms)
+ GET /dashboard/services/robux-100 200 in 661ms (next.js: 354ms, application-code: 308ms)
+ GET /dashboard/souscriptions/9 200 in 191ms (next.js: 87ms, application-code: 104ms)
+ GET /dashboard/services/robux-100 200 in 328ms (next.js: 52ms, application-code: 276ms)
+ GET /dashboard/souscriptions/9 200 in 227ms (next.js: 64ms, application-code: 163ms)
+ GET /dashboard/services/robux-100 200 in 372ms (next.js: 55ms, application-code: 317ms)
+ GET /dashboard/souscriptions/9 200 in 240ms (next.js: 58ms, application-code: 182ms)
+ GET /dashboard/souscriptions/9 200 in 686ms (next.js: 145ms, application-code: 541ms)
+ GET /dashboard/services/robux-100 200 in 264ms (next.js: 139ms, application-code: 125ms)
+ GET /dashboard/souscriptions/9 200 in 272ms (next.js: 48ms, application-code: 223ms)
+ GET /dashboard/services/robux-100 200 in 151ms (next.js: 51ms, application-code: 99ms)
+ GET /dashboard/services/robux-100 200 in 298ms (next.js: 45ms, application-code: 254ms)
+ GET /dashboard/souscriptions/9 200 in 200ms (next.js: 89ms, application-code: 112ms)
+ GET /dashboard/services/robux-100 200 in 253ms (next.js: 53ms, application-code: 199ms)
+ GET /dashboard/souscriptions/9 200 in 157ms (next.js: 67ms, application-code: 89ms)
+ GET /dashboard/souscriptions/9 200 in 266ms (next.js: 59ms, application-code: 207ms)
+ GET /dashboard/services/robux-100 200 in 156ms (next.js: 71ms, application-code: 85ms)
+ GET /dashboard/services/robux-100 200 in 739ms (next.js: 338ms, application-code: 402ms)
+ GET /dashboard/souscriptions/9 200 in 235ms (next.js: 86ms, application-code: 149ms)
+ GET /dashboard/services/robux-100 200 in 314ms (next.js: 53ms, application-code: 261ms)
+ GET /dashboard/souscriptions/9 200 in 200ms (next.js: 78ms, application-code: 122ms)
+ GET /dashboard/services/robux-100 200 in 642ms (next.js: 67ms, application-code: 574ms)
+ GET /dashboard/souscriptions/9 200 in 387ms (next.js: 77ms, application-code: 310ms)
+ GET /api/catalog/products/robux-100 200 in 3.3s (next.js: 3.1s, application-code: 162ms)
+○ Compiling /dashboard/checkout/[id] ...
+ GET /dashboard/checkout/robux-100?variant=21 200 in 4.3s (next.js: 4.2s, application-code: 151ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /dashboard/souscriptions 200 in 2.1s (next.js: 2.0s, application-code: 89ms)
+ GET /dashboard/souscriptions 200 in 367ms (next.js: 8ms, application-code: 359ms)
+ GET /dashboard/wallet 200 in 1002ms (next.js: 71ms, application-code: 931ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /dashboard/compte 200 in 3.1s (next.js: 2.9s, application-code: 125ms)
+ GET /dashboard/compte 200 in 586ms (next.js: 314ms, application-code: 272ms)
+ GET /dashboard/souscriptions/9 200 in 177ms (next.js: 76ms, application-code: 100ms)
+ GET /dashboard/souscriptions/9 200 in 270ms (next.js: 62ms, application-code: 208ms)
+ GET /dashboard/compte 200 in 150ms (next.js: 4ms, application-code: 146ms)
+ GET /dashboard/compte 200 in 242ms (next.js: 9ms, application-code: 233ms)
+ GET /dashboard/souscriptions/9 200 in 207ms (next.js: 53ms, application-code: 154ms)
+ GET /dashboard/souscriptions 200 in 88ms (next.js: 28ms, application-code: 60ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /verification-email?status=verified 200 in 3.2s (next.js: 2.8s, application-code: 343ms)
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HTTPAccessFallbackBoundary notFound={undefined} forbidden={undefined} unauthorized={undefined}>
+      <RedirectBoundary>
+        <RedirectErrorBoundary router={{...}}>
+          <InnerLayoutRouter url="/verificat..." tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} ...>
+            <SegmentViewNode type="page" pagePath="verificati...">
+              <SegmentTrieNode>
+              <ClientPageRoot Component={function VerificationEmailPage} serverProvidedParams={{...}}>
+                <VerificationEmailPage params={Promise} searchParams={Promise}>
+                  <main className="premium-pa...">
+                    <div className="w-full max...">
+                      <div className="premium-ca...">
+                        <div>
+                        <div>
+                        <h1>
+                        <p>
+                        <div>
+                        <div className="mt-6 flex ...">
+                          <LinkComponent href="/dashboard" className="inline-fle...">
+                            <a
+                              className="inline-flex w-full items-center justify-center rounded-2xl bg-primary-500 px-..."
+                              ref={function}
+                              onClick={function onClick}
+                              onMouseEnter={function onMouseEnter}
+                              onTouchStart={function onTouchStart}
++                             href="/dashboard"
+-                             href="/login?verified=1"
+                            >
++                             Aller au dashboard
+                          ...
+            ...
+          ...
+ 
+ GET /dashboard/souscriptions 200 in 398ms (next.js: 27ms, application-code: 372ms)
+ GET /dashboard/compte 200 in 589ms (next.js: 74ms, application-code: 514ms)
+ GET /dashboard 200 in 136ms (next.js: 32ms, application-code: 105ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+[browser] Image with src "http://localhost:3000/logo-aureusprime.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /api/catalog/products?per_page=12 200 in 3.6s (next.js: 3.4s, application-code: 284ms)
+ GET /dashboard 200 in 665ms (next.js: 356ms, application-code: 309ms)
+ GET /dashboard/souscriptions 200 in 179ms (next.js: 29ms, application-code: 150ms)
+ GET /dashboard/compte 200 in 107ms (next.js: 29ms, application-code: 78ms)
+ GET /dashboard 200 in 523ms (next.js: 281ms, application-code: 242ms)
+ GET /dashboard/compte 200 in 156ms (next.js: 22ms, application-code: 134ms)
+ GET /dashboard/souscriptions 200 in 91ms (next.js: 25ms, application-code: 66ms)
+ HEAD / 200 in 3.2s (next.js: 3.0s, application-code: 261ms)
+ GET / 200 in 82ms (next.js: 3ms, application-code: 79ms)
+ HEAD / 200 in 83ms (next.js: 3ms, application-code: 80ms)
+ GET / 200 in 89ms (next.js: 7ms, application-code: 82ms)
+ GET /dashboard 200 in 1495ms (next.js: 27ms, application-code: 1468ms)
+ GET /dashboard/souscriptions 200 in 1380ms (next.js: 26ms, application-code: 1354ms)
+○ Compiling /login ...
+ GET /login 200 in 5.9s (next.js: 5.5s, application-code: 373ms)
+ GET /dashboard/compte 200 in 5.9s (next.js: 5.5s, application-code: 399ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+○ Compiling /_not-found ...
+ GET /icons/icon-192.png 404 in 3.7s (next.js: 3.4s, application-code: 259ms)
+ GET /icons/icon-512.png 404 in 90ms (next.js: 4ms, application-code: 87ms)
+ GET /login 200 in 1177ms (next.js: 26ms, application-code: 1151ms)
+○ Compiling /api/catalog/products ...
+ GET /api/catalog/products?per_page=12 200 in 3.5s (next.js: 3.3s, application-code: 201ms)
+[browser] Image with src "/logo-aureusprime.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "http://localhost:3000/logo-aureusprime.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /dashboard 200 in 190ms (next.js: 113ms, application-code: 77ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+[browser] Image with src "http://192.168.8.101:3000/logo-aureusprime.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /api/catalog/products?per_page=12 200 in 97ms (next.js: 4ms, application-code: 93ms)
+ GET /dashboard/compte 200 in 71ms (next.js: 34ms, application-code: 37ms)
+ GET /dashboard/compte 200 in 265ms (next.js: 4ms, application-code: 261ms)
+○ Compiling /dashboard/wallet ...
+ GET /dashboard/wallet 200 in 4.5s (next.js: 4.4s, application-code: 93ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /dashboard/compte 200 in 64ms (next.js: 22ms, application-code: 41ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/compte. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard 200 in 777ms (next.js: 327ms, application-code: 450ms)
+ GET /dashboard/souscriptions 200 in 292ms (next.js: 40ms, application-code: 251ms)
+ GET /dashboard/compte 200 in 183ms (next.js: 51ms, application-code: 132ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/compte. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard 200 in 453ms (next.js: 188ms, application-code: 265ms)
+ GET /dashboard/compte 200 in 188ms (next.js: 25ms, application-code: 163ms)
+ GET /dashboard/souscriptions 200 in 114ms (next.js: 24ms, application-code: 90ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/compte. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard 200 in 179ms (next.js: 4ms, application-code: 175ms)
+ GET /dashboard/compte 200 in 127ms (next.js: 4ms, application-code: 122ms)
+ GET /dashboard/souscriptions 200 in 77ms (next.js: 4ms, application-code: 73ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/compte. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/compte 200 in 273ms (next.js: 3ms, application-code: 271ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/compte. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/compte 200 in 274ms (next.js: 3ms, application-code: 271ms)
+ GET /dashboard/souscriptions 200 in 220ms (next.js: 3ms, application-code: 217ms)
+ GET /dashboard 200 in 406ms (next.js: 4ms, application-code: 402ms)
+ GET /api/catalog/products?per_page=12 200 in 1369ms (next.js: 1160ms, application-code: 209ms)
+[browser] Image with src "http://localhost:3000/logo-aureusprime.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/compte. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/compte 200 in 427ms (next.js: 158ms, application-code: 269ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/wallet. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/wallet 200 in 63ms (next.js: 21ms, application-code: 41ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/souscriptions 200 in 59ms (next.js: 22ms, application-code: 37ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/services. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/compte. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/services 200 in 2.9s (next.js: 2.6s, application-code: 300ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/services. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard 200 in 310ms (next.js: 22ms, application-code: 288ms)
+ GET /dashboard/compte 200 in 221ms (next.js: 22ms, application-code: 199ms)
+ GET /dashboard/souscriptions 200 in 290ms (next.js: 23ms, application-code: 267ms)
+ GET /dashboard/services 200 in 172ms (next.js: 4ms, application-code: 168ms)
+ GET /api/catalog/products?per_page=100 200 in 1182ms (next.js: 933ms, application-code: 249ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard 200 in 254ms (next.js: 111ms, application-code: 143ms)
+[browser] Image with src "http://192.168.8.101:3000/logo-aureusprime.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /api/catalog/products?per_page=12 200 in 141ms (next.js: 13ms, application-code: 128ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/parrainage. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/parrainage 200 in 1983ms (next.js: 1914ms, application-code: 69ms)
+[browser] Failed to copy referral value: TypeError: Cannot read properties of undefined (reading 'writeText')
+    at copyValue (src/app/dashboard/parrainage/page.tsx:156:33)
+    at onClick (src/app/dashboard/parrainage/page.tsx:228:38)
+    at button (<anonymous>)
+    at ReferralPage (src/app/dashboard/parrainage/page.tsx:226:21)
+  154 |
+  155 |     try {
+> 156 |       await navigator.clipboard.writeText(value);
+      |                                 ^
+  157 |       setCopyFeedback(successMessage);
+  158 |       window.setTimeout(() => setCopyFeedback(""), 2500);
+  159 |     } catch (copyError) { (src/app/dashboard/parrainage/page.tsx:160:15)
+[browser] Failed to copy referral value: TypeError: Cannot read properties of undefined (reading 'writeText')
+    at copyValue (src/app/dashboard/parrainage/page.tsx:156:33)
+    at onClick (src/app/dashboard/parrainage/page.tsx:228:38)
+    at button (<anonymous>)
+    at ReferralPage (src/app/dashboard/parrainage/page.tsx:226:21)
+  154 |
+  155 |     try {
+> 156 |       await navigator.clipboard.writeText(value);
+      |                                 ^
+  157 |       setCopyFeedback(successMessage);
+  158 |       window.setTimeout(() => setCopyFeedback(""), 2500);
+  159 |     } catch (copyError) { (src/app/dashboard/parrainage/page.tsx:160:15)
+[browser] Failed to copy referral value: TypeError: Cannot read properties of undefined (reading 'writeText')
+    at copyValue (src/app/dashboard/parrainage/page.tsx:156:33)
+    at onClick (src/app/dashboard/parrainage/page.tsx:349:34)
+    at button (<anonymous>)
+    at ReferralPage (src/app/dashboard/parrainage/page.tsx:347:17)
+  154 |
+  155 |     try {
+> 156 |       await navigator.clipboard.writeText(value);
+      |                                 ^
+  157 |       setCopyFeedback(successMessage);
+  158 |       window.setTimeout(() => setCopyFeedback(""), 2500);
+  159 |     } catch (copyError) { (src/app/dashboard/parrainage/page.tsx:160:15)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/parrainage. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/parrainage 200 in 362ms (next.js: 3ms, application-code: 359ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/compte. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard 200 in 442ms (next.js: 17ms, application-code: 425ms)
+ GET /dashboard/souscriptions 200 in 344ms (next.js: 20ms, application-code: 324ms)
+ GET /dashboard/compte 200 in 257ms (next.js: 18ms, application-code: 239ms)
+ GET /api/catalog/products?per_page=12 200 in 175ms (next.js: 10ms, application-code: 165ms)
+[browser] Image with src "http://localhost:3000/logo-aureusprime.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard 200 in 64ms (next.js: 17ms, application-code: 47ms)
+[browser] Image with src "http://192.168.8.101:3000/logo-aureusprime.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /api/catalog/products?per_page=12 200 in 140ms (next.js: 6ms, application-code: 134ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/recharge. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/recharge 200 in 2.6s (next.js: 2.5s, application-code: 71ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/recharge. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/compte. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/recharge 200 in 686ms (next.js: 13ms, application-code: 673ms)
+ GET /dashboard 200 in 456ms (next.js: 28ms, application-code: 428ms)
+ GET /dashboard/compte 200 in 597ms (next.js: 41ms, application-code: 557ms)
+ GET /dashboard/souscriptions 200 in 444ms (next.js: 26ms, application-code: 418ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/compte. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/recharge. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard 200 in 3.0s (next.js: 5ms, application-code: 3.0s)
+ GET /dashboard/souscriptions 200 in 3.2s (next.js: 7ms, application-code: 3.2s)
+ GET /dashboard/compte 200 in 2.8s (next.js: 19ms, application-code: 2.8s)
+ GET /dashboard/recharge 200 in 2.3s (next.js: 4ms, application-code: 2.3s)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/compte. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/recharge. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard 200 in 236ms (next.js: 5ms, application-code: 231ms)
+ GET /dashboard/compte 200 in 365ms (next.js: 14ms, application-code: 351ms)
+ GET /dashboard/souscriptions 200 in 293ms (next.js: 4ms, application-code: 289ms)
+ GET /dashboard/recharge 200 in 250ms (next.js: 4ms, application-code: 247ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/recharge. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/compte. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard 200 in 324ms (next.js: 24ms, application-code: 300ms)
+ GET /dashboard/souscriptions 200 in 1049ms (next.js: 408ms, application-code: 641ms)
+ GET /dashboard/recharge 200 in 579ms (next.js: 29ms, application-code: 550ms)
+ GET /dashboard/compte 200 in 445ms (next.js: 25ms, application-code: 420ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/compte. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/recharge. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard 200 in 643ms (next.js: 229ms, application-code: 414ms)
+ GET /dashboard/recharge 200 in 130ms (next.js: 26ms, application-code: 105ms)
+ GET /dashboard/compte 200 in 314ms (next.js: 32ms, application-code: 282ms)
+ GET /dashboard/souscriptions 200 in 231ms (next.js: 32ms, application-code: 198ms)
+[browser] Uncaught Error: Element type is invalid. Received a promise that resolves to: undefined. Lazy element type must resolve to a class or function.
+    at RootLayout (src/app/layout.tsx:98:9)
+   96 |           {themeInitScript}
+   97 |         </Script>
+>  98 |         <FullscreenManager />
+      |         ^
+   99 |         <DevServiceWorkerReset />
+  100 |         {children}
+  101 |       </body>
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/recharge. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard 200 in 116ms (next.js: 3ms, application-code: 112ms)
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET /dashboard/recharge 200 in 722ms (next.js: 4ms, application-code: 718ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/compte. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/recharge. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/recharge. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/souscriptions 200 in 2.4s (next.js: 1713ms, application-code: 720ms)
+ GET /dashboard 200 in 1642ms (next.js: 910ms, application-code: 732ms)
+ GET /dashboard/recharge 200 in 1857ms (next.js: 1128ms, application-code: 729ms)
+ GET /dashboard/compte 200 in 2.4s (next.js: 1698ms, application-code: 734ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/souscriptions 200 in 230ms (next.js: 4ms, application-code: 226ms)
+○ Compiling /api/catalog/products ...
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/recharge. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /api/catalog/products?per_page=12 200 in 3.7s (next.js: 3.3s, application-code: 455ms)
+ GET /dashboard/recharge 200 in 672ms (next.js: 137ms, application-code: 535ms)
+[browser] Image with src "http://localhost:3000/logo-aureusprime.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/services. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/compte. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/recharge. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/services 200 in 2.9s (next.js: 2.3s, application-code: 534ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/services. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/souscriptions 200 in 92ms (next.js: 7ms, application-code: 85ms)
+ GET /dashboard/compte 200 in 606ms (next.js: 41ms, application-code: 565ms)
+ GET /dashboard/souscriptions 200 in 484ms (next.js: 56ms, application-code: 428ms)
+ GET /dashboard/recharge 200 in 333ms (next.js: 17ms, application-code: 316ms)
+ GET /dashboard/services 200 in 261ms (next.js: 7ms, application-code: 254ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/compte. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/recharge. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/recharge 200 in 3.6s (next.js: 2.3s, application-code: 1222ms)
+ GET /dashboard/souscriptions 200 in 3.6s (next.js: 2.4s, application-code: 1219ms)
+ GET /dashboard/compte 200 in 3.6s (next.js: 2.3s, application-code: 1247ms)
+ GET /dashboard/souscriptions 200 in 845ms (next.js: 25ms, application-code: 821ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/recharge. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/recharge 200 in 447ms (next.js: 300ms, application-code: 147ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/recharge. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/recharge 200 in 676ms (next.js: 10ms, application-code: 666ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/recharge. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/compte. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/recharge 200 in 426ms (next.js: 138ms, application-code: 288ms)
+ GET /dashboard/souscriptions 200 in 221ms (next.js: 25ms, application-code: 196ms)
+ GET /dashboard/compte 200 in 150ms (next.js: 29ms, application-code: 121ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/souscriptions 200 in 145ms (next.js: 6ms, application-code: 139ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/recharge. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/recharge 200 in 172ms (next.js: 3ms, application-code: 169ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/compte. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/souscriptions 200 in 300ms (next.js: 3ms, application-code: 296ms)
+ GET /dashboard/compte 200 in 227ms (next.js: 3ms, application-code: 224ms)
+ GET /dashboard/souscriptions 200 in 161ms (next.js: 3ms, application-code: 157ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard 200 in 71ms (next.js: 29ms, application-code: 42ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+[browser] Image with src "http://192.168.8.101:3000/logo-aureusprime.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+○ Compiling /api/catalog/products ...
+ GET /api/catalog/products?per_page=12 200 in 3.7s (next.js: 3.5s, application-code: 176ms)
+○ Compiling /dashboard/wallet ...
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/wallet. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/compte. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/wallet 200 in 3.6s (next.js: 3.3s, application-code: 277ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/wallet. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/compte 200 in 251ms (next.js: 34ms, application-code: 217ms)
+ GET /dashboard/souscriptions 200 in 171ms (next.js: 28ms, application-code: 142ms)
+ GET /dashboard/wallet 200 in 99ms (next.js: 4ms, application-code: 95ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/souscriptions 200 in 68ms (next.js: 4ms, application-code: 64ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/compte. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/compte 200 in 60ms (next.js: 7ms, application-code: 53ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/souscriptions 200 in 40ms (next.js: 3ms, application-code: 37ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/services. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/services 200 in 948ms (next.js: 877ms, application-code: 71ms)
+ GET /api/catalog/products?per_page=100 200 in 217ms (next.js: 9ms, application-code: 207ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/souscriptions 200 in 59ms (next.js: 22ms, application-code: 37ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions/[id]. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/compte. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/souscriptions/9 200 in 2.7s (next.js: 2.5s, application-code: 252ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions/[id]. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/souscriptions 200 in 270ms (next.js: 26ms, application-code: 244ms)
+ GET /dashboard/compte 200 in 205ms (next.js: 24ms, application-code: 181ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/souscriptions/9 200 in 211ms (next.js: 4ms, application-code: 207ms)
+ GET /dashboard/souscriptions 200 in 108ms (next.js: 6ms, application-code: 102ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/souscriptions 200 in 87ms (next.js: 10ms, application-code: 77ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions/[id]. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/souscriptions/1 200 in 116ms (next.js: 55ms, application-code: 62ms)
+○ Compiling /dashboard/services/[id] ...
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/services/[id]. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/compte. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/services/snapchat 200 in 4.7s (next.js: 4.4s, application-code: 306ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/services/[id]. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/souscriptions 200 in 296ms (next.js: 28ms, application-code: 269ms)
+ GET /dashboard/compte 200 in 226ms (next.js: 25ms, application-code: 200ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/services/snapchat 200 in 263ms (next.js: 12ms, application-code: 252ms)
+ GET /dashboard/souscriptions 200 in 149ms (next.js: 4ms, application-code: 145ms)
+ GET /api/catalog/products/snapchat 200 in 3.2s (next.js: 3.0s, application-code: 254ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/souscriptions 200 in 200ms (next.js: 124ms, application-code: 76ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/services. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/services 200 in 1018ms (next.js: 953ms, application-code: 65ms)
+ GET /api/catalog/products?per_page=100 200 in 864ms (next.js: 686ms, application-code: 178ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/souscriptions 200 in 149ms (next.js: 88ms, application-code: 61ms)
+○ Compiling /dashboard/wallet ...
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/wallet. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/wallet 200 in 4.2s (next.js: 4.2s, application-code: 79ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/compte. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/compte 200 in 68ms (next.js: 29ms, application-code: 39ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/wallet. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/wallet 200 in 91ms (next.js: 8ms, application-code: 83ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/souscriptions 200 in 131ms (next.js: 80ms, application-code: 51ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/services. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/services 200 in 2.9s (next.js: 2.8s, application-code: 83ms)
+ GET /api/catalog/products?per_page=100 200 in 1963ms (next.js: 1663ms, application-code: 300ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/services/[id]. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/services/crunchyroll 200 in 1553ms (next.js: 1411ms, application-code: 142ms)
+○ Compiling /api/catalog/products/[slug] ...
+ GET /api/catalog/products/crunchyroll 200 in 5.0s (next.js: 4.9s, application-code: 112ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/services. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/services 200 in 202ms (next.js: 114ms, application-code: 89ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/services. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/services 200 in 82ms (next.js: 10ms, application-code: 72ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /api/catalog/products?per_page=100 200 in 394ms (next.js: 18ms, application-code: 375ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/souscriptions 200 in 160ms (next.js: 56ms, application-code: 104ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/souscriptions 200 in 105ms (next.js: 7ms, application-code: 98ms)
+○ Compiling /dashboard/souscriptions/[id] ...
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/souscriptions/[id]. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/souscriptions/9 200 in 6.6s (next.js: 6.5s, application-code: 121ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/wallet. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/wallet 200 in 1759ms (next.js: 1632ms, application-code: 127ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/recharge. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/recharge 200 in 86ms (next.js: 35ms, application-code: 51ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard 200 in 2.9s (next.js: 2.8s, application-code: 126ms)
+ GET /api/catalog/products?per_page=12 200 in 1419ms (next.js: 1202ms, application-code: 217ms)
+○ Compiling /dashboard/services/[id] ...
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/services/[id]. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/services/[id]. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/services/netflix 200 in 4.4s (next.js: 4.2s, application-code: 265ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/services/[id]. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/services/netflix 200 in 127ms (next.js: 4ms, application-code: 123ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/services/[id]. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/services/netflix 200 in 128ms (next.js: 4ms, application-code: 124ms)
+ GET /dashboard/services/netflix 200 in 66ms (next.js: 5ms, application-code: 62ms)
+○ Compiling /api/catalog/products/[slug] ...
+ GET /api/catalog/products/netflix 200 in 3.4s (next.js: 3.2s, application-code: 197ms)
+○ Compiling /dashboard/services ...
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/services. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/services. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/services 200 in 6.3s (next.js: 6.2s, application-code: 154ms)
+ GET /dashboard/services 200 in 53ms (next.js: 4ms, application-code: 49ms)
+ GET /api/catalog/products?per_page=100 200 in 1426ms (next.js: 1182ms, application-code: 244ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/services/[id]. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/services/netflix 200 in 1442ms (next.js: 1347ms, application-code: 96ms)
+ GET /api/catalog/products/netflix 200 in 2.6s (next.js: 2.5s, application-code: 159ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/services. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/services 200 in 301ms (next.js: 136ms, application-code: 165ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/services/[id]. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/services/netflix 200 in 210ms (next.js: 130ms, application-code: 80ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/services. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/services 200 in 45ms (next.js: 4ms, application-code: 41ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/services/[id]. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/services/netflix 200 in 158ms (next.js: 83ms, application-code: 74ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/services/[id]. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/services/netflix 200 in 75ms (next.js: 8ms, application-code: 67ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/services. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/services 200 in 62ms (next.js: 3ms, application-code: 59ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/services/[id]. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/services/canva 200 in 118ms (next.js: 57ms, application-code: 61ms)
+ GET /api/catalog/products/canva 200 in 161ms (next.js: 58ms, application-code: 103ms)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/services. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/services 200 in 109ms (next.js: 6ms, application-code: 103ms)
+ GET /api/catalog/products?per_page=100 200 in 248ms (next.js: 6ms, application-code: 242ms)
+[browser] Failed to fetch RSC payload for http://localhost:3000/dashboard/services/duolingo. Falling back to browser navigation. TypeError: NetworkError when attempting to fetch resource. (app-pages-browser)
+⚠ Unsupported metadata viewport is configured in metadata export in /dashboard/services/[id]. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /dashboard/services/duolingo 200 in 713ms (next.js: 72ms, application-code: 641ms)
+ GET /api/catalog/products/duolingo 200 in 277ms (next.js: 108ms, application-code: 169ms)

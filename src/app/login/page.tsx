@@ -33,6 +33,10 @@ function LoginContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const isEmailVerifiedNoticeVisible = searchParams.get("verified") === "1";
+  const legalNotice =
+    locale === "fr"
+      ? "En vous connectant, vous acceptez automatiquement les documents légaux en vigueur :"
+      : "By signing in, you automatically accept the current legal documents:";
 
   useEffect(() => {
     if (getStoredAuthToken()) {
@@ -175,6 +179,22 @@ function LoginContent() {
             </div>
 
             <RecaptchaField ref={recaptchaRef} onTokenChange={setRecaptchaToken} />
+
+            <p className="rounded-2xl border border-[var(--premium-card-border)] bg-[var(--premium-card-deep)] px-4 py-3 text-xs leading-relaxed text-[var(--premium-text-muted)]">
+              {legalNotice}{" "}
+              <Link href="/conditions-utilisation" className="font-bold text-primary-500 hover:underline">
+                CGU
+              </Link>
+              {", "}
+              <Link href="/conditions-generales" className="font-bold text-primary-500 hover:underline">
+                CGV
+              </Link>
+              {locale === "fr" ? " et " : " and "}
+              <Link href="/confidentialite" className="font-bold text-primary-500 hover:underline">
+                {locale === "fr" ? "Politique de confidentialité" : "Privacy policy"}
+              </Link>
+              .
+            </p>
 
             {/* Submit Button */}
             <button

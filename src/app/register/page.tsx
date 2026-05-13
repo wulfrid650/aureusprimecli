@@ -40,6 +40,10 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
   const [hasReferralLink, setHasReferralLink] = useState(false);
+  const legalNotice =
+    locale === "fr"
+      ? "En créant un compte, vous acceptez automatiquement les documents légaux en vigueur :"
+      : "By creating an account, you automatically accept the current legal documents:";
 
   useEffect(() => {
     if (getStoredAuthToken()) {
@@ -268,13 +272,21 @@ export default function RegisterPage() {
 
             <RecaptchaField ref={recaptchaRef} onTokenChange={setRecaptchaToken} />
 
-            {/* Terms */}
-            <div className="flex items-start gap-2 py-1">
-              <input id="terms" type="checkbox" required className="mt-1 h-4 w-4 rounded border-[var(--premium-card-border)] bg-[var(--premium-card-deep)] text-primary-500 accent-primary-500 focus:ring-primary-500/50" />
-              <label htmlFor="terms" className="select-none text-xs text-[var(--premium-text-muted)] cursor-pointer leading-relaxed">
-                {t("auth.terms")}
-              </label>
-            </div>
+            <p className="rounded-2xl border border-[var(--premium-card-border)] bg-[var(--premium-card-deep)] px-4 py-3 text-xs leading-relaxed text-[var(--premium-text-muted)]">
+              {legalNotice}{" "}
+              <Link href="/conditions-utilisation" className="font-bold text-primary-500 hover:underline">
+                CGU
+              </Link>
+              {", "}
+              <Link href="/conditions-generales" className="font-bold text-primary-500 hover:underline">
+                CGV
+              </Link>
+              {locale === "fr" ? " et " : " and "}
+              <Link href="/confidentialite" className="font-bold text-primary-500 hover:underline">
+                {locale === "fr" ? "Politique de confidentialité" : "Privacy policy"}
+              </Link>
+              .
+            </p>
 
             {/* Submit */}
             <button type="submit" disabled={isLoading}
