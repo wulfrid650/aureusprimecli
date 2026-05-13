@@ -82,7 +82,7 @@ const dictionaries = {
       referralDetected: "Lien de parrainage détecté",
       referralHint:
         "Optionnel. Il est rempli automatiquement si vous venez d'un lien de parrainage.",
-      passwordHint: "Minuscules, majuscules, chiffres et symboles requis",
+      passwordHint: "8 caractères minimum, avec une minuscule, une majuscule, un chiffre et un symbole.",
       confirmPassword: "Confirmer le mot de passe",
       terms:
         "J'accepte les conditions générales et la politique de confidentialité de la plateforme.",
@@ -577,7 +577,7 @@ const dictionaries = {
       referralCode: "Referral code",
       referralDetected: "Referral link detected",
       referralHint: "Optional. It is filled automatically when you come from a referral link.",
-      passwordHint: "Lowercase, uppercase, numbers and symbols required",
+      passwordHint: "At least 8 characters, with lowercase, uppercase, a number and a symbol.",
       confirmPassword: "Confirm password",
       terms: "I accept the platform terms and privacy policy.",
       registerSubmit: "Create my account",

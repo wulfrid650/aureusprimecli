@@ -123,14 +123,14 @@ function ResetPasswordForm() {
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-[var(--premium-text-soft)]">
                       <span className="material-symbols-outlined text-lg">lock</span>
                     </div>
-                    <input id="password" type={showPassword ? "text" : "password"} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder="••••••••"
+                    <input id="password" type={showPassword ? "text" : "password"} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder="••••••••" aria-describedby="reset-password-help"
                       className="w-full rounded-xl border border-[var(--premium-card-border)] bg-[var(--premium-card-deep)] py-3 pl-11 pr-11 text-sm text-[var(--premium-text)] placeholder:text-[var(--premium-text-soft)] outline-none transition-all focus:border-primary-500 focus:ring-1 focus:ring-primary-500/50"
                       required />
                     <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 flex items-center pr-4 text-[var(--premium-text-soft)] hover:text-primary-500">
                       <span className="material-symbols-outlined text-lg">{showPassword ? "visibility_off" : "visibility"}</span>
                     </button>
                   </div>
-                  <p className="text-xs text-[var(--premium-text-soft)]">{t("auth.passwordHint")}</p>
+                  <p id="reset-password-help" className="text-xs leading-relaxed text-[var(--premium-text-soft)]">{t("auth.passwordHint")}</p>
                 </div>
 
                 {/* Confirm Password */}
