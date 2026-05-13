@@ -27,6 +27,7 @@ export const RecaptchaField = forwardRef<RecaptchaFieldHandle, { onTokenChange: 
     const containerRef = useRef<HTMLDivElement | null>(null);
     const widgetIdRef = useRef<number | null>(null);
     const [loadError, setLoadError] = useState(false);
+    const [loadErrorMessage, setLoadErrorMessage] = useState<string | null>(null);
 
     useImperativeHandle(ref, () => ({
       reset() {
@@ -70,18 +71,70 @@ export const RecaptchaField = forwardRef<RecaptchaFieldHandle, { onTokenChange: 
       loadScript()
         .then(() => {
           if (!mounted || !containerRef.current || !window.grecaptcha) return;
-          try {
-            widgetIdRef.current = window.grecaptcha.render(containerRef.current, {
-              sitekey: SITE_KEY,
-              callback: (token: string) => onTokenChange(token),
-              "expired-callback": () => onTokenChange(""),
-              "error-callback": () => onTokenChange(""),
-            });
-          } catch (e) {
-            setLoadError(true);
-          }
+          const tryRender = () => {
+            try {
+              const grecaptcha = (window as any).grecaptcha;
+              const renderOptions = {
+                sitekey: SITE_KEY,
+                callback: (token: string) => onTokenChange(token),
+                "expired-callback": () => onTokenChange(""),
+                "error-callback": () => onTokenChange(""),
+              };
+
+              if (grecaptcha && typeof grecaptcha.render === "function") {
+                widgetIdRef.current = grecaptcha.render(containerRef.current, renderOptions);
+                return;
+              }
+
+              // If grecaptcha.ready exists but render is not a function, it may be a v3 key
+              if (grecaptcha && typeof grecaptcha.ready === "function") {
+                if (typeof grecaptcha.render !== "function" && typeof grecaptcha.execute === "function") {
+                  const msg = "La clé reCAPTCHA semble être pour reCAPTCHA v3 (grecaptcha.execute présent) — le composant attend une clé v2 (case à cocher). Vérifiez NEXT_PUBLIC_RECAPTCHA_SITE_KEY en production.";
+                  console.error(msg);
+                  setLoadErrorMessage(msg);
+                  setLoadError(true);
+                  return;
+                }
+                grecaptcha.ready(() => {
+                  try {
+                    if (typeof grecaptcha.render === "function") {
+                      widgetIdRef.current = grecaptcha.render(containerRef.current, renderOptions);
+                      return;
+                    }
+                    // enterprise fallback
+                    if (grecaptcha.enterprise && typeof grecaptcha.enterprise.render === "function") {
+                      widgetIdRef.current = grecaptcha.enterprise.render(containerRef.current, renderOptions);
+                      return;
+                    }
+                    throw new Error("grecaptcha.render not available after ready()");
+                  } catch (e: any) {
+                    console.error("reCAPTCHA render error inside ready:", e);
+                    setLoadErrorMessage(e?.message || String(e));
+                    setLoadError(true);
+                  }
+                });
+                return;
+              }
+
+              // enterprise direct fallback
+              if (grecaptcha && grecaptcha.enterprise && typeof grecaptcha.enterprise.render === "function") {
+                widgetIdRef.current = grecaptcha.enterprise.render(containerRef.current, renderOptions);
+                return;
+              }
+
+              throw new Error("grecaptcha.render is not a function");
+            } catch (e: any) {
+              console.error("reCAPTCHA render error:", e);
+              setLoadErrorMessage(e?.message || String(e));
+              setLoadError(true);
+            }
+          };
+
+          tryRender();
         })
-        .catch(() => {
+        .catch((err) => {
+          console.error("reCAPTCHA script load failed:", err);
+          setLoadErrorMessage(err?.message || String(err));
           setLoadError(true);
         });
 
@@ -96,7 +149,13 @@ export const RecaptchaField = forwardRef<RecaptchaFieldHandle, { onTokenChange: 
       <div className="space-y-2">
         <div ref={containerRef} className="min-h-[78px]" />
         {loadError && (
-          <p className="text-xs font-medium text-red-600">Impossible de charger reCAPTCHA. Vérifiez votre connexion puis réessayez.</p>
+          <div>
+            <p className="text-xs font-medium text-red-600">Impossible de charger reCAPTCHA. Vérifiez votre connexion puis réessayez.</p>
+            {loadErrorMessage && (
+              <p className="text-xs text-red-500">Détails: {loadErrorMessage}</p>
+            )}
+            <p className="text-xs text-[var(--premium-text-muted)]">Vérifiez la console réseau et les bloqueurs de publicité.</p>
+          </div>
         )}
       </div>
     );
