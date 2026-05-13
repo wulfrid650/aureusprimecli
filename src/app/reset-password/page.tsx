@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { getApiMessage, readApiResponse } from "@/lib/api-response";
+import { getApiFieldErrors, getApiMessage, readApiResponse } from "@/lib/api-response";
 import { apiFetch } from "@/lib/fetch";
 import { useI18n } from "@/lib/i18n";
 
@@ -32,6 +32,11 @@ function ResetPasswordForm() {
       return;
     }
 
+    if (!token || !email) {
+      setError(t("auth.resetInvalidLink"));
+      return;
+    }
+
     setIsLoading(true);
     try {
       const res = await apiFetch("/api/v1/auth/reset-password", {
@@ -41,7 +46,14 @@ function ResetPasswordForm() {
       const data = await readApiResponse(res);
 
       if (!res.ok) {
-        setError(getApiMessage(data, t("auth.resetInvalidLink")));
+        const fieldErrors = getApiFieldErrors(data);
+        const fieldError =
+          fieldErrors.password?.[0] ??
+          fieldErrors.password_confirmation?.[0] ??
+          fieldErrors.token?.[0] ??
+          fieldErrors.email?.[0];
+
+        setError(fieldError ?? getApiMessage(data, t("auth.resetInvalidLink")));
         return;
       }
 
