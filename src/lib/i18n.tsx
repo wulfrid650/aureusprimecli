@@ -83,6 +83,7 @@ const dictionaries = {
       referralHint:
         "Optionnel. Il est rempli automatiquement si vous venez d'un lien de parrainage.",
       passwordHint: "8 caractères minimum, avec une minuscule, une majuscule, un chiffre et un symbole.",
+      recaptchaRequired: "Veuillez valider le reCAPTCHA avant de continuer.",
       confirmPassword: "Confirmer le mot de passe",
       terms:
         "J'accepte les conditions générales et la politique de confidentialité de la plateforme.",
@@ -578,6 +579,7 @@ const dictionaries = {
       referralDetected: "Referral link detected",
       referralHint: "Optional. It is filled automatically when you come from a referral link.",
       passwordHint: "At least 8 characters, with lowercase, uppercase, a number and a symbol.",
+      recaptchaRequired: "Please complete the reCAPTCHA before continuing.",
       confirmPassword: "Confirm password",
       terms: "I accept the platform terms and privacy policy.",
       registerSubmit: "Create my account",

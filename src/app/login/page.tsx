@@ -1,11 +1,12 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { isRecaptchaEnabled, RecaptchaField, type RecaptchaFieldHandle } from "@/components/auth/recaptcha-field";
 import { getStoredAuthToken, storeAuthToken } from "@/lib/auth-token";
 import { getApiMessage, readApiResponse } from "@/lib/api-response";
 import { useI18n } from "@/lib/i18n";
@@ -26,6 +27,8 @@ function LoginContent() {
   const searchParams = useSearchParams();
   const { locale, t } = useI18n();
   const [form, setForm] = useState({ email: "", password: "" });
+  const recaptchaRef = useRef<RecaptchaFieldHandle>(null);
+  const [recaptchaToken, setRecaptchaToken] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -40,17 +43,24 @@ function LoginContent() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (isRecaptchaEnabled() && !recaptchaToken) {
+      setError(t("auth.recaptchaRequired"));
+      return;
+    }
+
     setIsLoading(true);
 
     try {
       const res = await fetch("/api/v1/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json", "Accept-Language": locale },
-        body: JSON.stringify({ email: form.email, password: form.password }),
+        body: JSON.stringify({ email: form.email, password: form.password, recaptcha_token: recaptchaToken }),
       });
       const data = await readApiResponse<AuthResponseData>(res);
 
       if (!res.ok) {
+        recaptchaRef.current?.reset();
         setError(getApiMessage(data, t("auth.invalidCredentials")));
         return;
       }
@@ -65,6 +75,7 @@ function LoginContent() {
       storeAuthToken(token);
       router.push("/dashboard");
     } catch {
+      recaptchaRef.current?.reset();
       setError(t("common.networkError"));
     } finally {
       setIsLoading(false);
@@ -162,6 +173,8 @@ function LoginContent() {
                 </button>
               </div>
             </div>
+
+            <RecaptchaField ref={recaptchaRef} onTokenChange={setRecaptchaToken} />
 
             {/* Submit Button */}
             <button

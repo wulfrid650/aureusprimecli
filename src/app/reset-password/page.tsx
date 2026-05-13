@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useRef, useState, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { isRecaptchaEnabled, RecaptchaField, type RecaptchaFieldHandle } from "@/components/auth/recaptcha-field";
 import { getApiFieldErrors, getApiMessage, readApiResponse } from "@/lib/api-response";
 import { apiFetch } from "@/lib/fetch";
 import { useI18n } from "@/lib/i18n";
@@ -18,6 +19,8 @@ function ResetPasswordForm() {
   const email = searchParams.get("email") || "";
 
   const [form, setForm] = useState({ password: "", password_confirmation: "" });
+  const recaptchaRef = useRef<RecaptchaFieldHandle>(null);
+  const [recaptchaToken, setRecaptchaToken] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -37,21 +40,28 @@ function ResetPasswordForm() {
       return;
     }
 
+    if (isRecaptchaEnabled() && !recaptchaToken) {
+      setError(t("auth.recaptchaRequired"));
+      return;
+    }
+
     setIsLoading(true);
     try {
       const res = await apiFetch("/api/v1/auth/reset-password", {
         method: "POST",
-        body: JSON.stringify({ token, email, password: form.password, password_confirmation: form.password_confirmation }),
+        body: JSON.stringify({ token, email, password: form.password, password_confirmation: form.password_confirmation, recaptcha_token: recaptchaToken }),
       });
       const data = await readApiResponse(res);
 
       if (!res.ok) {
+        recaptchaRef.current?.reset();
         const fieldErrors = getApiFieldErrors(data);
         const fieldError =
           fieldErrors.password?.[0] ??
           fieldErrors.password_confirmation?.[0] ??
           fieldErrors.token?.[0] ??
-          fieldErrors.email?.[0];
+          fieldErrors.email?.[0] ??
+          fieldErrors.recaptcha_token?.[0];
 
         setError(fieldError ?? getApiMessage(data, t("auth.resetInvalidLink")));
         return;
@@ -60,6 +70,7 @@ function ResetPasswordForm() {
       setSuccess(true);
       setTimeout(() => router.push("/login"), 3000);
     } catch {
+      recaptchaRef.current?.reset();
       setError(t("common.networkError"));
     } finally {
       setIsLoading(false);
@@ -145,6 +156,8 @@ function ResetPasswordForm() {
                       required />
                   </div>
                 </div>
+
+                <RecaptchaField ref={recaptchaRef} onTokenChange={setRecaptchaToken} />
 
                 <button type="submit" disabled={isLoading}
                   className="group mt-2 relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-primary-500 px-4 py-3.5 text-sm font-bold text-[var(--premium-contrast)] transition-all hover:-translate-y-0.5 hover:bg-primary-400 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"

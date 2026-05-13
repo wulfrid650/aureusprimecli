@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { isRecaptchaEnabled, RecaptchaField, type RecaptchaFieldHandle } from "@/components/auth/recaptcha-field";
 import { getStoredAuthToken, storeAuthToken } from "@/lib/auth-token";
 import { getApiFieldErrors, getApiMessage, readApiResponse } from "@/lib/api-response";
 import { useI18n } from "@/lib/i18n";
@@ -32,6 +33,8 @@ export default function RegisterPage() {
     password_confirmation: "",
     referral_code: "",
   }));
+  const recaptchaRef = useRef<RecaptchaFieldHandle>(null);
+  const [recaptchaToken, setRecaptchaToken] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -74,17 +77,28 @@ export default function RegisterPage() {
       return;
     }
 
+    if (isRecaptchaEnabled() && !recaptchaToken) {
+      setError(t("auth.recaptchaRequired"));
+      return;
+    }
+
     setIsLoading(true);
     try {
       const res = await fetch("/api/v1/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json", "Accept-Language": locale },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, recaptcha_token: recaptchaToken }),
       });
       const data = await readApiResponse<AuthResponseData>(res);
 
       if (!res.ok) {
+        recaptchaRef.current?.reset();
         const errors = getApiFieldErrors(data);
+
+        if (errors.recaptcha_token?.[0]) {
+          setError(errors.recaptcha_token[0]);
+          return;
+        }
 
         if (Object.keys(errors).length > 0) {
           setFieldErrors(errors);
@@ -104,6 +118,7 @@ export default function RegisterPage() {
       storeAuthToken(token);
       router.push("/dashboard");
     } catch {
+      recaptchaRef.current?.reset();
       setError(t("common.networkError"));
     } finally {
       setIsLoading(false);
@@ -250,6 +265,8 @@ export default function RegisterPage() {
               </div>
               {getFieldError("password_confirmation") && <p className="text-xs text-red-600 font-medium">{getFieldError("password_confirmation")}</p>}
             </div>
+
+            <RecaptchaField ref={recaptchaRef} onTokenChange={setRecaptchaToken} />
 
             {/* Terms */}
             <div className="flex items-start gap-2 py-1">

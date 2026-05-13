@@ -1,17 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { getApiMessage, readApiResponse } from "@/lib/api-response";
+import { isRecaptchaEnabled, RecaptchaField, type RecaptchaFieldHandle } from "@/components/auth/recaptcha-field";
+import { getApiFieldErrors, getApiMessage, readApiResponse } from "@/lib/api-response";
 import { apiFetch } from "@/lib/fetch";
 import { useI18n } from "@/lib/i18n";
 
 export default function ForgotPasswordPage() {
   const { t } = useI18n();
   const [email, setEmail] = useState("");
+  const recaptchaRef = useRef<RecaptchaFieldHandle>(null);
+  const [recaptchaToken, setRecaptchaToken] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -19,22 +22,31 @@ export default function ForgotPasswordPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (isRecaptchaEnabled() && !recaptchaToken) {
+      setError(t("auth.recaptchaRequired"));
+      return;
+    }
+
     setIsLoading(true);
 
     try {
       const res = await apiFetch("/api/v1/auth/forgot-password", {
         method: "POST",
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, recaptcha_token: recaptchaToken }),
       });
       const data = await readApiResponse(res);
 
       if (!res.ok) {
-        setError(getApiMessage(data, t("auth.forgotGenericError")));
+        recaptchaRef.current?.reset();
+        const fieldErrors = getApiFieldErrors(data);
+        setError(fieldErrors.recaptcha_token?.[0] ?? getApiMessage(data, t("auth.forgotGenericError")));
         return;
       }
 
       setSuccess(true);
     } catch {
+      recaptchaRef.current?.reset();
       setError(t("common.networkError"));
     } finally {
       setIsLoading(false);
@@ -102,6 +114,8 @@ export default function ForgotPasswordPage() {
                       required />
                   </div>
                 </div>
+
+                <RecaptchaField ref={recaptchaRef} onTokenChange={setRecaptchaToken} />
 
                 <button type="submit" disabled={isLoading}
                   className="group mt-2 relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-primary-500 px-4 py-3.5 text-sm font-bold text-[var(--premium-contrast)] transition-all hover:-translate-y-0.5 hover:bg-primary-400 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
