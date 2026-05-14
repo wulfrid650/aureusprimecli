@@ -57,9 +57,8 @@ export function ServiceCard({ service, compact = false }: ServiceCardProps) {
             <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-gray-400">{service.priceHint}</span>
             {service.originalPriceFormatted ? (
               <span className="text-xs text-gray-400 line-through mt-0.5">{service.originalPriceFormatted}</span>
-            ) : (
-              <span className="text-xs text-gray-400 mt-0.5">{service.priceContextLabel}</span>
-            )}
+            ) : null}
+            <span className="text-xs text-gray-400 mt-0.5">{service.priceContextLabel}</span>
             <span className="text-lg font-bold text-[#131118] whitespace-nowrap mt-1">{service.currentPriceFormatted}</span>
           </div>
 
