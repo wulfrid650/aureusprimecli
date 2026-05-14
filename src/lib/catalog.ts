@@ -32,6 +32,8 @@ export type CatalogVariantApi = {
   sale_price?: number | null;
   duration_days?: number | null;
   billing_cycle?: string | null;
+  is_student_offer?: boolean;
+  kyc_required_type?: string | null;
   checkout_payload?: {
     variant_id?: number;
     variation_id?: number;
@@ -47,6 +49,8 @@ export type CatalogPurchaseOptionApi = {
   duration_days?: number | null;
   billing_cycle?: string | null;
   active?: boolean;
+  is_student_offer?: boolean;
+  kyc_required_type?: string | null;
   checkout_payload?: {
     variant_id?: number;
     variation_id?: number;
@@ -70,6 +74,8 @@ export type CatalogProductApi = {
   price?: number | null;
   sale_price?: number | null;
   billing_cycle?: string | null;
+  is_student_offer?: boolean;
+  kyc_required_type?: string | null;
   purchase_mode?: string | null;
   purchase_options?: CatalogPurchaseOptionApi[] | null;
   variants?: CatalogVariantApi[] | null;
@@ -88,6 +94,9 @@ export type CatalogOption = {
   billingCycleLabel: string;
   billingSummary: string;
   durationDays: number | null;
+  isStudentOffer: boolean;
+  kycRequiredType: string | null;
+  requiresKyc: boolean;
   imageSrc: string;
   checkoutPayload: {
     productId?: number;
@@ -103,6 +112,10 @@ export type CatalogProduct = {
   type: string;
   isGiftCard: boolean;
   giftCardType: string | null;
+  isStudentOffer: boolean;
+  kycRequiredType: string | null;
+  hasStudentOffer: boolean;
+  requiresKyc: boolean;
   title: string;
   category: string;
   description: string;
@@ -119,6 +132,9 @@ export type CatalogProduct = {
   originalPriceFormatted: string | null;
   priceHint: string;
   billingSummary: string;
+  priceContextLabel: string;
+  studentOfferLabel: string | null;
+  kycRequiredLabel: string | null;
   badgeLabel: string;
   badgeClassName: string;
 };
@@ -162,6 +178,10 @@ const catalogCopy = {
     from: "À partir de",
     price: "Prix",
     giftCode: "Code cadeau",
+    studentOffer: "Offre étudiant",
+    studentPrice: "Prix étudiant",
+    kycRequired: "KYC requis",
+    kycPriceContext: "KYC requis · {summary}",
     formulas: "{count} formule{plural}",
     days: "{count} jour{plural}",
     available: "Disponible",
@@ -189,6 +209,10 @@ const catalogCopy = {
     from: "From",
     price: "Price",
     giftCode: "Gift code",
+    studentOffer: "Student offer",
+    studentPrice: "Student price",
+    kycRequired: "KYC required",
+    kycPriceContext: "KYC required · {summary}",
     formulas: "{count} plan{plural}",
     days: "{count} day{plural}",
     available: "Available",
@@ -494,12 +518,24 @@ function isGiftCatalogProduct(product: CatalogProductApi): boolean {
   return product.type?.trim().toLowerCase() === "gift";
 }
 
+function normalizeKycRequiredType(value?: string | null): string | null {
+  const normalized = value?.trim().toLowerCase() ?? "";
+  return normalized || null;
+}
+
+function isStudentFlagged(
+  source?: { is_student_offer?: boolean; kyc_required_type?: string | null } | null,
+): boolean {
+  return Boolean(source?.is_student_offer) || normalizeKycRequiredType(source?.kyc_required_type) === "student";
+}
+
 function buildCatalogOptions(product: CatalogProductApi, locale: CatalogLocale): CatalogOption[] {
   const variants = product.variants ?? [];
   const variantMap = new Map(variants.map((variant) => [variant.id, variant]));
   const purchaseOptions = product.purchase_options?.filter((option) => option.active !== false) ?? [];
   const isGiftCard = isGiftCatalogProduct(product);
   const fallbackBillingCycle = isGiftCard ? (product.billing_cycle ?? "one_time") : (product.billing_cycle ?? null);
+  const productIsStudentOffer = isStudentFlagged(product);
 
   const mappedOptions = purchaseOptions.map((option) => {
     const variant = variantMap.get(option.id);
@@ -509,6 +545,11 @@ function buildCatalogOptions(product: CatalogProductApi, locale: CatalogLocale):
       ? fallbackBillingCycle
       : (option.billing_cycle ?? variant?.billing_cycle ?? fallbackBillingCycle);
     const durationDays = isGiftCard ? null : (option.duration_days ?? variant?.duration_days ?? null);
+    const isStudentOffer = productIsStudentOffer || isStudentFlagged(option) || isStudentFlagged(variant);
+    const kycRequiredType =
+      normalizeKycRequiredType(option.kyc_required_type) ??
+      normalizeKycRequiredType(variant?.kyc_required_type) ??
+      normalizeKycRequiredType(product.kyc_required_type);
 
     return {
       id: `${option.kind ?? "variant"}-${option.id}`,
@@ -523,6 +564,9 @@ function buildCatalogOptions(product: CatalogProductApi, locale: CatalogLocale):
       billingCycleLabel: formatBillingCycleLabel(billingCycle, locale),
       billingSummary: formatBillingSummary(durationDays, billingCycle, locale),
       durationDays,
+      isStudentOffer,
+      kycRequiredType,
+      requiresKyc: isStudentOffer || kycRequiredType === "student",
       imageSrc: resolveCatalogImage(variant?.image_url ?? product.image_url),
       checkoutPayload: {
         variantId: option.checkout_payload?.variant_id,
@@ -543,6 +587,10 @@ function buildCatalogOptions(product: CatalogProductApi, locale: CatalogLocale):
         ? fallbackBillingCycle
         : (variant.billing_cycle ?? fallbackBillingCycle);
       const durationDays = isGiftCard ? null : (variant.duration_days ?? null);
+      const isStudentOffer = productIsStudentOffer || isStudentFlagged(variant);
+      const kycRequiredType =
+        normalizeKycRequiredType(variant.kyc_required_type) ??
+        normalizeKycRequiredType(product.kyc_required_type);
 
       return {
         id: `variant-${variant.id}`,
@@ -557,6 +605,9 @@ function buildCatalogOptions(product: CatalogProductApi, locale: CatalogLocale):
         billingCycleLabel: formatBillingCycleLabel(billingCycle, locale),
         billingSummary: formatBillingSummary(durationDays, billingCycle, locale),
         durationDays,
+        isStudentOffer,
+        kycRequiredType,
+        requiresKyc: isStudentOffer || kycRequiredType === "student",
         imageSrc: resolveCatalogImage(variant.image_url ?? product.image_url),
         checkoutPayload: {
           variantId: variant.checkout_payload?.variant_id ?? variant.id,
@@ -568,6 +619,7 @@ function buildCatalogOptions(product: CatalogProductApi, locale: CatalogLocale):
 
   const productPrice = Number(product.sale_price ?? product.price ?? 0);
   const productOriginalPrice = pickOriginalPrice(product.price ?? null, product.sale_price ?? null);
+  const productKycRequiredType = normalizeKycRequiredType(product.kyc_required_type);
 
   return [
     {
@@ -583,6 +635,9 @@ function buildCatalogOptions(product: CatalogProductApi, locale: CatalogLocale):
       billingCycleLabel: formatBillingCycleLabel(fallbackBillingCycle, locale),
       billingSummary: formatBillingSummary(null, fallbackBillingCycle, locale),
       durationDays: null,
+      isStudentOffer: productIsStudentOffer,
+      kycRequiredType: productKycRequiredType,
+      requiresKyc: productIsStudentOffer || productKycRequiredType === "student",
       imageSrc: resolveCatalogImage(product.image_url),
       checkoutPayload: {
         productId: product.id,
@@ -607,6 +662,16 @@ export function normalizeCatalogProduct(product: CatalogProductApi, locale: Cata
   const originalPrice = defaultOption?.originalPrice ?? null;
   const originalPriceFormatted = defaultOption?.originalPriceFormatted ?? null;
   const optionCount = options.length;
+  const productKycRequiredType = normalizeKycRequiredType(product.kyc_required_type);
+  const productIsStudentOffer = isStudentFlagged(product);
+  const hasStudentOffer = productIsStudentOffer || options.some((option) => option.isStudentOffer || option.requiresKyc);
+  const requiresKyc = defaultOption?.requiresKyc ?? productIsStudentOffer;
+  const defaultBillingSummary = defaultOption?.billingSummary ?? formatBillingSummary(null, product.billing_cycle, locale);
+  const studentOfferLabel = hasStudentOffer ? copy(locale, "studentOffer") : null;
+  const kycRequiredLabel = hasStudentOffer ? copy(locale, "kycRequired") : null;
+  const priceContextLabel = requiresKyc
+    ? interpolate(copy(locale, "kycPriceContext"), { summary: defaultBillingSummary })
+    : defaultBillingSummary;
 
   return {
     id: product.slug,
@@ -615,6 +680,10 @@ export function normalizeCatalogProduct(product: CatalogProductApi, locale: Cata
     type: product.type?.trim().toLowerCase() || "product",
     isGiftCard,
     giftCardType: product.gift_card_type?.trim() || (isGiftCard ? "external" : null),
+    isStudentOffer: productIsStudentOffer,
+    kycRequiredType: productKycRequiredType,
+    hasStudentOffer,
+    requiresKyc,
     title,
     category,
     description,
@@ -629,10 +698,15 @@ export function normalizeCatalogProduct(product: CatalogProductApi, locale: Cata
     currentPriceFormatted,
     originalPrice,
     originalPriceFormatted,
-    priceHint: optionCount > 1 ? copy(locale, "from") : copy(locale, "price"),
-    billingSummary: defaultOption?.billingSummary ?? formatBillingSummary(null, product.billing_cycle, locale),
+    priceHint: requiresKyc ? copy(locale, "studentPrice") : optionCount > 1 ? copy(locale, "from") : copy(locale, "price"),
+    billingSummary: defaultBillingSummary,
+    priceContextLabel,
+    studentOfferLabel,
+    kycRequiredLabel,
     badgeLabel:
-      isGiftCard
+      hasStudentOffer
+        ? copy(locale, "studentOffer")
+        : isGiftCard
         ? copy(locale, "giftCode")
         : optionCount > 1
         ? interpolate(copy(locale, "formulas"), {
@@ -645,7 +719,7 @@ export function normalizeCatalogProduct(product: CatalogProductApi, locale: Cata
               plural: getCatalogPlural(locale, defaultOption.durationDays),
             })
           : defaultOption?.billingCycleLabel ?? copy(locale, "available"),
-    badgeClassName: resolveBadgeClassName(category),
+    badgeClassName: hasStudentOffer ? "bg-emerald-600" : resolveBadgeClassName(category),
   };
 }
 

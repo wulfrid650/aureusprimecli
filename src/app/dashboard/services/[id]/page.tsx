@@ -117,6 +117,8 @@ export default function SingleServicePage({ params }: { params: Promise<{ id: st
     );
   }
 
+  const selectedRequiresKyc = selectedOption?.requiresKyc ?? service.requiresKyc;
+
   return (
     <div className="dashboard-mode bg-[#f6f6f8] text-[#131118] min-h-screen flex justify-center sm:items-center sm:p-4">
       <div className="w-full sm:max-w-[420px] sm:h-[90vh] sm:max-h-[850px] bg-white sm:rounded-[40px] overflow-hidden relative shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] flex flex-col mx-auto h-[100dvh] sm:h-auto">
@@ -175,6 +177,12 @@ export default function SingleServicePage({ params }: { params: Promise<{ id: st
                           <div className="flex flex-col items-start">
                             <span className={`font-bold ${isSelected ? 'text-[#131118]' : 'text-gray-500'}`}>{option.name}</span>
                             <span className="text-xs text-gray-400">{option.billingSummary}</span>
+                            {option.requiresKyc && (
+                              <span className="mt-1 inline-flex w-fit items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
+                                <span className="material-symbols-outlined text-[12px]">school</span>
+                                {t("serviceDetail.kycRequired")}
+                              </span>
+                            )}
                           </div>
                         </div>
                         <span className={`font-bold ${isSelected ? 'text-[#5b13ec]' : 'text-[#131118]'}`}>
@@ -196,6 +204,18 @@ export default function SingleServicePage({ params }: { params: Promise<{ id: st
                 </span>
               )}
             </div>
+
+            {selectedRequiresKyc && (
+              <div className="mb-6 -mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-900">
+                <div className="flex items-start gap-3">
+                  <span className="material-symbols-outlined text-[20px]">school</span>
+                  <div>
+                    <p className="text-sm font-bold">{t("serviceDetail.kycNoticeTitle")}</p>
+                    <p className="mt-1 text-xs leading-relaxed text-emerald-800/85">{t("serviceDetail.kycNoticeText")}</p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <h2 className="text-lg font-bold text-[#131118] mb-3">{t("serviceDetail.aboutTitle")}</h2>
             <p className="text-gray-500 leading-relaxed text-[15px] mb-6">

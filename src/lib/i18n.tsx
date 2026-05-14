@@ -245,6 +245,7 @@ const dictionaries = {
     paymentReturn: {
       missingParams: "Paramètres de paiement manquants.",
       topupSuccess: "Votre rechargement a été effectué avec succès !",
+      kycRequiredSuccess: "Paiement confirmé. Déposez votre justificatif étudiant pour débloquer l'accès.",
       verifyFailed: "Échec de la vérification du paiement.",
       verifyError: "Erreur lors de la vérification du paiement.",
       paymentFailed: "Le paiement a échoué.",
@@ -307,6 +308,10 @@ const dictionaries = {
       standardPlan: "Standard",
       giftDeliveryText:
         "Un code sera affiché dans votre dashboard après validation du paiement.",
+      kycRequired: "KYC requis",
+      kycNoticeTitle: "Offre étudiant",
+      kycNoticeText:
+        "Ce tarif nécessite un justificatif étudiant. Après paiement, l'accès sera livré après validation du KYC.",
       renewSubscription: "Prolonger mon abonnement",
       seeCurrentSubscription: "Voir mon abonnement en cours",
       continueCheckout: "Continuer vers la caisse",
@@ -326,6 +331,13 @@ const dictionaries = {
       giftSuccessSuffix: "Votre code sera disponible dans la section cartes cadeaux de votre dashboard.",
       checkoutSuccessPrefix: "Votre commande",
       checkoutSuccessMiddle: "a bien été validée pour",
+      kycNoticeTitle: "Justificatif étudiant requis",
+      kycNoticeText:
+        "Ce prix est réservé aux étudiants. Le paiement peut être confirmé maintenant, mais l'accès sera activé après validation de votre justificatif.",
+      kycSuccessTitle: "Paiement confirmé - KYC requis",
+      kycSuccessText:
+        "Votre commande est enregistrée. Déposez votre justificatif étudiant pour débloquer l'accès à",
+      kycUploadCta: "Déposer mon justificatif",
       seeSubscription: "Voir mon abonnement",
       seeCode: "Voir mon code",
       seeWallet: "Voir mon wallet",
@@ -747,6 +759,7 @@ const dictionaries = {
     paymentReturn: {
       missingParams: "Missing payment parameters.",
       topupSuccess: "Your top-up was completed successfully!",
+      kycRequiredSuccess: "Payment confirmed. Upload your student proof to unlock access.",
       verifyFailed: "Payment verification failed.",
       verifyError: "Error while verifying payment.",
       paymentFailed: "Payment failed.",
@@ -809,6 +822,10 @@ const dictionaries = {
       standardPlan: "Standard",
       giftDeliveryText:
         "A code will be shown in your dashboard after payment validation.",
+      kycRequired: "KYC required",
+      kycNoticeTitle: "Student offer",
+      kycNoticeText:
+        "This price requires student proof. After payment, access is delivered after KYC approval.",
       renewSubscription: "Extend my subscription",
       seeCurrentSubscription: "View my current subscription",
       continueCheckout: "Continue to checkout",
@@ -828,6 +845,13 @@ const dictionaries = {
       giftSuccessSuffix: "Your code will be available in the gift cards section of your dashboard.",
       checkoutSuccessPrefix: "Your order",
       checkoutSuccessMiddle: "has been confirmed for",
+      kycNoticeTitle: "Student proof required",
+      kycNoticeText:
+        "This price is reserved for students. Payment can be confirmed now, but access will be activated after your proof is approved.",
+      kycSuccessTitle: "Payment confirmed - KYC required",
+      kycSuccessText:
+        "Your order is registered. Upload your student proof to unlock access to",
+      kycUploadCta: "Upload my proof",
       seeSubscription: "View my subscription",
       seeCode: "View my code",
       seeWallet: "View my wallet",

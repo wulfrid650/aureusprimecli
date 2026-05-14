@@ -41,6 +41,7 @@ type PaymentSuccessState =
       mode: "checkout";
       orderRef?: string;
       subscriptionId?: number;
+      kycRequired?: boolean;
     }
   | {
       mode: "renewal";
@@ -170,6 +171,7 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
   const hasEnoughFunds = hasMounted && balance !== null && balance >= priceValue;
   const isRenewalFlow = matchingSubscription ? isActiveSubscription(matchingSubscription.status) : false;
   const hasBlockingSubscription = Boolean(matchingSubscription && !isRenewalFlow);
+  const selectedRequiresKyc = selectedOption?.requiresKyc ?? service?.requiresKyc ?? false;
 
   const handlePayment = async () => {
     if (!service || isPaying) return;
@@ -236,6 +238,7 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
         mode: "checkout",
         orderRef: data?.data?.order_ref,
         subscriptionId: data?.data?.subscription_id,
+        kycRequired: Boolean(data?.data?.kyc_required),
       });
       setBalance((currentBalance) => (currentBalance === null ? currentBalance : Math.max(0, currentBalance - priceValue)));
     } catch (paymentError) {
@@ -254,7 +257,11 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
             <span className="material-symbols-outlined text-[40px]">check_circle</span>
           </div>
           <h1 className="text-2xl font-black mb-2 text-[#131118]">
-            {paymentSuccess.mode === "renewal" ? t("checkout.renewalSuccessTitle") : t("checkout.paymentSuccessTitle")}
+            {paymentSuccess.mode === "renewal"
+              ? t("checkout.renewalSuccessTitle")
+              : paymentSuccess.kycRequired
+                ? t("checkout.kycSuccessTitle")
+                : t("checkout.paymentSuccessTitle")}
           </h1>
           <p className="text-gray-500 mb-8">
             {paymentSuccess.mode === "renewal" ? (
@@ -266,6 +273,11 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
               <>
                 {t("checkout.giftSuccessPrefix")} <strong>{paymentSuccess.orderRef || ""}</strong> {t("checkout.giftSuccessMiddle")} <strong>{service.title}</strong>.
                 {" "}{t("checkout.giftSuccessSuffix")}
+              </>
+            ) : paymentSuccess.kycRequired ? (
+              <>
+                {t("checkout.kycSuccessText")} <strong>{service?.title}</strong>
+                {selectedOption ? ` (${selectedOption.name})` : ""}.
               </>
             ) : (
               <>
@@ -280,6 +292,8 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
                 ? getSubscriptionDetailsHref(paymentSuccess.subscriptionId)
                 : service?.isGiftCard
                   ? "/dashboard/souscriptions"
+                  : paymentSuccess.kycRequired
+                    ? "/dashboard/compte"
                   : paymentSuccess.subscriptionId
                     ? getSubscriptionDetailsHref(paymentSuccess.subscriptionId)
                     : "/dashboard/souscriptions"
@@ -290,6 +304,8 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
               ? t("checkout.seeSubscription")
               : service?.isGiftCard
                 ? t("checkout.seeCode")
+                : paymentSuccess.kycRequired
+                  ? t("checkout.kycUploadCta")
                 : t("checkout.seeSubscription")}
           </Link>
         </div>
@@ -368,6 +384,18 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
                </div>
              </div>
           </div>
+
+          {selectedRequiresKyc && (
+            <div className="mb-6 rounded-3xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-emerald-900">
+              <div className="flex items-start gap-3">
+                <span className="material-symbols-outlined text-[22px]">school</span>
+                <div>
+                  <p className="text-sm font-bold">{t("checkout.kycNoticeTitle")}</p>
+                  <p className="mt-1 text-xs leading-relaxed text-emerald-800/85">{t("checkout.kycNoticeText")}</p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {matchingSubscription && (
             <div

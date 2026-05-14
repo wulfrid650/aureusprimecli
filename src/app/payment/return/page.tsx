@@ -54,13 +54,16 @@ export default function PaymentReturnPage() {
           const data = await readApiResponse<PaymentFinalizeResponse>(res);
 
           if (res.ok && data?.status === "success") {
-            const nextHref = data.data?.subscription_id
+            const requiresKyc = Boolean(data.data?.kyc_required);
+            const nextHref = requiresKyc
+              ? "/dashboard/compte"
+              : data.data?.subscription_id
               ? getSubscriptionDetailsHref(data.data.subscription_id)
               : "/dashboard/souscriptions";
 
             setRedirectHref(nextHref);
             setStatus('success');
-            setMessage(getApiMessage(data, t("paymentReturn.topupSuccess")));
+            setMessage(getApiMessage(data, requiresKyc ? t("paymentReturn.kycRequiredSuccess") : t("paymentReturn.topupSuccess")));
             setTimeout(() => {
               router.push(nextHref);
             }, 3000);
@@ -93,13 +96,16 @@ export default function PaymentReturnPage() {
         const data = await readApiResponse<PaymentFinalizeResponse>(res);
 
         if (res.ok && data?.status === "success") {
-          const nextHref = data.data?.subscription_id
+          const requiresKyc = Boolean(data.data?.kyc_required);
+          const nextHref = requiresKyc
+            ? "/dashboard/compte"
+            : data.data?.subscription_id
             ? getSubscriptionDetailsHref(data.data.subscription_id)
             : "/dashboard";
 
           setRedirectHref(nextHref);
           setStatus('success');
-          setMessage(getApiMessage(data, t("paymentReturn.topupSuccess")));
+          setMessage(getApiMessage(data, requiresKyc ? t("paymentReturn.kycRequiredSuccess") : t("paymentReturn.topupSuccess")));
           setTimeout(() => {
             router.push(nextHref);
           }, 3000);

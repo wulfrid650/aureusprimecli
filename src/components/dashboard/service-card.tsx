@@ -45,13 +45,20 @@ export function ServiceCard({ service, compact = false }: ServiceCardProps) {
 
         <p className="text-sm text-gray-500 line-clamp-2 mb-4 leading-relaxed">{service.shortDescription}</p>
 
+        {service.hasStudentOffer && service.studentOfferLabel && (
+          <div className="mb-4 inline-flex w-fit items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-bold text-emerald-700">
+            <span className="material-symbols-outlined text-[14px]">school</span>
+            {service.studentOfferLabel}
+          </div>
+        )}
+
         <div className="mt-auto flex items-end justify-between gap-4">
           <div className="flex flex-col">
             <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-gray-400">{service.priceHint}</span>
             {service.originalPriceFormatted ? (
               <span className="text-xs text-gray-400 line-through mt-0.5">{service.originalPriceFormatted}</span>
             ) : (
-              <span className="text-xs text-gray-400 mt-0.5">{service.billingSummary}</span>
+              <span className="text-xs text-gray-400 mt-0.5">{service.priceContextLabel}</span>
             )}
             <span className="text-lg font-bold text-[#131118] whitespace-nowrap mt-1">{service.currentPriceFormatted}</span>
           </div>
