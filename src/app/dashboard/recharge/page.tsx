@@ -86,25 +86,38 @@ export default function RechargePage() {
             <Link href="/dashboard" className="flex items-center justify-center size-9 shrink-0 rounded-full bg-white border border-gray-100 text-[#131118] hover:bg-gray-50 transition-colors">
               <span className="material-symbols-outlined text-[20px]">arrow_back</span>
             </Link>
-            <h1 className="truncate text-lg font-bold tracking-tight">{t("recharge.title")}</h1>
+            <div className="min-w-0">
+              <h1 className="truncate text-lg font-bold tracking-tight">{t("recharge.title")}</h1>
+              <p className="truncate text-xs text-gray-500">{t("recharge.subtitle")}</p>
+            </div>
           </div>
           <DashboardHeaderControls />
         </header>
 
-        <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth px-5 pb-28 pt-3 flex flex-col gap-6">
+        <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth px-5 pb-5 pt-3 flex flex-col gap-4">
           
           {/* Amount Selection */}
-          <section className="flex flex-col gap-3">
-            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">{t("recharge.amountQuestion")}</h2>
+          <section className="rounded-[30px] border border-gray-100 bg-white p-5 shadow-sm flex flex-col gap-3">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gray-400">
+                  {t("recharge.amountLabel")}
+                </p>
+                <h2 className="mt-2 text-xl font-black text-[#131118]">{t("recharge.amountQuestion")}</h2>
+              </div>
+              <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-[#f7f3ff] text-[#5b13ec]">
+                <span className="material-symbols-outlined text-[24px]">account_balance_wallet</span>
+              </div>
+            </div>
             
             <div className="grid grid-cols-3 gap-3">
               {quickAmounts.map((q) => (
                 <button
                   key={q}
                   onClick={() => handleAmountSelect(q)}
-                  className={`py-3 rounded-2xl font-bold transition-all ${
+                  className={`h-12 rounded-2xl text-sm font-bold transition-colors ${
                     amount === q && !customAmount
-                      ? "bg-[#eab308] text-white shadow-md shadow-[#eab308]/30 scale-105"
+                      ? "bg-[#131118] text-white shadow-md shadow-black/10"
                       : "bg-[#f2f0f4] text-gray-600 hover:bg-[#e8e6eb]"
                   }`}
                 >
@@ -119,7 +132,7 @@ export default function RechargePage() {
                 value={customAmount}
                 onChange={handleCustomAmountChange}
                 placeholder={t("recharge.customAmount")}
-                className="w-full bg-white border-2 border-[#f2f0f4] rounded-2xl py-4 pl-5 pr-16 text-lg font-bold text-[#131118] font-[family:var(--font-inter)] placeholder:opacity-40 outline-none transition-colors focus:border-[#eab308]"
+                className="w-full bg-[#fcfcfd] border-2 border-[#f2f0f4] rounded-2xl py-4 pl-5 pr-16 text-lg font-bold text-[#131118] font-[family:var(--font-inter)] placeholder:opacity-40 outline-none transition-colors focus:border-[#eab308]"
               />
               <div className="absolute right-5 top-1/2 -translate-y-1/2 font-bold text-gray-400">
                 AURI
@@ -129,15 +142,25 @@ export default function RechargePage() {
               <p className="text-xs text-red-500">{t("recharge.maxAmount")}</p>
             )}
 
-            <div className="bg-[#eab308]/10 text-[#ca8a04] px-4 py-3 rounded-xl flex items-center gap-2 mt-1">
+            <div className="bg-[#eab308]/10 text-[#ca8a04] px-4 py-3 rounded-2xl flex items-center gap-2 mt-1">
               <span className="material-symbols-outlined text-[18px]">info</span>
               <span className="text-sm font-bold">{t("recharge.rate")}</span>
             </div>
           </section>
 
           {/* Payment Method */}
-          <section className="flex flex-col gap-3">
-            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">{t("recharge.paymentMethod")}</h2>
+          <section className="rounded-[30px] border border-gray-100 bg-white p-5 shadow-sm flex flex-col gap-3">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gray-400">
+                  {t("recharge.paymentLabel")}
+                </p>
+                <h2 className="mt-2 text-xl font-black text-[#131118]">{t("recharge.paymentMethod")}</h2>
+              </div>
+              <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700">
+                <span className="material-symbols-outlined text-[24px]">payments</span>
+              </div>
+            </div>
             
             <button
               onClick={() => setPaymentMethod("mobile_money")}
@@ -176,18 +199,18 @@ export default function RechargePage() {
           </section>
 
           {error && (
-            <div className="p-4 rounded-xl bg-red-50 text-red-600 text-sm font-medium text-center">
+            <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-center text-sm font-medium text-red-600">
               {error}
             </div>
           )}
         </main>
 
-        <div className="shrink-0 border-t border-[#f2f0f4] bg-white px-5 py-4 pb-safe">
+        <div className="sticky bottom-0 mt-auto w-full border-t border-[#f2f0f4] bg-white p-4 z-50 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] pb-safe">
           <button
             type="button"
             onClick={handleTopup}
             disabled={isLoading || amount <= 0 || amount > 150000}
-            className="w-full flex items-center justify-center gap-2 bg-[#5b13ec] hover:bg-[#480ec0] disabled:bg-[#f2f0f4] disabled:text-gray-400 text-white font-bold py-4 rounded-full transition-all"
+            className="w-full flex items-center justify-center gap-2 bg-[#eab308] hover:bg-[#ca8a04] disabled:bg-[#f2f0f4] disabled:text-gray-400 text-[#131118] font-bold text-lg py-4 rounded-2xl shadow-xl shadow-[#eab308]/20 transition-colors disabled:shadow-none"
           >
             {isLoading ? (
               <span className="material-symbols-outlined animate-spin">progress_activity</span>

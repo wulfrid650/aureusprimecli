@@ -3,9 +3,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { DashboardBottomNav } from "@/components/dashboard/bottom-nav";
+import { DashboardHeaderControls } from "@/components/dashboard/header-controls";
 import { ServiceIllustration } from "@/components/dashboard/service-illustration";
 import { getApiMessage, readApiResponse } from "@/lib/api-response";
 import { apiFetch } from "@/lib/fetch";
+import { getPlural, type Locale, type TranslateFn, useI18n } from "@/lib/i18n";
 
 type MaskedPayloadValue = string | number | boolean | null;
 
@@ -68,18 +71,18 @@ function isActiveSubscription(status?: string | null): boolean {
   return normalizeStatus(status) === "active";
 }
 
-function formatDate(dateStr?: string | null): string {
+function formatDate(dateStr: string | null | undefined, dateLocale: string, t: TranslateFn): string {
   if (!dateStr) {
-    return "Date non definie";
+    return t("subscriptions.undefinedDate");
   }
 
   const date = new Date(dateStr);
 
   if (Number.isNaN(date.getTime())) {
-    return "Date non definie";
+    return t("subscriptions.undefinedDate");
   }
 
-  return new Intl.DateTimeFormat("fr-FR", {
+  return new Intl.DateTimeFormat(dateLocale, {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -104,86 +107,87 @@ function getDaysUntil(dateStr?: string | null): number | null {
   return Math.round((targetDay - currentDay) / 86_400_000);
 }
 
-function getStatusMeta(status?: string | null) {
+function getStatusMeta(status: string | null | undefined, t: TranslateFn) {
   switch (normalizeStatus(status)) {
     case "active":
       return {
-        label: "Actif",
+        label: t("subscriptions.statusActive"),
         chipClassName: "border-emerald-200 bg-emerald-50 text-emerald-700",
-        hint: "Votre service est disponible depuis votre espace Aureus.",
+        hint: t("subscriptions.hintActive"),
       };
     case "pending":
       return {
-        label: "En attente",
+        label: t("subscriptions.statusPending"),
         chipClassName: "border-amber-200 bg-amber-50 text-amber-700",
-        hint: "Votre commande est en cours de validation.",
+        hint: t("subscriptions.hintPending"),
       };
     case "waiting_manual":
       return {
-        label: "A affecter",
+        label: t("subscriptions.statusWaitingManual"),
         chipClassName: "border-sky-200 bg-sky-50 text-sky-700",
-        hint: "Une affectation manuelle est encore necessaire.",
+        hint: t("subscriptions.hintWaitingManual"),
       };
     case "pending_student_kyc":
       return {
-        label: "KYC requis",
+        label: t("subscriptions.statusKycRequired"),
         chipClassName: "border-violet-200 bg-violet-50 text-violet-700",
-        hint: "Une verification etudiante est necessaire pour finaliser l'acces.",
+        hint: t("subscriptions.hintKycRequired"),
       };
     case "expired":
       return {
-        label: "Expire",
+        label: t("subscriptions.statusExpired"),
         chipClassName: "border-rose-200 bg-rose-50 text-rose-700",
-        hint: "La duree de validite est terminee.",
+        hint: t("subscriptions.hintExpired"),
       };
     case "cancelled":
       return {
-        label: "Annule",
+        label: t("subscriptions.statusCancelled"),
         chipClassName: "border-zinc-200 bg-zinc-100 text-zinc-700",
-        hint: "Cet abonnement a ete interrompu.",
+        hint: t("subscriptions.hintCancelled"),
       };
     default:
       return {
-        label: status || "Inconnu",
+        label: status || t("subscriptions.statusUnknown"),
         chipClassName: "border-gray-200 bg-gray-100 text-gray-700",
-        hint: "Statut de suivi disponible dans votre historique.",
+        hint: t("subscriptions.hintUnknown"),
       };
   }
 }
 
-function getExpiryMeta(subscription: Subscription) {
+function getExpiryMeta(subscription: Subscription, dateLocale: string, locale: Locale, t: TranslateFn) {
   const daysUntilExpiry = getDaysUntil(subscription.expires_at);
 
   if (daysUntilExpiry === null) {
     return {
-      label: "Echeance flexible",
+      label: t("subscriptions.flexibleExpiry"),
       toneClassName: "text-gray-500",
     };
   }
 
   if (daysUntilExpiry < 0) {
+    const count = Math.abs(daysUntilExpiry);
     return {
-      label: `Expire depuis ${Math.abs(daysUntilExpiry)} jour${Math.abs(daysUntilExpiry) > 1 ? "s" : ""}`,
+      label: t("subscriptions.expiredSince", { count, plural: getPlural(locale, count) }),
       toneClassName: "text-rose-600",
     };
   }
 
   if (daysUntilExpiry === 0) {
     return {
-      label: "Expire aujourd'hui",
+      label: t("subscriptions.expiresToday"),
       toneClassName: "text-amber-600",
     };
   }
 
   if (daysUntilExpiry <= 7) {
     return {
-      label: `Expire dans ${daysUntilExpiry} jour${daysUntilExpiry > 1 ? "s" : ""}`,
+      label: t("subscriptions.expiresIn", { count: daysUntilExpiry, plural: getPlural(locale, daysUntilExpiry) }),
       toneClassName: "text-amber-600",
     };
   }
 
   return {
-    label: `Valide jusqu'au ${formatDate(subscription.expires_at)}`,
+    label: t("subscriptions.validUntil", { date: formatDate(subscription.expires_at, dateLocale, t) }),
     toneClassName: "text-gray-500",
   };
 }
@@ -198,20 +202,21 @@ function formatFieldLabel(field: string): string {
   return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
 }
 
-function getPayloadTypeLabel(payloadType?: string | null): string {
+function getPayloadTypeLabel(payloadType: string | null | undefined, t: TranslateFn): string {
   if (payloadType === "link") {
-    return "Lien securise";
+    return t("subscriptions.payloadLink");
   }
 
   if (payloadType === "credentials") {
-    return "Identifiants masques";
+    return t("subscriptions.payloadCredentials");
   }
 
-  return "Acces protege";
+  return t("subscriptions.payloadProtected");
 }
 
 export default function SouscriptionsPage() {
   const router = useRouter();
+  const { dateLocale, locale, t } = useI18n();
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -228,7 +233,7 @@ export default function SouscriptionsPage() {
 
       if (!response.ok) {
         setSubscriptions([]);
-        setError(getApiMessage(payload, "Impossible de charger vos abonnements pour le moment."));
+        setError(getApiMessage(payload, t("subscriptions.loadError")));
         return;
       }
 
@@ -236,11 +241,11 @@ export default function SouscriptionsPage() {
     } catch (loadError) {
       console.error("Failed to fetch subscriptions:", loadError);
       setSubscriptions([]);
-      setError("Impossible de charger vos abonnements pour le moment.");
+      setError(t("subscriptions.loadError"));
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -295,34 +300,37 @@ export default function SouscriptionsPage() {
     }
 
     setAccessSheet({
-      title: subscription.product?.name?.trim() || "Acces Aureus",
+      title: subscription.product?.name?.trim() || t("subscriptions.accessAureus"),
       subtitle:
         subscription.variant?.name?.trim() ||
         subscription.productVariation?.name?.trim() ||
-        "Abonnement actif",
-      payloadTypeLabel: getPayloadTypeLabel(subscription.assignedAccount?.payload_type),
+        t("subscriptions.activeSubscription"),
+      payloadTypeLabel: getPayloadTypeLabel(subscription.assignedAccount?.payload_type, t),
       entries,
     });
   };
 
   return (
-    <div className="bg-[#f6f6f8] text-[#131118] min-h-screen flex justify-center sm:items-center sm:p-4">
+    <div className="dashboard-mode bg-[#f6f6f8] text-[#131118] min-h-screen flex justify-center sm:items-center sm:p-4">
       <div className="w-full sm:max-w-[420px] sm:h-[90vh] sm:max-h-[850px] bg-[#f6f6f8] sm:rounded-[40px] overflow-hidden relative shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] flex flex-col mx-auto h-[100dvh] sm:h-auto">
-        <header className="sticky top-0 z-50 bg-[#f6f6f8]/95 backdrop-blur-md px-5 py-4 flex flex-col gap-4 border-b border-transparent">
-          <div className="flex items-center gap-2">
+        <header className="sticky top-0 z-50 bg-[#f6f6f8]/95 backdrop-blur-md px-5 py-4 flex items-center justify-between gap-3 border-b border-transparent">
+          <div className="flex min-w-0 items-center gap-3">
             <button
               onClick={() => router.back()}
-              className="flex items-center justify-center size-9 rounded-full bg-white border border-gray-100 text-[#131118] hover:bg-gray-50 transition-colors mr-1"
+              className="flex items-center justify-center size-9 shrink-0 rounded-full bg-white border border-gray-100 text-[#131118] hover:bg-gray-50 transition-colors"
             >
               <span className="material-symbols-outlined text-[20px]">arrow_back</span>
             </button>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-gray-400">Dashboard</p>
-              <h1 className="text-lg font-bold tracking-tight">Mes abonnements</h1>
+            <div className="min-w-0">
+              <h1 className="truncate text-lg font-bold tracking-tight">{t("subscriptions.title")}</h1>
+              <p className="truncate text-xs text-gray-500">{t("subscriptions.headerSubtitle")}</p>
             </div>
           </div>
+          <DashboardHeaderControls />
+        </header>
 
-          <section className="rounded-[30px] bg-[#131118] p-5 text-white shadow-xl shadow-black/15 overflow-hidden relative">
+        <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth px-5 pb-28 pt-3">
+          <section className="mb-4 rounded-[30px] bg-[#131118] p-5 text-white shadow-xl shadow-black/15 overflow-hidden relative">
             <div className="absolute -top-8 -right-6 h-24 w-24 rounded-full bg-[#5b13ec]/40 blur-3xl" />
             <div className="absolute -bottom-8 -left-6 h-20 w-20 rounded-full bg-[#eab308]/20 blur-3xl" />
 
@@ -330,10 +338,8 @@ export default function SouscriptionsPage() {
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/50">Aureus Prime</p>
-                  <h2 className="mt-2 text-2xl font-black leading-tight">Suivi de vos acces premium</h2>
-                  <p className="mt-2 text-sm text-white/70">
-                    Retrouvez vos services actifs, vos echeances et vos renouvellements depuis un seul ecran.
-                  </p>
+                  <h2 className="mt-2 text-2xl font-black leading-tight">{t("subscriptions.heroTitle")}</h2>
+                  <p className="mt-2 text-sm text-white/70">{t("subscriptions.heroSubtitle")}</p>
                 </div>
                 <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm">
                   <span className="material-symbols-outlined text-[24px] text-[#eab308]">subscriptions</span>
@@ -342,29 +348,29 @@ export default function SouscriptionsPage() {
 
               <div className="mt-5 grid grid-cols-3 gap-3">
                 <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/50">En cours</p>
+                  <p className="text-[9px] font-semibold uppercase tracking-[0.12em] text-white/50">{t("subscriptions.ongoing")}</p>
                   <p className="mt-2 text-2xl font-black">{ongoingSubscriptions.length}</p>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/50">Actifs</p>
+                  <p className="text-[9px] font-semibold uppercase tracking-[0.12em] text-white/50">{t("subscriptions.active")}</p>
                   <p className="mt-2 text-2xl font-black">{activeSubscriptions.length}</p>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/50">A renouveler</p>
+                  <p className="text-[9px] font-semibold uppercase tracking-[0.12em] text-white/50">{t("subscriptions.renewSoon")}</p>
                   <p className="mt-2 text-2xl font-black">{expiringSoonCount}</p>
                 </div>
               </div>
             </div>
           </section>
 
-          <div className="flex bg-white/70 p-1 rounded-xl w-full border border-gray-100 shadow-sm">
+          <div className="mb-4 flex bg-white/70 p-1 rounded-xl w-full border border-gray-100 shadow-sm">
             <button
               onClick={() => setActiveTab("actifs")}
               className={`flex-1 py-2.5 text-sm font-bold rounded-lg transition-all ${
                 activeTab === "actifs" ? "bg-white shadow-sm text-[#131118]" : "text-gray-500 hover:text-[#131118]"
               }`}
             >
-              En cours ({ongoingSubscriptions.length})
+              {t("subscriptions.ongoing")} ({ongoingSubscriptions.length})
             </button>
             <button
               onClick={() => setActiveTab("historique")}
@@ -372,25 +378,23 @@ export default function SouscriptionsPage() {
                 activeTab === "historique" ? "bg-white shadow-sm text-[#131118]" : "text-gray-500 hover:text-[#131118]"
               }`}
             >
-              Historique ({historySubscriptions.length})
+              {t("subscriptions.history")} ({historySubscriptions.length})
             </button>
           </div>
-        </header>
 
-        <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth px-5 pb-28 pt-3">
           {error && !isLoading && (
             <div className="mb-4 rounded-3xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-medium text-red-700">
               <div className="flex items-start gap-3">
                 <span className="material-symbols-outlined mt-0.5 text-[20px]">error</span>
                 <div className="flex-1">
-                  <p className="font-bold">Chargement impossible</p>
+                  <p className="font-bold">{t("subscriptions.loadingImpossible")}</p>
                   <p className="mt-1 text-red-600/90">{error}</p>
                   <button
                     onClick={() => void loadSubscriptions()}
                     className="mt-3 inline-flex items-center gap-2 rounded-full bg-red-600 px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-red-700"
                   >
                     <span className="material-symbols-outlined text-[16px]">refresh</span>
-                    Reessayer
+                    {t("common.retry")}
                   </button>
                 </div>
               </div>
@@ -423,29 +427,34 @@ export default function SouscriptionsPage() {
           ) : filteredSubscriptions.length > 0 ? (
             <div className="flex flex-col gap-4">
               {filteredSubscriptions.map((subscription) => {
-                const statusMeta = getStatusMeta(subscription.status);
-                const expiryMeta = getExpiryMeta(subscription);
+                const statusMeta = getStatusMeta(subscription.status, t);
+                const expiryMeta = getExpiryMeta(subscription, dateLocale, locale, t);
                 const serviceHref = subscription.product?.slug
                   ? `/dashboard/services/${subscription.product.slug}`
                   : "/dashboard/services";
                 const optionLabel =
                   subscription.variant?.name?.trim() ||
                   subscription.productVariation?.name?.trim() ||
-                  "Formule standard";
+                  t("subscriptions.standardPlan");
                 const maskedPayloadEntries = Object.entries(subscription.assignedAccount?.masked_payload ?? {}).filter(
                   ([, value]) => value !== null && value !== "",
                 );
                 const canOpenAccessSheet = isActiveSubscription(subscription.status) && maskedPayloadEntries.length > 0;
                 const illustrationService = {
                   title: subscription.product?.name?.trim() || "Aureus Prime",
-                  category: subscription.product?.category?.name?.trim() || "Abonnement",
+                  category: subscription.product?.category?.name?.trim() || t("subscriptions.subscriptionCategory"),
                   currentPriceFormatted: statusMeta.label,
-                  priceHint: "Etat",
+                  priceHint: t("subscriptions.state"),
                   billingSummary: optionLabel,
                   optionCount: 1,
                 };
                 const assignmentCount = subscription.assignments?.length ?? 0;
-                const typeLabel = subscription.type === "personal" ? "Personnel" : subscription.type === "shared" ? "Partage" : "Service";
+                const typeLabel =
+                  subscription.type === "personal"
+                    ? t("subscriptions.accessPersonal")
+                    : subscription.type === "shared"
+                      ? t("subscriptions.accessShared")
+                      : t("common.service");
 
                 return (
                   <article
@@ -461,7 +470,7 @@ export default function SouscriptionsPage() {
                         <div className="flex items-start justify-between gap-3">
                           <div className="min-w-0">
                             <h3 className="text-lg font-extrabold leading-tight text-[#131118] truncate">
-                              {subscription.product?.name?.trim() || "Service premium"}
+                              {subscription.product?.name?.trim() || t("subscriptions.premiumService")}
                             </h3>
                             <p className="mt-1 text-sm font-medium text-gray-500">{optionLabel}</p>
                           </div>
@@ -479,12 +488,15 @@ export default function SouscriptionsPage() {
                           </span>
                           {assignmentCount > 0 && (
                             <span className="rounded-full bg-[#f7f3ff] px-3 py-1 text-[11px] font-bold text-[#5b13ec]">
-                              {assignmentCount} affectation{assignmentCount > 1 ? "s" : ""}
+                              {t("subscriptions.assignments", {
+                                count: assignmentCount,
+                                plural: getPlural(locale, assignmentCount),
+                              })}
                             </span>
                           )}
                           {subscription.auto_renew && (
                             <span className="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-bold text-emerald-700">
-                              Renouvellement auto
+                              {t("subscriptions.autoRenewal")}
                             </span>
                           )}
                         </div>
@@ -493,11 +505,11 @@ export default function SouscriptionsPage() {
 
                     <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
                       <div className="rounded-2xl bg-[#f8f8fb] px-4 py-3">
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-400">Activation</p>
-                        <p className="mt-2 text-sm font-bold text-[#131118]">{formatDate(subscription.started_at)}</p>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-400">{t("subscriptions.activation")}</p>
+                        <p className="mt-2 text-sm font-bold text-[#131118]">{formatDate(subscription.started_at, dateLocale, t)}</p>
                       </div>
                       <div className="rounded-2xl bg-[#f8f8fb] px-4 py-3">
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-400">Echeance</p>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-400">{t("subscriptions.expiry")}</p>
                         <p className={`mt-2 text-sm font-bold ${expiryMeta.toneClassName}`}>{expiryMeta.label}</p>
                       </div>
                     </div>
@@ -506,38 +518,38 @@ export default function SouscriptionsPage() {
                       <p className="text-sm font-semibold text-[#131118]">{statusMeta.hint}</p>
                       <p className="mt-1 text-xs text-gray-500">
                         {subscription.pending_student_kyc
-                          ? "Votre verification etudiante doit etre completee avant l'activation finale."
-                          : `Derniere echeance enregistree le ${formatDate(subscription.expires_at)}.`}
+                          ? t("subscriptions.studentKycPending")
+                          : t("subscriptions.lastExpiry", { date: formatDate(subscription.expires_at, dateLocale, t) })}
                       </p>
                     </div>
 
-                    <div className="mt-4 flex items-center gap-2">
+                    <div className="mt-4 grid grid-cols-2 gap-2">
                       {isActiveSubscription(subscription.status) ? (
                         <>
+                          <Link
+                            href={serviceHref}
+                            className="flex min-h-12 items-center justify-center rounded-2xl bg-[#131118] px-3 py-3 text-center text-sm font-bold text-white transition-colors hover:bg-black"
+                          >
+                            {t("subscriptions.renew")}
+                          </Link>
                           <button
                             onClick={() => openAccessSheet(subscription)}
                             disabled={!canOpenAccessSheet}
-                            className={`flex-1 rounded-2xl py-3 text-sm font-bold transition-colors ${
+                            className={`min-h-12 rounded-2xl px-3 py-3 text-sm font-bold transition-colors ${
                               canOpenAccessSheet
                                 ? "bg-[#f2f0f4] text-[#131118] hover:bg-[#e8e6eb]"
                                 : "bg-gray-100 text-gray-400 cursor-not-allowed"
                             }`}
                           >
-                            {canOpenAccessSheet ? "Acces securise" : "Affectation en cours"}
+                            {canOpenAccessSheet ? t("common.secureAccess") : t("subscriptions.statusPending")}
                           </button>
-                          <Link
-                            href={serviceHref}
-                            className="flex-1 rounded-2xl bg-[#131118] py-3 text-center text-sm font-bold text-white transition-colors hover:bg-black"
-                          >
-                            Renouveler
-                          </Link>
                         </>
                       ) : (
                         <Link
                           href={serviceHref}
-                          className="w-full rounded-2xl bg-[#5b13ec] py-3 text-center text-sm font-bold text-white shadow-lg shadow-[#5b13ec]/20 transition-colors hover:bg-[#4a0ebb]"
+                          className="col-span-2 flex min-h-12 items-center justify-center rounded-2xl bg-[#131118] px-3 py-3 text-center text-sm font-bold text-white shadow-lg shadow-black/10 transition-colors hover:bg-black"
                         >
-                          {isOngoingSubscription(subscription.status) ? "Voir le service" : "Se reabonner"}
+                          {isOngoingSubscription(subscription.status) ? t("common.seeService") : t("subscriptions.resubscribe")}
                         </Link>
                       )}
                     </div>
@@ -557,12 +569,12 @@ export default function SouscriptionsPage() {
               </div>
 
               <h2 className="mt-5 text-xl font-black text-[#131118]">
-                {activeTab === "actifs" ? "Aucun abonnement en cours" : "Historique vide"}
+                {activeTab === "actifs" ? t("subscriptions.emptyActiveTitle") : t("subscriptions.emptyHistoryTitle")}
               </h2>
               <p className="mt-2 text-sm font-medium text-gray-500">
                 {activeTab === "actifs"
-                  ? "Vos prochains achats et renouvellements apparaitront ici avec leur statut et leur acces."
-                  : "Vos abonnements termines ou annules s'afficheront ici pour un suivi complet."}
+                  ? t("subscriptions.emptyActiveText")
+                  : t("subscriptions.emptyHistoryText")}
               </p>
 
               <Link
@@ -570,36 +582,13 @@ export default function SouscriptionsPage() {
                 className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#131118] px-5 py-3.5 text-sm font-bold text-white transition-colors hover:bg-black"
               >
                 <span className="material-symbols-outlined text-[18px]">grid_view</span>
-                Decouvrir nos offres
+                {t("subscriptions.discoverOffers")}
               </Link>
             </div>
           )}
         </main>
 
-        <div className="sticky bottom-0 mt-auto w-full bg-white border-t border-[#f2f0f4] px-4 py-3 flex justify-between items-center z-50 sm:rounded-b-[40px] shadow-[0_-5px_20px_rgba(0,0,0,0.03)] pb-safe">
-          <Link href="/dashboard" className="flex flex-col items-center gap-1 text-gray-400 hover:text-[#131118]">
-            <span className="material-symbols-outlined">home</span>
-            <span className="text-[10px] font-medium">Accueil</span>
-          </Link>
-          <Link href="/dashboard/services" className="flex flex-col items-center gap-1 text-gray-400 hover:text-[#131118]">
-            <span className="material-symbols-outlined">grid_view</span>
-            <span className="text-[10px] font-medium">Services</span>
-          </Link>
-          <Link href="/dashboard/souscriptions" className="flex flex-col items-center gap-1 text-[#eab308]">
-            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>
-              subscriptions
-            </span>
-            <span className="text-[10px] font-bold">Abonnements</span>
-          </Link>
-          <Link href="/dashboard/wallet" className="flex flex-col items-center gap-1 text-gray-400 hover:text-[#131118]">
-            <span className="material-symbols-outlined">account_balance_wallet</span>
-            <span className="text-[10px] font-medium">Wallet</span>
-          </Link>
-          <Link href="/dashboard/compte" className="flex flex-col items-center gap-1 text-gray-400 hover:text-[#131118]">
-            <span className="material-symbols-outlined">person</span>
-            <span className="text-[10px] font-medium">Compte</span>
-          </Link>
-        </div>
+        <DashboardBottomNav active="subscriptions" />
       </div>
 
       {accessSheet && (
@@ -611,7 +600,7 @@ export default function SouscriptionsPage() {
             >
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gray-400">Acces securise</p>
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gray-400">{t("common.secureAccess")}</p>
                   <h3 className="mt-2 text-2xl font-black text-[#131118]">{accessSheet.title}</h3>
                   <p className="mt-1 text-sm font-medium text-gray-500">{accessSheet.subtitle}</p>
                 </div>
@@ -637,7 +626,7 @@ export default function SouscriptionsPage() {
               </div>
 
               <p className="mt-5 text-xs font-medium leading-relaxed text-gray-500">
-                Cet apercu reste masque dans l&apos;application pour proteger les informations sensibles liees a votre abonnement.
+                {t("subscriptions.accessPrivacyNote")}
               </p>
             </div>
           </div>

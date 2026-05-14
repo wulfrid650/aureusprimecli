@@ -8,9 +8,24 @@ import React, {
 
 declare global {
   interface Window {
-    grecaptcha?: any;
+    grecaptcha?: RecaptchaApi;
   }
 }
+
+type RecaptchaRenderOptions = {
+  sitekey: string;
+  callback: (token: string) => void;
+  "expired-callback": () => void;
+  "error-callback": () => void;
+};
+
+type RecaptchaApi = {
+  render?: (container: HTMLElement, options: RecaptchaRenderOptions) => number;
+  reset?: (widgetId?: number) => void;
+  ready?: (callback: () => void) => void;
+  execute?: (...args: unknown[]) => unknown;
+  enterprise?: RecaptchaApi;
+};
 
 export type RecaptchaFieldHandle = {
   reset: () => void;
@@ -20,6 +35,10 @@ const SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY?.trim() || "";
 
 export function isRecaptchaEnabled(): boolean {
   return SITE_KEY.length > 0;
+}
+
+function getErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
 }
 
 export const RecaptchaField = forwardRef<RecaptchaFieldHandle, { onTokenChange: (token: string) => void }>(
@@ -34,10 +53,10 @@ export const RecaptchaField = forwardRef<RecaptchaFieldHandle, { onTokenChange: 
         onTokenChange("");
         try {
           if (window.grecaptcha && widgetIdRef.current !== null) {
-            window.grecaptcha.reset(widgetIdRef.current);
+            window.grecaptcha.reset?.(widgetIdRef.current);
           }
-        } catch (e) {
-          // noop
+        } catch {
+          // The widget may already be gone during route changes.
         }
       },
     }));
@@ -50,7 +69,7 @@ export const RecaptchaField = forwardRef<RecaptchaFieldHandle, { onTokenChange: 
       const loadScript = () => {
         const existing = document.querySelector('script[src^="https://www.google.com/recaptcha/api.js"]');
         if (existing) {
-          if ((window as any).grecaptcha) return Promise.resolve();
+          if (window.grecaptcha) return Promise.resolve();
           return new Promise<void>((resolve, reject) => {
             existing.addEventListener("load", () => resolve(), { once: true });
             existing.addEventListener("error", () => reject(new Error("reCAPTCHA script failed")), { once: true });
@@ -73,7 +92,7 @@ export const RecaptchaField = forwardRef<RecaptchaFieldHandle, { onTokenChange: 
           if (!mounted || !containerRef.current || !window.grecaptcha) return;
           const tryRender = () => {
             try {
-              const grecaptcha = (window as any).grecaptcha;
+              const grecaptcha = window.grecaptcha;
               const renderOptions = {
                 sitekey: SITE_KEY,
                 callback: (token: string) => onTokenChange(token),
@@ -81,7 +100,7 @@ export const RecaptchaField = forwardRef<RecaptchaFieldHandle, { onTokenChange: 
                 "error-callback": () => onTokenChange(""),
               };
 
-              if (grecaptcha && typeof grecaptcha.render === "function") {
+              if (grecaptcha && typeof grecaptcha.render === "function" && containerRef.current) {
                 widgetIdRef.current = grecaptcha.render(containerRef.current, renderOptions);
                 return;
               }
@@ -97,19 +116,19 @@ export const RecaptchaField = forwardRef<RecaptchaFieldHandle, { onTokenChange: 
                 }
                 grecaptcha.ready(() => {
                   try {
-                    if (typeof grecaptcha.render === "function") {
+                    if (typeof grecaptcha.render === "function" && containerRef.current) {
                       widgetIdRef.current = grecaptcha.render(containerRef.current, renderOptions);
                       return;
                     }
                     // enterprise fallback
-                    if (grecaptcha.enterprise && typeof grecaptcha.enterprise.render === "function") {
+                    if (grecaptcha.enterprise && typeof grecaptcha.enterprise.render === "function" && containerRef.current) {
                       widgetIdRef.current = grecaptcha.enterprise.render(containerRef.current, renderOptions);
                       return;
                     }
                     throw new Error("grecaptcha.render not available after ready()");
-                  } catch (e: any) {
-                    console.error("reCAPTCHA render error inside ready:", e);
-                    setLoadErrorMessage(e?.message || String(e));
+                  } catch (error) {
+                    console.error("reCAPTCHA render error inside ready:", error);
+                    setLoadErrorMessage(getErrorMessage(error));
                     setLoadError(true);
                   }
                 });
@@ -117,24 +136,24 @@ export const RecaptchaField = forwardRef<RecaptchaFieldHandle, { onTokenChange: 
               }
 
               // enterprise direct fallback
-              if (grecaptcha && grecaptcha.enterprise && typeof grecaptcha.enterprise.render === "function") {
+              if (grecaptcha && grecaptcha.enterprise && typeof grecaptcha.enterprise.render === "function" && containerRef.current) {
                 widgetIdRef.current = grecaptcha.enterprise.render(containerRef.current, renderOptions);
                 return;
               }
 
               throw new Error("grecaptcha.render is not a function");
-            } catch (e: any) {
-              console.error("reCAPTCHA render error:", e);
-              setLoadErrorMessage(e?.message || String(e));
+            } catch (error) {
+              console.error("reCAPTCHA render error:", error);
+              setLoadErrorMessage(getErrorMessage(error));
               setLoadError(true);
             }
           };
 
           tryRender();
         })
-        .catch((err) => {
-          console.error("reCAPTCHA script load failed:", err);
-          setLoadErrorMessage(err?.message || String(err));
+        .catch((error: unknown) => {
+          console.error("reCAPTCHA script load failed:", error);
+          setLoadErrorMessage(getErrorMessage(error));
           setLoadError(true);
         });
 

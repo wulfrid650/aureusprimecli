@@ -304,6 +304,7 @@ const dictionaries = {
       securePurchaseText: "Commande validée depuis votre portefeuille avec suivi dans le dashboard.",
       delivery: "Livraison",
       selectedPlan: "Formule sélectionnée",
+      standardPlan: "Standard",
       giftDeliveryText:
         "Un code sera affiché dans votre dashboard après validation du paiement.",
       renewSubscription: "Prolonger mon abonnement",
@@ -350,10 +351,13 @@ const dictionaries = {
     },
     subscriptions: {
       title: "Mes abonnements",
+      headerSubtitle: "Services actifs et renouvellements",
       loadError: "Impossible de charger vos abonnements pour le moment.",
       accessAureus: "Accès Aureus",
       activeSubscription: "Abonnement actif",
       accessFootnote: "Seules les informations utiles à votre abonnement sont affichées ici.",
+      accessPrivacyNote:
+        "Cet aperçu reste masqué dans l'application pour protéger les informations sensibles liées à votre abonnement.",
       giftCode: "Code cadeau",
       giftCard: "Carte cadeau",
       secureCode: "Code",
@@ -426,6 +430,7 @@ const dictionaries = {
       title: "Aureus Wallet",
       unknownDate: "Date inconnue",
       topup: "Recharge",
+      commandFor: "CMD pour {product}",
       productFallback: "Produit",
       creditFallback: "Entrée",
       debitFallback: "Sortie",
@@ -443,6 +448,9 @@ const dictionaries = {
     },
     recharge: {
       title: "Recharger mon solde",
+      subtitle: "Ajouter du solde au wallet",
+      amountLabel: "Montant",
+      paymentLabel: "Paiement",
       amountRangeError: "Le montant doit être compris entre 1 et 150 000 Auri.",
       genericError: "Une erreur est survenue lors du rechargement.",
       paymentUrlMissing: "URL de paiement non reçue du serveur.",
@@ -798,6 +806,7 @@ const dictionaries = {
       securePurchaseText: "Order validated from your wallet with dashboard tracking.",
       delivery: "Delivery",
       selectedPlan: "Selected plan",
+      standardPlan: "Standard",
       giftDeliveryText:
         "A code will be shown in your dashboard after payment validation.",
       renewSubscription: "Extend my subscription",
@@ -844,10 +853,13 @@ const dictionaries = {
     },
     subscriptions: {
       title: "My subscriptions",
+      headerSubtitle: "Active services and renewals",
       loadError: "Unable to load your subscriptions right now.",
       accessAureus: "Aureus access",
       activeSubscription: "Active subscription",
       accessFootnote: "Only the information useful to your subscription is shown here.",
+      accessPrivacyNote:
+        "This preview stays masked in the app to protect the sensitive information linked to your subscription.",
       giftCode: "Gift code",
       giftCard: "Gift card",
       secureCode: "Code",
@@ -919,6 +931,7 @@ const dictionaries = {
       title: "Aureus Wallet",
       unknownDate: "Unknown date",
       topup: "Top-up",
+      commandFor: "Order for {product}",
       productFallback: "Product",
       creditFallback: "Entry",
       debitFallback: "Exit",
@@ -936,6 +949,9 @@ const dictionaries = {
     },
     recharge: {
       title: "Top up my balance",
+      subtitle: "Add balance to your wallet",
+      amountLabel: "Amount",
+      paymentLabel: "Payment",
       amountRangeError: "The amount must be between 1 and 150,000 Auri.",
       genericError: "Something went wrong while topping up.",
       paymentUrlMissing: "Payment URL was not received from the server.",
