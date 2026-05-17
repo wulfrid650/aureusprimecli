@@ -62,6 +62,7 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
 
   const variantId = searchParams.get("variant");
   const variationId = searchParams.get("variation");
+  const offerType = searchParams.get("offer");
   const renewalSubscriptionId = searchParams.get("subscription");
 
   const [balance, setBalance] = useState<number | null>(null);
@@ -130,17 +131,27 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
     if (!service) return null;
 
     if (variantId) {
-      const byVariant = service.options.find((option) => option.checkoutPayload.variantId === Number(variantId));
+      const byVariant = service.options.find((option) => {
+        const matchesVariant = option.checkoutPayload.variantId === Number(variantId);
+        const matchesOffer = !offerType || option.checkoutPayload.offerType === offerType;
+
+        return matchesVariant && matchesOffer;
+      });
       if (byVariant) return byVariant;
     }
 
     if (variationId) {
-      const byVariation = service.options.find((option) => option.checkoutPayload.variationId === Number(variationId));
+      const byVariation = service.options.find((option) => {
+        const matchesVariation = option.checkoutPayload.variationId === Number(variationId);
+        const matchesOffer = !offerType || option.checkoutPayload.offerType === offerType;
+
+        return matchesVariation && matchesOffer;
+      });
       if (byVariation) return byVariation;
     }
 
     return service.defaultOption ?? null;
-  }, [service, variantId, variationId]);
+  }, [offerType, service, variantId, variationId]);
 
   const matchingSubscription = useMemo(() => {
     if (!service) {
@@ -210,7 +221,7 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
         return;
       }
 
-      const payload: Record<string, number | string> = {
+      const payload: Record<string, boolean | number | string> = {
         payment_method: "wallet",
       };
 
@@ -220,6 +231,11 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
         payload.variation_id = selectedOption.checkoutPayload.variationId;
       } else {
         payload.product_id = service.productId;
+      }
+
+      if (selectedOption?.checkoutPayload.offerType) {
+        payload.offer_type = selectedOption.checkoutPayload.offerType;
+        payload.student_offer = selectedOption.checkoutPayload.offerType === "student";
       }
 
       const res = await apiFetch("/api/v1/checkout", {
@@ -386,12 +402,12 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
           </div>
 
           {selectedRequiresKyc && (
-            <div className="mb-6 rounded-3xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-emerald-900">
+            <div className="mb-6 rounded-3xl border border-white/10 bg-[#131118] px-4 py-4 text-white">
               <div className="flex items-start gap-3">
-                <span className="material-symbols-outlined text-[22px]">school</span>
+                <span className="material-symbols-outlined text-[22px] text-[#eab308]">school</span>
                 <div>
                   <p className="text-sm font-bold">{t("checkout.kycNoticeTitle")}</p>
-                  <p className="mt-1 text-xs leading-relaxed text-emerald-800/85">{t("checkout.kycNoticeText")}</p>
+                  <p className="mt-1 text-xs leading-relaxed text-white/70">{t("checkout.kycNoticeText")}</p>
                 </div>
               </div>
             </div>

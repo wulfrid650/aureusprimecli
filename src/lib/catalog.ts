@@ -7,11 +7,6 @@ type ApiEnvelope<T> = {
   status?: string;
 };
 
-type CachedEnvelope = {
-  expiresAt: number;
-  promise: Promise<unknown | null>;
-};
-
 type ApiPaginationMeta = {
   current_page?: number;
   last_page?: number;
@@ -37,6 +32,7 @@ export type CatalogVariantApi = {
   checkout_payload?: {
     variant_id?: number;
     variation_id?: number;
+    offer_type?: string;
   };
 };
 
@@ -45,15 +41,19 @@ export type CatalogPurchaseOptionApi = {
   id: number;
   label?: string | null;
   price?: number | null;
+  display_price?: number | null;
+  display_price_formatted?: string | null;
   sale_price?: number | null;
   duration_days?: number | null;
   billing_cycle?: string | null;
   active?: boolean;
+  is_featured?: boolean;
   is_student_offer?: boolean;
   kyc_required_type?: string | null;
   checkout_payload?: {
     variant_id?: number;
     variation_id?: number;
+    offer_type?: string;
   };
 };
 
@@ -76,6 +76,34 @@ export type CatalogProductApi = {
   billing_cycle?: string | null;
   is_student_offer?: boolean;
   kyc_required_type?: string | null;
+  display_price?: {
+    amount?: number | null;
+    formatted?: string | null;
+    original_amount?: number | null;
+    original_formatted?: string | null;
+  } | null;
+  display_variant?: {
+    kind?: string | null;
+    id?: number | null;
+    label?: string | null;
+    is_featured?: boolean;
+    is_student_offer?: boolean;
+    checkout_payload?: {
+      product_id?: number;
+      variant_id?: number;
+      variation_id?: number;
+      offer_type?: string;
+    };
+  } | null;
+  display_badge?: {
+    type?: string | null;
+    label?: string | null;
+  } | null;
+  display_kyc?: {
+    required?: boolean;
+    type?: string | null;
+    label?: string | null;
+  } | null;
   purchase_mode?: string | null;
   purchase_options?: CatalogPurchaseOptionApi[] | null;
   variants?: CatalogVariantApi[] | null;
@@ -102,6 +130,7 @@ export type CatalogOption = {
     productId?: number;
     variantId?: number;
     variationId?: number;
+    offerType?: string;
   };
 };
 
@@ -149,9 +178,6 @@ export type CatalogProductsPage = {
 };
 
 const fallbackImage = "/logo-aureusprime.svg";
-const CATALOG_CACHE_TTL_MS = 60_000;
-const INFLIGHT_CACHE_TTL_MS = 5_000;
-const catalogEnvelopeCache = new Map<string, CachedEnvelope>();
 
 type CatalogLocale = "fr" | "en";
 
@@ -452,38 +478,7 @@ function buildCatalogListQuery(perPage: number, page = 1, locale: CatalogLocale 
 }
 
 async function cachedCatalogFetch<T>(url: string): Promise<ApiEnvelope<T> | null> {
-  const now = Date.now();
-  const cached = catalogEnvelopeCache.get(url);
-
-  if (cached && cached.expiresAt > now) {
-    return cached.promise as Promise<ApiEnvelope<T> | null>;
-  }
-
-  const request = safeFetch<ApiEnvelope<T>>(url)
-    .then((payload) => {
-      if (payload) {
-        catalogEnvelopeCache.set(url, {
-          expiresAt: Date.now() + CATALOG_CACHE_TTL_MS,
-          promise: Promise.resolve(payload),
-        });
-
-        return payload;
-      }
-
-      catalogEnvelopeCache.delete(url);
-      return null;
-    })
-    .catch((error) => {
-      catalogEnvelopeCache.delete(url);
-      throw error;
-    });
-
-  catalogEnvelopeCache.set(url, {
-    expiresAt: now + INFLIGHT_CACHE_TTL_MS,
-    promise: request,
-  });
-
-  return request;
+  return safeFetch<ApiEnvelope<T>>(url, { cache: "no-store" });
 }
 
 function resolveBadgeClassName(category: string): string {
@@ -529,6 +524,47 @@ function isStudentFlagged(
   return Boolean(source?.is_student_offer) || normalizeKycRequiredType(source?.kyc_required_type) === "student";
 }
 
+function optionMatchesDisplayVariant(option: CatalogOption, product: CatalogProductApi): boolean {
+  const displayVariant = product.display_variant;
+
+  if (!displayVariant) {
+    return false;
+  }
+
+  const displayKind = displayVariant.kind?.trim() ?? "";
+  const displayId = displayVariant.id;
+  const payload = displayVariant.checkout_payload;
+  const displayOfferType = payload?.offer_type?.trim();
+  const optionOfferType = option.checkoutPayload.offerType?.trim();
+  const offerMatches = !displayOfferType || optionOfferType === displayOfferType;
+
+  if (payload?.variant_id && option.checkoutPayload.variantId === payload.variant_id && offerMatches) {
+    return true;
+  }
+
+  if (payload?.variation_id && option.checkoutPayload.variationId === payload.variation_id && offerMatches) {
+    return true;
+  }
+
+  if (payload?.product_id && option.checkoutPayload.productId === payload.product_id && offerMatches) {
+    return true;
+  }
+
+  if (!displayId) {
+    return false;
+  }
+
+  if (displayKind === "variant" && option.checkoutPayload.variantId === displayId && offerMatches) {
+    return true;
+  }
+
+  if (displayKind === "product_variation" && option.checkoutPayload.variationId === displayId && offerMatches) {
+    return true;
+  }
+
+  return displayKind === "product" && option.checkoutPayload.productId === displayId && offerMatches;
+}
+
 function buildCatalogOptions(product: CatalogProductApi, locale: CatalogLocale): CatalogOption[] {
   const variants = product.variants ?? [];
   const variantMap = new Map(variants.map((variant) => [variant.id, variant]));
@@ -539,17 +575,21 @@ function buildCatalogOptions(product: CatalogProductApi, locale: CatalogLocale):
 
   const mappedOptions = purchaseOptions.map((option) => {
     const variant = variantMap.get(option.id);
-    const price = Number(option.sale_price ?? option.price ?? variant?.sale_price ?? variant?.price ?? 0);
+    const price = Number(option.display_price ?? option.sale_price ?? option.price ?? variant?.sale_price ?? variant?.price ?? 0);
     const originalPrice = pickOriginalPrice(option.price ?? variant?.price ?? null, option.sale_price ?? variant?.sale_price ?? null);
     const billingCycle = isGiftCard
       ? fallbackBillingCycle
       : (option.billing_cycle ?? variant?.billing_cycle ?? fallbackBillingCycle);
     const durationDays = isGiftCard ? null : (option.duration_days ?? variant?.duration_days ?? null);
-    const isStudentOffer = productIsStudentOffer || isStudentFlagged(option) || isStudentFlagged(variant);
+    const hasExplicitOfferType = Boolean(option.checkout_payload?.offer_type);
+    const isStudentOffer =
+      isStudentFlagged(option) ||
+      isStudentFlagged(variant) ||
+      (!hasExplicitOfferType && productIsStudentOffer);
     const kycRequiredType =
       normalizeKycRequiredType(option.kyc_required_type) ??
       normalizeKycRequiredType(variant?.kyc_required_type) ??
-      normalizeKycRequiredType(product.kyc_required_type);
+      (!hasExplicitOfferType ? normalizeKycRequiredType(product.kyc_required_type) : null);
 
     return {
       id: `${option.kind ?? "variant"}-${option.id}`,
@@ -557,7 +597,7 @@ function buildCatalogOptions(product: CatalogProductApi, locale: CatalogLocale):
       kind: (option.kind as "variant" | "variation" | null) ?? "variant",
       name: normalizeLegacyLabel(option.label ?? variant?.name) || copy(locale, "standard"),
       price,
-      priceFormatted: formatXaf(price, locale),
+      priceFormatted: option.display_price_formatted ?? formatXaf(price, locale),
       originalPrice,
       originalPriceFormatted: originalPrice ? formatXaf(originalPrice, locale) : null,
       billingCycle,
@@ -571,6 +611,7 @@ function buildCatalogOptions(product: CatalogProductApi, locale: CatalogLocale):
       checkoutPayload: {
         variantId: option.checkout_payload?.variant_id,
         variationId: option.checkout_payload?.variation_id,
+        offerType: option.checkout_payload?.offer_type,
       },
     } satisfies CatalogOption;
   });
@@ -612,6 +653,7 @@ function buildCatalogOptions(product: CatalogProductApi, locale: CatalogLocale):
         checkoutPayload: {
           variantId: variant.checkout_payload?.variant_id ?? variant.id,
           variationId: variant.checkout_payload?.variation_id,
+          offerType: variant.checkout_payload?.offer_type,
         },
       } satisfies CatalogOption;
     });
@@ -655,20 +697,26 @@ export function normalizeCatalogProduct(product: CatalogProductApi, locale: Cata
     description ||
     copy(locale, "instantActivation");
   const isGiftCard = isGiftCatalogProduct(product);
-  const options = buildCatalogOptions(product, locale).sort((left, right) => left.price - right.price);
-  const defaultOption = options[0] ?? null;
-  const currentPrice = defaultOption?.price ?? Number(product.sale_price ?? product.price ?? 0);
-  const currentPriceFormatted = defaultOption?.priceFormatted ?? formatXaf(currentPrice, locale);
-  const originalPrice = defaultOption?.originalPrice ?? null;
-  const originalPriceFormatted = defaultOption?.originalPriceFormatted ?? null;
+  const options = buildCatalogOptions(product, locale);
+  const displayOption = options.find((option) => optionMatchesDisplayVariant(option, product));
+  const defaultOption = displayOption ?? options[0] ?? null;
+  const backendDisplayPrice = product.display_price;
+  const currentPrice = Number(backendDisplayPrice?.amount ?? defaultOption?.price ?? product.sale_price ?? product.price ?? 0);
+  const currentPriceFormatted = backendDisplayPrice?.formatted ?? defaultOption?.priceFormatted ?? formatXaf(currentPrice, locale);
+  const originalPrice = backendDisplayPrice?.original_amount ?? defaultOption?.originalPrice ?? null;
+  const originalPriceFormatted = backendDisplayPrice?.original_formatted ?? defaultOption?.originalPriceFormatted ?? null;
   const optionCount = options.length;
   const productKycRequiredType = normalizeKycRequiredType(product.kyc_required_type);
   const productIsStudentOffer = isStudentFlagged(product);
-  const hasStudentOffer = productIsStudentOffer || options.some((option) => option.isStudentOffer || option.requiresKyc);
-  const requiresKyc = defaultOption?.requiresKyc ?? productIsStudentOffer;
+  const backendKycRequired = Boolean(product.display_kyc?.required);
+  const hasStudentOffer =
+    productIsStudentOffer ||
+    backendKycRequired ||
+    options.some((option) => option.isStudentOffer || option.requiresKyc);
+  const requiresKyc = backendKycRequired || (defaultOption?.requiresKyc ?? productIsStudentOffer);
   const defaultBillingSummary = defaultOption?.billingSummary ?? formatBillingSummary(null, product.billing_cycle, locale);
-  const studentOfferLabel = hasStudentOffer ? copy(locale, "studentOffer") : null;
-  const kycRequiredLabel = hasStudentOffer ? copy(locale, "kycRequired") : null;
+  const studentOfferLabel = hasStudentOffer ? (product.display_badge?.label ?? copy(locale, "studentOffer")) : null;
+  const kycRequiredLabel = hasStudentOffer ? (product.display_kyc?.label ?? copy(locale, "kycRequired")) : null;
   const priceContextLabel = requiresKyc
     ? interpolate(copy(locale, "kycPriceContext"), { summary: defaultBillingSummary })
     : defaultBillingSummary;
@@ -704,7 +752,8 @@ export function normalizeCatalogProduct(product: CatalogProductApi, locale: Cata
     studentOfferLabel,
     kycRequiredLabel,
     badgeLabel:
-      hasStudentOffer
+      product.display_badge?.label ??
+      (hasStudentOffer
         ? copy(locale, "studentOffer")
         : isGiftCard
         ? copy(locale, "giftCode")
@@ -718,7 +767,7 @@ export function normalizeCatalogProduct(product: CatalogProductApi, locale: Cata
               count: defaultOption.durationDays,
               plural: getCatalogPlural(locale, defaultOption.durationDays),
             })
-          : defaultOption?.billingCycleLabel ?? copy(locale, "available"),
+          : defaultOption?.billingCycleLabel ?? copy(locale, "available")),
     badgeClassName: hasStudentOffer ? "bg-emerald-600" : resolveBadgeClassName(category),
   };
 }

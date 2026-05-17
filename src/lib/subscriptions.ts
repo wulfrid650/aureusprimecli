@@ -150,7 +150,7 @@ export function parseSubscriptionRouteId(routeId: string): number | null {
 }
 
 export async function fetchUserSubscription(subscriptionId: number): Promise<Subscription> {
-  const response = await apiFetch(`/api/v1/me/subscriptions/${subscriptionId}`);
+  const response = await apiFetch(`/api/v1/me/subscriptions/${subscriptionId}`, { cache: "no-store" });
   const payload = await readApiResponse<Subscription>(response);
 
   if (!response.ok) {
@@ -168,7 +168,7 @@ export async function fetchUserSubscription(subscriptionId: number): Promise<Sub
 }
 
 export async function fetchUserSubscriptions(): Promise<Subscription[]> {
-  const response = await apiFetch("/api/v1/me/subscriptions");
+  const response = await apiFetch("/api/v1/me/subscriptions", { cache: "no-store" });
   const payload = await readApiResponse<Subscription[]>(response);
 
   if (!response.ok) {

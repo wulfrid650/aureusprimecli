@@ -9,6 +9,7 @@ import { ServiceIllustration } from "@/components/dashboard/service-illustration
 import { getApiMessage, readApiResponse } from "@/lib/api-response";
 import { apiFetch } from "@/lib/fetch";
 import { getPlural, type Locale, type TranslateFn, useI18n } from "@/lib/i18n";
+import { getSubscriptionDetailsHref } from "@/lib/subscriptions";
 
 type MaskedPayloadValue = string | number | boolean | null;
 
@@ -524,6 +525,14 @@ export default function SouscriptionsPage() {
                     </div>
 
                     <div className="mt-4 grid grid-cols-2 gap-2">
+                      <Link
+                        href={getSubscriptionDetailsHref(subscription.id)}
+                        className="col-span-2 flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-gray-200 bg-white px-3 py-3 text-center text-sm font-bold text-[#131118] transition-colors hover:bg-[#f8f8fb]"
+                      >
+                        <span className="material-symbols-outlined text-[18px]">visibility</span>
+                        {t("common.seeDetails")}
+                      </Link>
+
                       {isActiveSubscription(subscription.status) ? (
                         <>
                           <Link
