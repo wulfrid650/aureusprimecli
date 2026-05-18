@@ -159,7 +159,7 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
     }
 
     const selection = {
-      productId: service.productId,
+      productId: selectedOption?.checkoutPayload.productId ?? service.productId,
       variantId: selectedOption?.checkoutPayload.variantId ?? null,
       variationId: selectedOption?.checkoutPayload.variationId ?? null,
     };
@@ -229,6 +229,8 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
         payload.variant_id = selectedOption.checkoutPayload.variantId;
       } else if (selectedOption?.checkoutPayload.variationId) {
         payload.variation_id = selectedOption.checkoutPayload.variationId;
+      } else if (selectedOption?.checkoutPayload.productId) {
+        payload.product_id = selectedOption.checkoutPayload.productId;
       } else {
         payload.product_id = service.productId;
       }

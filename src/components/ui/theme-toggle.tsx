@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getStoredAuthToken } from "@/lib/auth-token";
+import { apiFetch } from "@/lib/fetch";
 
 type Theme = "light" | "dark";
 
@@ -38,6 +40,15 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
     applyTheme(nextTheme);
     window.localStorage.setItem(STORAGE_KEY, nextTheme);
     setTheme(nextTheme);
+
+    if (getStoredAuthToken()) {
+      apiFetch("/api/v1/me/profile", {
+        method: "PATCH",
+        body: JSON.stringify({ theme_preference: nextTheme }),
+      }).catch((error) => {
+        console.warn("[theme] Failed to persist theme preference:", error);
+      });
+    }
   };
 
   return (

@@ -25,6 +25,7 @@ export type SubscriptionAssignedAccount = {
   payload?: SubscriptionPayload | null;
   masked_payload?: SubscriptionPayload | null;
   notes?: string | null;
+  available_slots?: number | null;
 };
 
 export type SubscriptionAssignment = {
@@ -45,10 +46,27 @@ export type Subscription = {
   type?: string | null;
   access_mode?: string | null;
   status: string;
+  computed_status?: string | null;
   started_at?: string | null;
   expires_at?: string | null;
+  days_until_expiry?: number | null;
+  is_expiring_soon?: boolean;
+  is_expired?: boolean;
   auto_renew?: boolean;
   pending_student_kyc?: boolean;
+  renewal_amount?: number | null;
+  renewal_amount_formatted?: string | null;
+  renewal_days?: number | null;
+  kyc_required?: boolean;
+  credentials_available?: boolean;
+  access_state?: {
+    status?: string | null;
+    label?: string | null;
+    message?: string | null;
+    requires_admin?: boolean;
+    requires_kyc?: boolean;
+    can_show_credentials?: boolean;
+  } | null;
   product?: SubscriptionProduct | null;
   variant?: SubscriptionOption | null;
   productVariation?: SubscriptionOption | null;

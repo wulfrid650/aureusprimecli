@@ -238,16 +238,21 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
   const assignedAccount = subscription ? getAssignedAccount(subscription) : null;
   const visiblePayloadEntries = useMemo(
     () =>
-      Object.entries(getVisibleAccountPayload(assignedAccount))
+      Object.entries(
+        subscription?.credentials_available || subscription?.access_state?.can_show_credentials
+          ? getVisibleAccountPayload(assignedAccount)
+          : {},
+      )
         .filter(([, value]) => value !== null && value !== "")
         .map(([key, value]) => ({
           field: key,
           label: formatFieldLabel(key, t),
           value: String(value),
         })),
-    [assignedAccount, t],
+    [assignedAccount, subscription?.access_state?.can_show_credentials, subscription?.credentials_available, t],
   );
-  const statusMeta = subscription ? getStatusMeta(subscription.status, t) : null;
+  const displayStatus = subscription ? subscription.computed_status ?? subscription.status : null;
+  const statusMeta = subscription ? getStatusMeta(displayStatus, t) : null;
   const expiryMeta = subscription ? getExpiryMeta(subscription, dateLocale, t, locale) : null;
   const optionLabel = subscription
     ? getSubscriptionOption(subscription)?.name?.trim() || t("subscriptions.standardPlan")
@@ -255,7 +260,7 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
   const productName = subscription?.product?.name?.trim() || t("subscriptions.premiumService");
   const serviceHref = subscription?.product?.slug ? `/dashboard/services/${subscription.product.slug}` : "/dashboard/services";
   const typeLabel = subscription ? getAccessModeLabel(subscription.access_mode ?? subscription.type, t) : t("common.service");
-  const isActive = subscription ? isActiveSubscription(subscription.status) : false;
+  const isActive = subscription ? isActiveSubscription(displayStatus) : false;
 
   return (
     <div className="dashboard-mode bg-[#f6f6f8] text-[#131118] min-h-screen flex justify-center sm:items-center sm:p-4">
@@ -352,7 +357,7 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gray-400">{t("subscriptions.state")}</p>
                     <h3 className="mt-2 text-xl font-black text-[#131118]">{statusMeta.label}</h3>
-                    <p className="mt-1 text-sm font-medium text-gray-500">{statusMeta.hint}</p>
+                    <p className="mt-1 text-sm font-medium text-gray-500">{subscription.access_state?.message || statusMeta.hint}</p>
                   </div>
                   <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-[#f7f3ff] text-[#5b13ec]">
                     <span className="material-symbols-outlined text-[24px]">monitoring</span>
@@ -364,6 +369,12 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
                     <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-400">{t("common.service")}</p>
                     <p className="mt-2 text-sm font-bold text-[#131118]">{typeLabel}</p>
                   </div>
+                  {subscription.renewal_amount_formatted && (
+                    <div className="rounded-2xl bg-[#f8f8fb] px-4 py-3">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-400">{t("subscriptions.renew")}</p>
+                      <p className="mt-2 text-sm font-bold text-[#131118]">{subscription.renewal_amount_formatted}</p>
+                    </div>
+                  )}
                   {subscription.assignments && subscription.assignments.length > 0 && (
                     <div className="rounded-2xl bg-[#f8f8fb] px-4 py-3">
                       <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-400">{t("subscriptions.assignments", {
@@ -390,9 +401,10 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
                     <p className="mt-1 text-sm font-medium text-gray-500">
                       {visiblePayloadEntries.length > 0
                         ? t("subscriptions.accessFootnote")
-                        : isActive
+                        : subscription.access_state?.message ||
+                        (isActive
                           ? t("subscriptions.hintWaitingManual")
-                          : statusMeta.hint}
+                          : statusMeta.hint)}
                     </p>
                   </div>
                   <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700">
@@ -428,7 +440,7 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
                   href={serviceHref}
                   className="flex-1 rounded-2xl bg-[#131118] py-3.5 text-center text-sm font-bold text-white transition-colors hover:bg-black"
                 >
-                  {isOngoingSubscription(subscription.status) ? t("common.seeService") : t("subscriptions.resubscribe")}
+                  {isOngoingSubscription(displayStatus) ? t("common.seeService") : t("subscriptions.resubscribe")}
                 </Link>
                 <Link
                   href="/dashboard/souscriptions"

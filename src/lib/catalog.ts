@@ -18,6 +18,8 @@ type PaginatedApiEnvelope<T> = ApiEnvelope<T> & {
   meta?: ApiPaginationMeta;
 };
 
+type CatalogOptionKind = "product" | "variant" | "product_variation";
+
 export type CatalogVariantApi = {
   id: number;
   name?: string | null;
@@ -27,9 +29,12 @@ export type CatalogVariantApi = {
   sale_price?: number | null;
   duration_days?: number | null;
   billing_cycle?: string | null;
+  is_featured?: boolean;
+  sort_order?: number | null;
   is_student_offer?: boolean;
   kyc_required_type?: string | null;
   checkout_payload?: {
+    product_id?: number;
     variant_id?: number;
     variation_id?: number;
     offer_type?: string;
@@ -51,6 +56,7 @@ export type CatalogPurchaseOptionApi = {
   is_student_offer?: boolean;
   kyc_required_type?: string | null;
   checkout_payload?: {
+    product_id?: number;
     variant_id?: number;
     variation_id?: number;
     offer_type?: string;
@@ -112,7 +118,7 @@ export type CatalogProductApi = {
 export type CatalogOption = {
   id: string;
   apiId?: number;
-  kind: "product" | "variant" | "variation";
+  kind: CatalogOptionKind;
   name: string;
   price: number;
   priceFormatted: string;
@@ -122,6 +128,7 @@ export type CatalogOption = {
   billingCycleLabel: string;
   billingSummary: string;
   durationDays: number | null;
+  isFeatured: boolean;
   isStudentOffer: boolean;
   kycRequiredType: string | null;
   requiresKyc: boolean;
@@ -524,6 +531,20 @@ function isStudentFlagged(
   return Boolean(source?.is_student_offer) || normalizeKycRequiredType(source?.kyc_required_type) === "student";
 }
 
+function normalizeCatalogOptionKind(kind?: string | null): CatalogOptionKind {
+  const normalized = kind?.trim().toLowerCase();
+
+  if (normalized === "product_variation" || normalized === "variation") {
+    return "product_variation";
+  }
+
+  if (normalized === "product") {
+    return "product";
+  }
+
+  return "variant";
+}
+
 function optionMatchesDisplayVariant(option: CatalogOption, product: CatalogProductApi): boolean {
   const displayVariant = product.display_variant;
 
@@ -574,6 +595,7 @@ function buildCatalogOptions(product: CatalogProductApi, locale: CatalogLocale):
   const productIsStudentOffer = isStudentFlagged(product);
 
   const mappedOptions = purchaseOptions.map((option) => {
+    const kind = normalizeCatalogOptionKind(option.kind);
     const variant = variantMap.get(option.id);
     const price = Number(option.display_price ?? option.sale_price ?? option.price ?? variant?.sale_price ?? variant?.price ?? 0);
     const originalPrice = pickOriginalPrice(option.price ?? variant?.price ?? null, option.sale_price ?? variant?.sale_price ?? null);
@@ -592,9 +614,9 @@ function buildCatalogOptions(product: CatalogProductApi, locale: CatalogLocale):
       (!hasExplicitOfferType ? normalizeKycRequiredType(product.kyc_required_type) : null);
 
     return {
-      id: `${option.kind ?? "variant"}-${option.id}`,
+      id: `${kind}-${option.id}`,
       apiId: option.id,
-      kind: (option.kind as "variant" | "variation" | null) ?? "variant",
+      kind,
       name: normalizeLegacyLabel(option.label ?? variant?.name) || copy(locale, "standard"),
       price,
       priceFormatted: option.display_price_formatted ?? formatXaf(price, locale),
@@ -604,11 +626,13 @@ function buildCatalogOptions(product: CatalogProductApi, locale: CatalogLocale):
       billingCycleLabel: formatBillingCycleLabel(billingCycle, locale),
       billingSummary: formatBillingSummary(durationDays, billingCycle, locale),
       durationDays,
+      isFeatured: Boolean(option.is_featured),
       isStudentOffer,
       kycRequiredType,
       requiresKyc: isStudentOffer || kycRequiredType === "student",
       imageSrc: resolveCatalogImage(variant?.image_url ?? product.image_url),
       checkoutPayload: {
+        productId: option.checkout_payload?.product_id,
         variantId: option.checkout_payload?.variant_id,
         variationId: option.checkout_payload?.variation_id,
         offerType: option.checkout_payload?.offer_type,
@@ -646,11 +670,13 @@ function buildCatalogOptions(product: CatalogProductApi, locale: CatalogLocale):
         billingCycleLabel: formatBillingCycleLabel(billingCycle, locale),
         billingSummary: formatBillingSummary(durationDays, billingCycle, locale),
         durationDays,
+        isFeatured: Boolean(variant.is_featured),
         isStudentOffer,
         kycRequiredType,
         requiresKyc: isStudentOffer || kycRequiredType === "student",
         imageSrc: resolveCatalogImage(variant.image_url ?? product.image_url),
         checkoutPayload: {
+          productId: variant.checkout_payload?.product_id,
           variantId: variant.checkout_payload?.variant_id ?? variant.id,
           variationId: variant.checkout_payload?.variation_id,
           offerType: variant.checkout_payload?.offer_type,
@@ -677,6 +703,7 @@ function buildCatalogOptions(product: CatalogProductApi, locale: CatalogLocale):
       billingCycleLabel: formatBillingCycleLabel(fallbackBillingCycle, locale),
       billingSummary: formatBillingSummary(null, fallbackBillingCycle, locale),
       durationDays: null,
+      isFeatured: true,
       isStudentOffer: productIsStudentOffer,
       kycRequiredType: productKycRequiredType,
       requiresKyc: productIsStudentOffer || productKycRequiredType === "student",
@@ -699,7 +726,8 @@ export function normalizeCatalogProduct(product: CatalogProductApi, locale: Cata
   const isGiftCard = isGiftCatalogProduct(product);
   const options = buildCatalogOptions(product, locale);
   const displayOption = options.find((option) => optionMatchesDisplayVariant(option, product));
-  const defaultOption = displayOption ?? options[0] ?? null;
+  const featuredOption = options.find((option) => option.isFeatured);
+  const defaultOption = displayOption ?? featuredOption ?? options[0] ?? null;
   const backendDisplayPrice = product.display_price;
   const currentPrice = Number(backendDisplayPrice?.amount ?? defaultOption?.price ?? product.sale_price ?? product.price ?? 0);
   const currentPriceFormatted = backendDisplayPrice?.formatted ?? defaultOption?.priceFormatted ?? formatXaf(currentPrice, locale);

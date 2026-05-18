@@ -28,6 +28,7 @@ type SubscriptionOption = {
 type SubscriptionAssignedAccount = {
   id: number;
   payload_type?: string | null;
+  payload?: Record<string, MaskedPayloadValue> | null;
   masked_payload?: Record<string, MaskedPayloadValue> | null;
   notes?: string | null;
 };
@@ -40,14 +41,26 @@ type Subscription = {
   id: number;
   type?: string | null;
   status: string;
+  computed_status?: string | null;
   started_at?: string | null;
   expires_at?: string | null;
+  days_until_expiry?: number | null;
+  credentials_available?: boolean;
+  access_state?: {
+    status?: string | null;
+    label?: string | null;
+    message?: string | null;
+    requires_admin?: boolean;
+    requires_kyc?: boolean;
+    can_show_credentials?: boolean;
+  } | null;
   auto_renew?: boolean;
   pending_student_kyc?: boolean;
   product?: SubscriptionProduct | null;
   variant?: SubscriptionOption | null;
   productVariation?: SubscriptionOption | null;
   assignedAccount?: SubscriptionAssignedAccount | null;
+  assigned_account?: SubscriptionAssignedAccount | null;
   assignments?: SubscriptionAssignment[] | null;
 };
 
@@ -229,7 +242,7 @@ export default function SouscriptionsPage() {
     setError("");
 
     try {
-      const response = await apiFetch("/api/v1/me/subscriptions");
+      const response = await apiFetch("/api/v1/me/subscriptions", { cache: "no-store" });
       const payload = await readApiResponse<Subscription[]>(response);
 
       if (!response.ok) {
@@ -259,17 +272,17 @@ export default function SouscriptionsPage() {
   }, [loadSubscriptions]);
 
   const ongoingSubscriptions = useMemo(
-    () => subscriptions.filter((subscription) => isOngoingSubscription(subscription.status)),
+    () => subscriptions.filter((subscription) => isOngoingSubscription(subscription.computed_status ?? subscription.status)),
     [subscriptions],
   );
 
   const activeSubscriptions = useMemo(
-    () => subscriptions.filter((subscription) => isActiveSubscription(subscription.status)),
+    () => subscriptions.filter((subscription) => isActiveSubscription(subscription.computed_status ?? subscription.status)),
     [subscriptions],
   );
 
   const historySubscriptions = useMemo(
-    () => subscriptions.filter((subscription) => !isOngoingSubscription(subscription.status)),
+    () => subscriptions.filter((subscription) => !isOngoingSubscription(subscription.computed_status ?? subscription.status)),
     [subscriptions],
   );
 
@@ -288,8 +301,13 @@ export default function SouscriptionsPage() {
   );
 
   const openAccessSheet = (subscription: Subscription) => {
-    const maskedPayload = subscription.assignedAccount?.masked_payload ?? {};
-    const entries = Object.entries(maskedPayload)
+    if (!subscription.credentials_available && !subscription.access_state?.can_show_credentials) {
+      return;
+    }
+
+    const assignedAccount = subscription.assignedAccount ?? subscription.assigned_account;
+    const visiblePayload = assignedAccount?.payload ?? assignedAccount?.masked_payload ?? {};
+    const entries = Object.entries(visiblePayload)
       .filter(([, value]) => value !== null && value !== "")
       .map(([key, value]) => ({
         label: formatFieldLabel(key),
@@ -306,7 +324,7 @@ export default function SouscriptionsPage() {
         subscription.variant?.name?.trim() ||
         subscription.productVariation?.name?.trim() ||
         t("subscriptions.activeSubscription"),
-      payloadTypeLabel: getPayloadTypeLabel(subscription.assignedAccount?.payload_type, t),
+      payloadTypeLabel: getPayloadTypeLabel(assignedAccount?.payload_type, t),
       entries,
     });
   };
@@ -428,7 +446,8 @@ export default function SouscriptionsPage() {
           ) : filteredSubscriptions.length > 0 ? (
             <div className="flex flex-col gap-4">
               {filteredSubscriptions.map((subscription) => {
-                const statusMeta = getStatusMeta(subscription.status, t);
+                const displayStatus = subscription.computed_status ?? subscription.status;
+                const statusMeta = getStatusMeta(displayStatus, t);
                 const expiryMeta = getExpiryMeta(subscription, dateLocale, locale, t);
                 const serviceHref = subscription.product?.slug
                   ? `/dashboard/services/${subscription.product.slug}`
@@ -437,10 +456,14 @@ export default function SouscriptionsPage() {
                   subscription.variant?.name?.trim() ||
                   subscription.productVariation?.name?.trim() ||
                   t("subscriptions.standardPlan");
-                const maskedPayloadEntries = Object.entries(subscription.assignedAccount?.masked_payload ?? {}).filter(
+                const assignedAccount = subscription.assignedAccount ?? subscription.assigned_account;
+                const visiblePayloadEntries = Object.entries(assignedAccount?.payload ?? {}).filter(
                   ([, value]) => value !== null && value !== "",
                 );
-                const canOpenAccessSheet = isActiveSubscription(subscription.status) && maskedPayloadEntries.length > 0;
+                const canOpenAccessSheet =
+                  (subscription.credentials_available || subscription.access_state?.can_show_credentials === true) &&
+                  isActiveSubscription(displayStatus) &&
+                  visiblePayloadEntries.length > 0;
                 const illustrationService = {
                   title: subscription.product?.name?.trim() || "Aureus Prime",
                   category: subscription.product?.category?.name?.trim() || t("subscriptions.subscriptionCategory"),
@@ -518,9 +541,10 @@ export default function SouscriptionsPage() {
                     <div className="mt-4 rounded-2xl border border-gray-100 bg-[#fcfcfd] px-4 py-3">
                       <p className="text-sm font-semibold text-[#131118]">{statusMeta.hint}</p>
                       <p className="mt-1 text-xs text-gray-500">
-                        {subscription.pending_student_kyc
+                          {subscription.access_state?.message ||
+                          (subscription.pending_student_kyc
                           ? t("subscriptions.studentKycPending")
-                          : t("subscriptions.lastExpiry", { date: formatDate(subscription.expires_at, dateLocale, t) })}
+                          : t("subscriptions.lastExpiry", { date: formatDate(subscription.expires_at, dateLocale, t) }))}
                       </p>
                     </div>
 
@@ -533,7 +557,7 @@ export default function SouscriptionsPage() {
                         {t("common.seeDetails")}
                       </Link>
 
-                      {isActiveSubscription(subscription.status) ? (
+                      {isActiveSubscription(displayStatus) ? (
                         <>
                           <Link
                             href={serviceHref}
@@ -558,7 +582,7 @@ export default function SouscriptionsPage() {
                           href={serviceHref}
                           className="col-span-2 flex min-h-12 items-center justify-center rounded-2xl bg-[#131118] px-3 py-3 text-center text-sm font-bold text-white shadow-lg shadow-black/10 transition-colors hover:bg-black"
                         >
-                          {isOngoingSubscription(subscription.status) ? t("common.seeService") : t("subscriptions.resubscribe")}
+                          {isOngoingSubscription(displayStatus) ? t("common.seeService") : t("subscriptions.resubscribe")}
                         </Link>
                       )}
                     </div>

@@ -14,7 +14,20 @@ interface UserProfile {
   phone?: string;
   created_at?: string;
   email_verified_at?: string | null;
+  email_verified?: boolean;
   kyc_status?: string | null;
+  kyc?: {
+    status?: string | null;
+    is_verified?: boolean;
+    requires_action?: boolean;
+    student_years_count?: number;
+    student_last_verified_at?: string | null;
+    latest_document?: {
+      status?: string | null;
+      admin_note?: string | null;
+      updated_at?: string | null;
+    } | null;
+  } | null;
 }
 
 interface SecurityEvent {
@@ -291,6 +304,9 @@ export default function ComptePage() {
     }
   };
 
+  const emailVerified = Boolean(profile?.email_verified ?? profile?.email_verified_at);
+  const kycStatus = profile?.kyc?.status ?? profile?.kyc_status ?? "none";
+
   return (
     <div className="dashboard-mode bg-[#f6f6f8] text-[#131118] min-h-screen flex justify-center sm:items-center sm:p-4">
       {/* Container */}
@@ -334,7 +350,7 @@ export default function ComptePage() {
                 <h2 className="text-xl font-extrabold">{profile?.name || t("account.defaultUser")}</h2>
                 <p className="text-sm font-medium text-gray-500">{profile?.email || "-"}</p>
                 <div className="flex gap-2 mt-2 flex-wrap justify-center">
-                  {profile?.email_verified_at ? (
+                  {emailVerified ? (
                     <span className="text-xs font-bold px-3 py-1 bg-green-100 text-green-700 rounded-full flex items-center gap-1">
                       <span className="material-symbols-outlined text-[12px]" style={{ fontVariationSettings: "'FILL' 1" }}>mark_email_read</span>
                       {t("account.emailVerified")}
@@ -345,7 +361,7 @@ export default function ComptePage() {
                       {t("account.emailUnverified")}
                     </span>
                   )}
-                  {profile?.kyc_status === "verified" && (
+                  {kycStatus === "verified" && (
                     <span className="text-xs font-bold px-3 py-1 bg-blue-100 text-blue-700 rounded-full flex items-center gap-1">
                       <span className="material-symbols-outlined text-[12px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified_user</span>
                       {t("account.studentKyc")}
@@ -354,7 +370,7 @@ export default function ComptePage() {
                 </div>
               </div>
 
-              {!profile?.email_verified_at && (
+              {!emailVerified && (
                 <div className="bg-amber-50 rounded-3xl p-6 border border-amber-200 shadow-sm mb-6">
                   <div className="flex items-start gap-3">
                     <div className="mt-1 flex size-11 shrink-0 items-center justify-center rounded-2xl bg-amber-100 text-amber-700">
@@ -499,14 +515,14 @@ export default function ComptePage() {
               </div>
 
               {/* KYC Étudiant */}
-              {profile?.kyc_status !== "verified" && (
+              {kycStatus !== "verified" && (
                 <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm mb-6">
                   <div className="flex items-center justify-between mb-1">
                     <h3 className="font-bold text-[#131118]">{t("account.studentVerification")}</h3>
-                    {profile?.kyc_status === "pending" && (
+                    {kycStatus === "pending" && (
                       <span className="text-xs font-bold px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded-md">{t("account.pending")}</span>
                     )}
-                    {profile?.kyc_status === "rejected" && (
+                    {(kycStatus === "rejected" || kycStatus === "revoked") && (
                       <span className="text-xs font-bold px-2 py-0.5 bg-red-100 text-red-700 rounded-md">{t("account.rejected")}</span>
                     )}
                   </div>
