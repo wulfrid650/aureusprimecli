@@ -423,6 +423,9 @@ input {
 [data-theme="dark"] .dashboard-mode .bg-amber-50\/35,
 [data-theme="dark"] .dashboard-mode .bg-emerald-50,
 [data-theme="dark"] .dashboard-mode .bg-green-50,
+[data-theme="dark"] .dashboard-mode .bg-sky-50,
+[data-theme="dark"] .dashboard-mode .bg-violet-50,
+[data-theme="dark"] .dashboard-mode .bg-rose-50,
 [data-theme="dark"] .dashboard-mode .bg-red-50,
 [data-theme="dark"] .dashboard-mode .bg-yellow-100,
 [data-theme="dark"] .dashboard-mode .bg-zinc-100 {
@@ -436,6 +439,9 @@ input {
 [data-theme="dark"] .dashboard-mode .border-amber-100,
 [data-theme="dark"] .dashboard-mode .border-amber-200,
 [data-theme="dark"] .dashboard-mode .border-emerald-200,
+[data-theme="dark"] .dashboard-mode .border-sky-200,
+[data-theme="dark"] .dashboard-mode .border-violet-200,
+[data-theme="dark"] .dashboard-mode .border-rose-200,
 [data-theme="dark"] .dashboard-mode .border-zinc-200 {
   border-color: rgba(247, 248, 248, 0.1) !important;
 }
@@ -452,6 +458,40 @@ input {
 [data-theme="dark"] .dashboard-mode .text-gray-500,
 [data-theme="dark"] .dashboard-mode .text-gray-400 {
   color: rgba(247, 248, 248, 0.68) !important;
+}
+
+[data-theme="dark"] .dashboard-mode .text-emerald-700 {
+  color: #86efac !important;
+}
+
+[data-theme="dark"] .dashboard-mode .text-amber-600,
+[data-theme="dark"] .dashboard-mode .text-amber-700 {
+  color: #fbbf24 !important;
+}
+
+[data-theme="dark"] .dashboard-mode .text-sky-700 {
+  color: #7dd3fc !important;
+}
+
+[data-theme="dark"] .dashboard-mode .text-violet-700,
+[data-theme="dark"] .dashboard-mode .text-\[\#5b13ec\],
+[data-theme="dark"] .dashboard-mode .text-\[\#5b13ec\]\/80 {
+  color: #c4b5fd !important;
+}
+
+[data-theme="dark"] .dashboard-mode .text-rose-600,
+[data-theme="dark"] .dashboard-mode .text-rose-700,
+[data-theme="dark"] .dashboard-mode .text-red-600,
+[data-theme="dark"] .dashboard-mode .text-red-700 {
+  color: #fda4af !important;
+}
+
+[data-theme="dark"] .dashboard-mode .text-zinc-700 {
+  color: rgba(247, 248, 248, 0.74) !important;
+}
+
+[data-theme="dark"] .dashboard-mode .disabled\:text-gray-400:disabled {
+  color: rgba(247, 248, 248, 0.36) !important;
 }
 
 [data-theme="dark"] .dashboard-mode input,

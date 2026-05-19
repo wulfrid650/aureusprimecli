@@ -8,6 +8,8 @@ export type SubscriptionProduct = {
   id?: number;
   name?: string | null;
   slug?: string | null;
+  type?: string | null;
+  is_pack?: boolean;
   category?: {
     name?: string | null;
   } | null;
@@ -30,11 +32,19 @@ export type SubscriptionAssignedAccount = {
 
 export type SubscriptionAssignment = {
   id: number;
+  account_id?: number | null;
   assigned_at?: string | null;
   revoked_at?: string | null;
   note?: string | null;
   revoked?: boolean;
   assigned_manually?: boolean;
+  account?: SubscriptionAssignedAccount | null;
+  service?: {
+    id?: number | null;
+    name?: string | null;
+    slug?: string | null;
+  } | null;
+  metadata?: Record<string, unknown> | null;
 };
 
 export type Subscription = {
@@ -249,6 +259,61 @@ export function getVisibleAccountPayload(
   return assignedAccount?.masked_payload ?? {};
 }
 
+export type SubscriptionVisibleAccess = {
+  assignmentId?: number | null;
+  serviceName: string;
+  payloadType?: string | null;
+  payload: SubscriptionPayload;
+};
+
+export function getVisibleAssignmentAccesses(subscription: Subscription): SubscriptionVisibleAccess[] {
+  const canShow =
+    subscription.credentials_available === true ||
+    subscription.access_state?.can_show_credentials === true;
+
+  if (!canShow) {
+    return [];
+  }
+
+  const accesses =
+    subscription.assignments
+      ?.filter((assignment) => !assignment.revoked && !assignment.revoked_at)
+      .map((assignment) => {
+        const payload = getVisibleAccountPayload(assignment.account);
+
+        return {
+          assignmentId: assignment.id,
+          serviceName:
+            assignment.service?.name?.trim() ||
+            subscription.product?.name?.trim() ||
+            "Aureus Prime",
+          payloadType: assignment.account?.payload_type,
+          payload,
+        };
+      })
+      .filter((access) => Object.keys(access.payload).length > 0) ?? [];
+
+  if (accesses.length > 0) {
+    return accesses;
+  }
+
+  const assignedAccount = getAssignedAccount(subscription);
+  const fallbackPayload = getVisibleAccountPayload(assignedAccount);
+
+  if (Object.keys(fallbackPayload).length === 0) {
+    return [];
+  }
+
+  return [
+    {
+      assignmentId: null,
+      serviceName: subscription.product?.name?.trim() || "Aureus Prime",
+      payloadType: assignedAccount?.payload_type,
+      payload: fallbackPayload,
+    },
+  ];
+}
+
 type SubscriptionSelectionInput = {
   productId?: number | null;
   variantId?: number | null;
@@ -304,6 +369,10 @@ function getTimestampScore(dateStr?: string | null): number {
 }
 
 function getAssignedAccessScore(subscription: Subscription): number {
+  if (getVisibleAssignmentAccesses(subscription).length > 0) {
+    return 2;
+  }
+
   const assignedAccount = getAssignedAccount(subscription);
   const entryCount = Object.keys(getVisibleAccountPayload(assignedAccount)).length;
 

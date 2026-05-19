@@ -13,7 +13,6 @@ type ServiceIllustrationProps = {
 
 type MockupTheme = {
   gradient: string;
-  glow: string;
   icon: string;
   chip: string;
 };
@@ -23,7 +22,6 @@ const themes: Array<{ match: (service: ServiceIllustrationProps["service"]) => b
     match: (service) => service.category.toLowerCase().includes("stream") || /netflix|prime video|disney|crunchyroll/i.test(service.title),
     theme: {
       gradient: "from-[#1b0a10] via-[#7f1734] to-[#ff7a45]",
-      glow: "bg-[#ff7a45]/35",
       icon: "movie",
       chip: "Streaming",
     },
@@ -32,7 +30,6 @@ const themes: Array<{ match: (service: ServiceIllustrationProps["service"]) => b
     match: (service) => /logic|software/i.test(service.category) || /canva|capcut|adobe|office|photoroom|filmora/i.test(service.title),
     theme: {
       gradient: "from-[#051937] via-[#0f5ba7] to-[#56d6ff]",
-      glow: "bg-[#56d6ff]/35",
       icon: "design_services",
       chip: "Studio",
     },
@@ -41,7 +38,6 @@ const themes: Array<{ match: (service: ServiceIllustrationProps["service"]) => b
     match: (service) => /musique|music/i.test(service.category) || /spotify|deezer|apple music|youtube music/i.test(service.title),
     theme: {
       gradient: "from-[#07160c] via-[#0a7f4f] to-[#45f3a6]",
-      glow: "bg-[#45f3a6]/35",
       icon: "headphones",
       chip: "Audio",
     },
@@ -50,7 +46,6 @@ const themes: Array<{ match: (service: ServiceIllustrationProps["service"]) => b
     match: (service) => /\bia\b|\bai\b/i.test(service.category) || /chatgpt|midjourney|claude|gemini/i.test(service.title),
     theme: {
       gradient: "from-[#180d32] via-[#5c2ccf] to-[#b98cff]",
-      glow: "bg-[#b98cff]/35",
       icon: "auto_awesome",
       chip: "IA",
     },
@@ -59,7 +54,6 @@ const themes: Array<{ match: (service: ServiceIllustrationProps["service"]) => b
     match: (service) => /vpn|securite|sécurité|security/i.test(service.category) || /vpn|kapersky|password/i.test(service.title),
     theme: {
       gradient: "from-[#071822] via-[#0c6477] to-[#5ae1df]",
-      glow: "bg-[#5ae1df]/35",
       icon: "shield_lock",
       chip: "Securite",
     },
@@ -68,7 +62,6 @@ const themes: Array<{ match: (service: ServiceIllustrationProps["service"]) => b
 
 const defaultTheme: MockupTheme = {
   gradient: "from-[#17111f] via-[#5b13ec] to-[#d6b2ff]",
-  glow: "bg-[#d6b2ff]/30",
   icon: "bolt",
   chip: "Premium",
 };
@@ -134,9 +127,8 @@ export function ServiceIllustration({
   return (
     <div className={`relative overflow-hidden ${shell.root} ${className}`}>
       <div className={`absolute inset-0 bg-gradient-to-br ${theme.gradient}`} />
-      <div className={`absolute -right-10 -top-10 h-28 w-28 rounded-full blur-3xl ${theme.glow}`} />
-      <div className="absolute -bottom-8 -left-8 h-24 w-24 rounded-full bg-white/10 blur-2xl" />
-      <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.38),transparent_38%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.18),transparent_34%)]" />
+      <div className="absolute inset-0 border border-white/10" />
+      <div className="absolute inset-x-0 top-0 h-20 bg-white/10" />
 
       <div className={`relative z-10 flex h-full flex-col ${shell.padding}`}>
         <div className="flex items-start justify-between gap-3">

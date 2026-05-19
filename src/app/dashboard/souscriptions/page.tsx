@@ -9,7 +9,7 @@ import { ServiceIllustration } from "@/components/dashboard/service-illustration
 import { getApiMessage, readApiResponse } from "@/lib/api-response";
 import { apiFetch } from "@/lib/fetch";
 import { getPlural, type Locale, type TranslateFn, useI18n } from "@/lib/i18n";
-import { getSubscriptionDetailsHref } from "@/lib/subscriptions";
+import { getSubscriptionDetailsHref, getVisibleAssignmentAccesses } from "@/lib/subscriptions";
 
 type MaskedPayloadValue = string | number | boolean | null;
 
@@ -35,6 +35,12 @@ type SubscriptionAssignedAccount = {
 
 type SubscriptionAssignment = {
   id: number;
+  revoked_at?: string | null;
+  revoked?: boolean;
+  account?: SubscriptionAssignedAccount | null;
+  service?: {
+    name?: string | null;
+  } | null;
 };
 
 type Subscription = {
@@ -305,14 +311,18 @@ export default function SouscriptionsPage() {
       return;
     }
 
-    const assignedAccount = subscription.assignedAccount ?? subscription.assigned_account;
-    const visiblePayload = assignedAccount?.payload ?? assignedAccount?.masked_payload ?? {};
-    const entries = Object.entries(visiblePayload)
-      .filter(([, value]) => value !== null && value !== "")
-      .map(([key, value]) => ({
-        label: formatFieldLabel(key),
-        value: String(value),
-      }));
+    const accessGroups = getVisibleAssignmentAccesses(subscription);
+    const entries = accessGroups.flatMap((access) =>
+      Object.entries(access.payload)
+        .filter(([, value]) => value !== null && value !== "")
+        .map(([key, value]) => ({
+          label:
+            accessGroups.length > 1
+              ? `${access.serviceName} - ${formatFieldLabel(key)}`
+              : formatFieldLabel(key),
+          value: String(value),
+        })),
+    );
 
     if (entries.length === 0) {
       return;
@@ -324,7 +334,10 @@ export default function SouscriptionsPage() {
         subscription.variant?.name?.trim() ||
         subscription.productVariation?.name?.trim() ||
         t("subscriptions.activeSubscription"),
-      payloadTypeLabel: getPayloadTypeLabel(assignedAccount?.payload_type, t),
+      payloadTypeLabel:
+        accessGroups.length > 1
+          ? getPayloadTypeLabel("credentials", t)
+          : getPayloadTypeLabel(accessGroups[0]?.payloadType, t),
       entries,
     });
   };
@@ -350,8 +363,7 @@ export default function SouscriptionsPage() {
 
         <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth px-5 pb-28 pt-3">
           <section className="mb-4 rounded-[30px] bg-[#131118] p-5 text-white shadow-xl shadow-black/15 overflow-hidden relative">
-            <div className="absolute -top-8 -right-6 h-24 w-24 rounded-full bg-[#5b13ec]/40 blur-3xl" />
-            <div className="absolute -bottom-8 -left-6 h-20 w-20 rounded-full bg-[#eab308]/20 blur-3xl" />
+            <div className="absolute inset-0 border border-white/10" />
 
             <div className="relative z-10">
               <div className="flex items-start justify-between gap-4">
@@ -456,14 +468,11 @@ export default function SouscriptionsPage() {
                   subscription.variant?.name?.trim() ||
                   subscription.productVariation?.name?.trim() ||
                   t("subscriptions.standardPlan");
-                const assignedAccount = subscription.assignedAccount ?? subscription.assigned_account;
-                const visiblePayloadEntries = Object.entries(assignedAccount?.payload ?? {}).filter(
-                  ([, value]) => value !== null && value !== "",
-                );
+                const visibleAccessGroups = getVisibleAssignmentAccesses(subscription);
                 const canOpenAccessSheet =
                   (subscription.credentials_available || subscription.access_state?.can_show_credentials === true) &&
                   isActiveSubscription(displayStatus) &&
-                  visiblePayloadEntries.length > 0;
+                  visibleAccessGroups.length > 0;
                 const illustrationService = {
                   title: subscription.product?.name?.trim() || "Aureus Prime",
                   category: subscription.product?.category?.name?.trim() || t("subscriptions.subscriptionCategory"),
@@ -628,7 +637,7 @@ export default function SouscriptionsPage() {
         <div className="fixed inset-0 z-[80] bg-black/45 backdrop-blur-[2px] px-4 py-6 sm:px-0" onClick={() => setAccessSheet(null)}>
           <div className="mx-auto flex h-full w-full max-w-[420px] items-end sm:items-center">
             <div
-              className="w-full rounded-[32px] bg-white p-6 shadow-2xl"
+              className="w-full rounded-[32px] border border-gray-100 bg-white p-6 shadow-2xl"
               onClick={(event) => event.stopPropagation()}
             >
               <div className="flex items-start justify-between gap-4">
