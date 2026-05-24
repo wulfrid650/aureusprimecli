@@ -31,7 +31,7 @@ const legalDocs: Record<LegalPageId, LegalDocument> = {
   usage: {
     title: "Conditions Générales d'Utilisation (CGU)",
     subtitle: "aureusprime.com - Règles d'utilisation de la plateforme",
-    effectiveDate: "Mai 2026",
+    effectiveDate: "24 mai 2026",
     intro: [
       "Les présentes Conditions Générales d'Utilisation définissent les règles d'accès et d'utilisation du site, du dashboard, du wallet Auri et des applications Aureus Prime.",
       "Toute création de compte, connexion ou utilisation de la plateforme vaut acceptation pleine et entière des présentes CGU, des CGV et de la Politique de Confidentialité en vigueur.",
@@ -127,7 +127,7 @@ const legalDocs: Record<LegalPageId, LegalDocument> = {
   terms: {
     title: "Conditions Générales de Vente (CGV)",
     subtitle: "aureusprime.com - Plateforme d'abonnements digitaux",
-    effectiveDate: "Mai 2026",
+    effectiveDate: "24 mai 2026",
     intro: [
       "Les présentes Conditions Générales de Vente régissent les relations contractuelles entre Aureus Prime, ci-après « Aureus Prime » ou « Nous », et toute personne physique ou morale utilisant les services proposés via le site et les applications associées.",
       "L'accès et l'utilisation des services impliquent l'acceptation pleine et entière des présentes CGV. Si vous n'acceptez pas ces CGV, vous ne devez pas utiliser les services d'Aureus Prime.",
@@ -144,6 +144,10 @@ const legalDocs: Record<LegalPageId, LegalDocument> = {
             type: "paragraph",
             text: "Aureus Prime agit exclusivement en tant qu'intermédiaire et facilitateur de paiement et n'est pas le fournisseur des services numériques tiers.",
           },
+          {
+            type: "paragraph",
+            text: "1.2. Nature de la relation - Contrat de mandat : en utilisant la Plateforme pour configurer, faciliter ou payer un abonnement à un Service Numérique Tiers, l'Utilisateur confie expressément à Aureus Prime un mandat de gestion technique et logistique. Aureus Prime n'agit pas en tant que vendeur ou distributeur des contenus tiers, mais exclusivement comme mandataire informatique et facilitateur de paiement exécutant les instructions de l'Utilisateur. L'exécution complète du mandat technique libère Aureus Prime de son obligation de facilitation, les risques liés aux modifications unilatérales de conditions d'accès, géoblocages ou suspensions décidées par les éditeurs tiers incombant à l'Utilisateur.",
+          },
         ],
       },
       {
@@ -157,9 +161,10 @@ const legalDocs: Record<LegalPageId, LegalDocument> = {
               "Utilisateur : toute personne utilisant les services d'Aureus Prime.",
               "Services : prestations proposées par Aureus Prime, incluant la gestion, la facilitation de souscription et de paiement d'abonnements numériques.",
               "Services Numériques Tiers : services fournis par des éditeurs tiers tels que Netflix, Spotify, PhotoRoom Pro ou Microsoft 365.",
+              "Mandat numérique : mission technique confiée par l'Utilisateur à Aureus Prime pour configurer, faciliter, payer ou mettre à disposition un accès à un Service Numérique Tiers selon les instructions de l'Utilisateur.",
               "Abonnement : contrat conclu directement entre l'utilisateur et le fournisseur du service numérique tiers.",
               "Wallet Aureus Prime : portefeuille électronique interne libellé en Auri, utilisé exclusivement pour le paiement des services.",
-              "Auri : unité de compte interne d'Aureus Prime. 1 Auri = 1 Franc CFA (XAF). Les Auri ne sont pas une cryptomonnaie et ne peuvent être échangés en dehors de la plateforme.",
+              "Auri : unité de compte interne et jeton utilitaire d'infrastructure d'Aureus Prime. 1 Auri = 1 Franc CFA (XAF). Les Auri ne sont pas une cryptomonnaie, ne constituent pas une monnaie électronique autonome et ne peuvent être échangés en dehors de la plateforme.",
               "Mobile Money / PayPal : moyens de paiement servant uniquement à recharger le wallet Aureus Prime.",
               "Compte Utilisateur : espace personnel permettant de gérer abonnements, wallet et informations personnelles.",
             ],
@@ -278,6 +283,15 @@ const legalDocs: Record<LegalPageId, LegalDocument> = {
             type: "paragraph",
             text: "Ces frais sont inclus dans le prix affiché en Auri TTC. En validant sa commande, l'utilisateur accepte expressément que le montant total inclut cette rémunération de service, définitivement acquise à Aureus Prime dès validation de la transaction.",
           },
+          { type: "subheading", text: "7.4. Caractère définitif de la recharge du Wallet" },
+          {
+            type: "paragraph",
+            text: "Les services de paiement tiers, notamment Mobile Money, MTN MoMo, Orange Money, Wave, Airtel Money et PayPal, sont exclusivement utilisés par l'Utilisateur pour acheter l'unité de compte interne nommée Auri. Le contrat de vente financière est réputé exécuté et livré en totalité à la seconde où le wallet Aureus Prime de l'Utilisateur est crédité du montant correspondant en Auri.",
+          },
+          {
+            type: "paragraph",
+            text: "L'Auri constitue un jeton utilitaire d'infrastructure interne, non remboursable en numéraire après livraison du crédit wallet et dépourvu de valeur monétaire en dehors de l'application. Aucun litige ultérieur concernant un Service Numérique Tiers ne peut justifier l'annulation automatique de la transaction financière d'achat d'Auri d'origine.",
+          },
         ],
       },
       {
@@ -333,7 +347,7 @@ const legalDocs: Record<LegalPageId, LegalDocument> = {
             type: "list",
             items: [
               "Remboursement possible uniquement en cas de non-activation du service dans les 24h suivant le paiement, si la cause est imputable à Aureus Prime.",
-              "Le remboursement peut être effectué en Auri sur le wallet ou en Mobile Money selon la préférence de l'utilisateur.",
+              "Après livraison réussie des Auri ou des identifiants, la compensation applicable est prioritairement interne : réassignation d'un nouvel accès fonctionnel ou recrédit équivalent en Auri.",
               "Toute demande doit être soumise dans les 7 jours calendaires suivant la transaction.",
             ],
           },
@@ -622,6 +636,10 @@ const legalDocs: Record<LegalPageId, LegalDocument> = {
             type: "paragraph",
             text: "Une fois l'abonnement activé et les identifiants livrés, l'accès et l'utilisation du service sont entièrement gérés par le fournisseur tiers.",
           },
+          {
+            type: "paragraph",
+            text: "L'Utilisateur reconnaît l'existence d'un aléa technologique propre aux Services Numériques Tiers : modification de protocoles, géoblocage, politique de partage, suspension ou restriction décidée par l'éditeur tiers. Ces aléas ne constituent pas automatiquement une non-livraison imputable à Aureus Prime lorsque les identifiants ou le crédit Auri ont été correctement livrés.",
+          },
         ],
       },
       {
@@ -660,6 +678,10 @@ const legalDocs: Record<LegalPageId, LegalDocument> = {
       {
         title: "3. Cas où aucun remboursement ne sera accordé",
         blocks: [
+          {
+            type: "paragraph",
+            text: "Aléa tiers et absence de remboursement monétaire : l'Utilisateur déclare être conscient que les éditeurs tiers peuvent modifier leurs protocoles, géoblocages ou règles de partage de compte à tout moment. En cas d'interruption technique d'un service tiers après livraison réussie des identifiants, aucun remboursement monétaire sur les comptes Mobile Money ne sera accordé. Aureus Prime proposera exclusivement une compensation interne via réassignation d'un nouvel accès fonctionnel ou recrédit du montant équivalent en Auri sur le wallet interne.",
+          },
           { type: "paragraph", text: "Aucun remboursement ne sera effectué dans les situations suivantes :" },
           {
             type: "list",
@@ -708,20 +730,20 @@ const legalDocs: Record<LegalPageId, LegalDocument> = {
       {
         title: "5. Modalités de remboursement",
         blocks: [
-          { type: "paragraph", text: "Si la demande est approuvée, l'utilisateur peut choisir entre :" },
+          { type: "paragraph", text: "Si une compensation est approuvée, elle est appliquée prioritairement dans l'écosystème Aureus Prime :" },
           { type: "subheading", text: "Option A - Remboursement en Auri" },
           {
             type: "paragraph",
             text: "Le montant est recrédité immédiatement sur le wallet Auri de l'utilisateur. L'utilisateur peut immédiatement souscrire à un autre service disponible sur la plateforme.",
           },
-          { type: "subheading", text: "Option B - Remboursement en Mobile Money" },
+          { type: "subheading", text: "Option B - Réassignation ou remplacement" },
           {
             type: "paragraph",
-            text: "Le montant est recrédité sur le compte Mobile Money utilisé lors du paiement initial. Le délai de réception dépend de l'opérateur Mobile Money, généralement 1 à 3 jours ouvrables après validation.",
+            text: "Lorsque le service livré devient indisponible pour une cause technique liée à un éditeur tiers, Aureus Prime peut proposer un nouvel accès fonctionnel, une réassignation de slot ou un service équivalent disponible.",
           },
           {
             type: "note",
-            text: "Les frais de transfert éventuels appliqués par l'opérateur Mobile Money sont à la charge de l'utilisateur pour l'option B.",
+            text: "Un remboursement monétaire externe ne constitue pas le mode normal de compensation après livraison des Auri ou des identifiants. Il ne peut intervenir qu'en cas d'obligation légale impérative ou de décision exceptionnelle documentée par Aureus Prime.",
           },
         ],
       },
@@ -765,7 +787,7 @@ const englishLegalDocs: Record<LegalPageId, LegalDocument> = {
   usage: {
     title: "Terms of Use",
     subtitle: "aureusprime.com - Platform usage rules",
-    effectiveDate: "May 2026",
+    effectiveDate: "May 24, 2026",
     intro: [
       "These Terms of Use define the rules for accessing and using the Aureus Prime website, dashboard, Auri wallet and related applications.",
       "Creating an account, signing in or using the platform means that you accept these Terms of Use, the Terms of Sale and the Privacy Policy in force.",
@@ -878,6 +900,10 @@ const englishLegalDocs: Record<LegalPageId, LegalDocument> = {
             type: "paragraph",
             text: "Aureus Prime acts only as an intermediary and payment facilitator and is not the provider of third-party digital services.",
           },
+          {
+            type: "paragraph",
+            text: "1.2. Nature of the relationship - Digital mandate: by using the Platform to configure, facilitate or pay for access to a Third-party digital service, the User expressly gives Aureus Prime a technical and logistical management mandate. Aureus Prime does not act as seller or distributor of third-party content, but as a technical agent and payment facilitator executing the User's instructions. Once the technical mandate has been performed, risks linked to unilateral access rule changes, geoblocking or suspensions decided by third-party publishers remain with the User.",
+          },
         ],
       },
       {
@@ -891,8 +917,9 @@ const englishLegalDocs: Record<LegalPageId, LegalDocument> = {
               "User: any person using Aureus Prime services.",
               "Services: subscription facilitation, management and payment services offered by Aureus Prime.",
               "Third-party digital services: services provided by external publishers or platforms.",
+              "Digital mandate: the technical task entrusted by the User to Aureus Prime to configure, facilitate, pay for or make available access to a Third-party digital service according to the User's instructions.",
               "Auri wallet: internal wallet denominated in Auri and used only for platform payments.",
-              "Auri: internal unit of account. 1 Auri = 1 XAF. Auri is not cryptocurrency and cannot be exchanged outside the platform.",
+              "Auri: internal unit of account and infrastructure utility token. 1 Auri = 1 XAF. Auri is not cryptocurrency, is not standalone electronic money and cannot be exchanged outside the platform.",
               "Mobile Money / PayPal: payment methods used only to top up the Aureus Prime wallet.",
             ],
           },
@@ -972,6 +999,15 @@ const englishLegalDocs: Record<LegalPageId, LegalDocument> = {
           {
             type: "paragraph",
             text: "The total price may include the subscription cost and Aureus Prime service fees for intermediation, technical management, transaction security and support.",
+          },
+          { type: "subheading", text: "7.4. Final delivery of wallet top-ups" },
+          {
+            type: "paragraph",
+            text: "Third-party payment services, including Mobile Money, MTN MoMo, Orange Money, Wave, Airtel Money and PayPal, are used exclusively by the User to purchase the internal account unit called Auri. The financial sale is deemed fully performed and delivered at the precise moment the User's Aureus Prime wallet is credited with the corresponding Auri amount.",
+          },
+          {
+            type: "paragraph",
+            text: "Auri is an internal infrastructure utility token, non-refundable in cash after wallet credit delivery and without monetary value outside the application. A later dispute concerning a Third-party digital service does not automatically justify cancellation of the original Auri purchase transaction.",
           },
         ],
       },
@@ -1059,7 +1095,7 @@ const englishLegalDocs: Record<LegalPageId, LegalDocument> = {
   privacy: {
     title: "Privacy Policy",
     subtitle: "aureusprime.com - Digital subscription platform",
-    effectiveDate: "May 2026",
+    effectiveDate: "May 24, 2026",
     intro: [
       "At Aureus Prime, privacy is a core part of trust. We collect only the data needed to operate our services, without abusive use, resale or hidden geolocation.",
       "This Privacy Policy explains how we collect, use, share and protect data when you use our website, subdomains and applications.",
@@ -1242,6 +1278,10 @@ const englishLegalDocs: Record<LegalPageId, LegalDocument> = {
             type: "paragraph",
             text: "Once a subscription is activated and access details are delivered, access and use are managed by the third-party provider.",
           },
+          {
+            type: "paragraph",
+            text: "The User acknowledges the technological uncertainty attached to Third-party digital services, including protocol changes, geoblocking, account-sharing policies, restrictions or suspensions decided by third-party publishers. These events are not automatically treated as non-delivery by Aureus Prime once Auri credit or access details have been correctly delivered.",
+          },
         ],
       },
       {
@@ -1279,6 +1319,10 @@ const englishLegalDocs: Record<LegalPageId, LegalDocument> = {
       {
         title: "3. Cases where no refund is granted",
         blocks: [
+          {
+            type: "paragraph",
+            text: "Third-party uncertainty and no cash refund: the User acknowledges that third-party publishers may change protocols, geoblocking or account-sharing rules at any time. If a third-party service is interrupted after successful delivery of access details, no cash refund to Mobile Money accounts will be granted. Aureus Prime will provide internal compensation only, through reassignment of functional access or equivalent Auri credit to the internal wallet.",
+          },
           {
             type: "list",
             items: [
@@ -1326,20 +1370,20 @@ const englishLegalDocs: Record<LegalPageId, LegalDocument> = {
       {
         title: "5. Refund methods",
         blocks: [
-          { type: "paragraph", text: "If approved, the user may choose between:" },
+          { type: "paragraph", text: "If compensation is approved, it is applied primarily within the Aureus Prime ecosystem:" },
           { type: "subheading", text: "Option A - Refund in Auri" },
           {
             type: "paragraph",
             text: "The amount is credited back immediately to the user's Auri wallet and can be used for another available service.",
           },
-          { type: "subheading", text: "Option B - Mobile Money refund" },
+          { type: "subheading", text: "Option B - Reassignment or replacement" },
           {
             type: "paragraph",
-            text: "The amount is credited back to the Mobile Money account used for the initial payment. Receipt time depends on the operator, usually 1 to 3 business days after validation.",
+            text: "When the delivered service becomes unavailable because of a third-party technical or policy issue, Aureus Prime may offer functional reassignment, a replacement slot or an equivalent available service.",
           },
           {
             type: "note",
-            text: "Any transfer fees charged by the Mobile Money operator are borne by the user for option B.",
+            text: "External cash refund is not the normal compensation method after Auri or access details have been delivered. It may occur only where mandatory law requires it or by an exceptional documented decision of Aureus Prime.",
           },
         ],
       },

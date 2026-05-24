@@ -168,8 +168,9 @@ const dictionaries = {
           "Sélectionnez les abonnements et outils dont vous avez besoin dans notre catalogue.",
         payTitle: "2. Paiement sécurisé",
         payDescription: "Réglez votre commande via nos moyens de paiement cryptés et sécurisés.",
-        accessTitle: "3. Accès instantané",
-        accessDescription: "Recevez vos identifiants par email immédiatement après validation.",
+        accessTitle: "3. Accès suivi",
+        accessDescription:
+          "Suivez la validation, le KYC si nécessaire et la livraison de vos accès dans votre espace.",
       },
     },
     dashboard: {
@@ -300,9 +301,9 @@ const dictionaries = {
         "Vous ne pouvez pas reprendre exactement la même formule tant que la souscription actuelle n'est pas finalisée.",
       aboutTitle: "À propos du service",
       walletFlow:
-        "Paiement direct par wallet, traitement rapide de votre commande et suivi centralisé dans votre espace Aureus Prime.",
+        "Paiement direct par wallet, création de votre abonnement et livraison suivie de vos accès depuis votre espace Aureus Prime.",
       securePurchase: "Achat sécurisé",
-      securePurchaseText: "Commande validée depuis votre portefeuille avec suivi dans le dashboard.",
+      securePurchaseText: "Commande validée depuis votre wallet avec suivi de l'abonnement, du KYC et de l'assignation.",
       delivery: "Livraison",
       selectedPlan: "Formule sélectionnée",
       standardPlan: "Standard",
@@ -311,7 +312,7 @@ const dictionaries = {
       kycRequired: "KYC requis",
       kycNoticeTitle: "Offre étudiant",
       kycNoticeText:
-        "Ce tarif nécessite un justificatif étudiant. Après paiement, l'accès sera livré après validation du KYC.",
+        "Ce tarif nécessite un justificatif étudiant. L'accès est livré uniquement après validation du KYC et assignation d'un compte compatible.",
       renewSubscription: "Prolonger mon abonnement",
       seeCurrentSubscription: "Voir mon abonnement en cours",
       continueCheckout: "Continuer vers la caisse",
@@ -682,8 +683,9 @@ const dictionaries = {
         chooseDescription: "Select the subscriptions and tools you need from our catalog.",
         payTitle: "2. Secure payment",
         payDescription: "Pay through our encrypted and secure payment methods.",
-        accessTitle: "3. Instant access",
-        accessDescription: "Receive your credentials by email immediately after validation.",
+        accessTitle: "3. Tracked access",
+        accessDescription:
+          "Track validation, KYC when required and access delivery from your account.",
       },
     },
     dashboard: {
@@ -814,9 +816,9 @@ const dictionaries = {
         "You cannot buy the exact same plan again until the current subscription is finalized.",
       aboutTitle: "About this service",
       walletFlow:
-        "Direct wallet payment, fast order processing and centralized tracking in your Aureus Prime space.",
+        "Direct wallet payment, subscription creation and tracked access delivery from your Aureus Prime space.",
       securePurchase: "Secure purchase",
-      securePurchaseText: "Order validated from your wallet with dashboard tracking.",
+      securePurchaseText: "Order validated from your wallet with subscription, KYC and assignment tracking.",
       delivery: "Delivery",
       selectedPlan: "Selected plan",
       standardPlan: "Standard",
@@ -825,7 +827,7 @@ const dictionaries = {
       kycRequired: "KYC required",
       kycNoticeTitle: "Student offer",
       kycNoticeText:
-        "This price requires student proof. After payment, access is delivered after KYC approval.",
+        "This price requires student proof. Access is delivered only after KYC approval and assignment of a compatible account.",
       renewSubscription: "Extend my subscription",
       seeCurrentSubscription: "View my current subscription",
       continueCheckout: "Continue to checkout",
