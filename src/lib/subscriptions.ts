@@ -26,6 +26,7 @@ export type SubscriptionAssignedAccount = {
   payload_type?: string | null;
   payload?: SubscriptionPayload | null;
   masked_payload?: SubscriptionPayload | null;
+  delivery_steps?: string[] | null;
   notes?: string | null;
   available_slots?: number | null;
 };

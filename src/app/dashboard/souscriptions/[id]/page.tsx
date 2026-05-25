@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useMemo, useState } from "react";
+import { use, useEffect, useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { DashboardBottomNav } from "@/components/dashboard/bottom-nav";
@@ -159,6 +159,46 @@ function isUrlValue(value: string): boolean {
   return /^https?:\/\//i.test(value.trim());
 }
 
+function renderLinkedText(text: string) {
+  const matches = Array.from(text.matchAll(/https?:\/\/[^\s]+/gi));
+
+  if (matches.length === 0) {
+    return text;
+  }
+
+  const parts: ReactNode[] = [];
+  let cursor = 0;
+
+  matches.forEach((match, index) => {
+    const url = match[0];
+    const start = match.index ?? 0;
+
+    if (start > cursor) {
+      parts.push(text.slice(cursor, start));
+    }
+
+    parts.push(
+      <a
+        key={`${url}-${index}`}
+        href={url}
+        target="_blank"
+        rel="noreferrer"
+        className="font-semibold text-[#131118] underline decoration-[#131118]/30 underline-offset-4"
+      >
+        {url}
+      </a>,
+    );
+
+    cursor = start + url.length;
+  });
+
+  if (cursor < text.length) {
+    parts.push(text.slice(cursor));
+  }
+
+  return parts;
+}
+
 function formatFieldLabel(field: string, t: TranslateFn): string {
   const normalized = field.trim().toLowerCase();
 
@@ -252,6 +292,7 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
   );
   const visiblePayloadEntries = visibleAccessGroups.flatMap((access) => access.entries);
   const primaryPayloadType = visibleAccessGroups[0]?.payloadType;
+  const deliverySteps = subscription?.assigned_account?.delivery_steps ?? subscription?.assignedAccount?.delivery_steps ?? [];
   const displayStatus = subscription ? subscription.computed_status ?? subscription.status : null;
   const statusMeta = subscription ? getStatusMeta(displayStatus, t) : null;
   const expiryMeta = subscription ? getExpiryMeta(subscription, dateLocale, t, locale) : null;
@@ -438,6 +479,26 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
                         </div>
                       </div>
                     ))}
+                  </div>
+                )}
+
+                {deliverySteps.length > 0 && (
+                  <div className="mt-5 rounded-2xl border border-gray-100 bg-[#fcfcfd] px-4 py-4">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-400">
+                      {t("subscriptions.deliverySteps")}
+                    </p>
+                    <ol className="mt-3 space-y-3">
+                      {deliverySteps.map((step, index) => (
+                        <li key={`${index}-${step}`} className="flex items-start gap-3">
+                          <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-[#131118] text-[11px] font-bold text-white">
+                            {index + 1}
+                          </span>
+                          <p className="flex-1 text-sm font-medium leading-6 text-[#131118]">
+                            {renderLinkedText(step)}
+                          </p>
+                        </li>
+                      ))}
+                    </ol>
                   </div>
                 )}
               </section>
