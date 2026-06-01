@@ -9,6 +9,8 @@ type BeforeInstallPromptEvent = Event & {
 };
 
 const DISMISS_KEY = "ap_pwa_install_prompt_dismissed_at";
+const INSTALL_ID_KEY = "ap_pwa_installation_id";
+const INSTALL_TRACKED_KEY = "ap_pwa_installation_tracked_at";
 const DISMISS_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
 function isInstalledPwa() {
@@ -46,6 +48,57 @@ function wasRecentlyDismissed() {
 
 function rememberDismissal() {
   window.localStorage.setItem(DISMISS_KEY, String(Date.now()));
+}
+
+function installationId() {
+  const existing = window.localStorage.getItem(INSTALL_ID_KEY);
+  if (existing) {
+    return existing;
+  }
+
+  const id =
+    typeof window.crypto?.randomUUID === "function"
+      ? window.crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
+  window.localStorage.setItem(INSTALL_ID_KEY, id);
+  return id;
+}
+
+function displayMode() {
+  if (window.matchMedia("(display-mode: fullscreen)").matches) return "fullscreen";
+  if (window.matchMedia("(display-mode: standalone)").matches) return "standalone";
+  if (window.matchMedia("(display-mode: minimal-ui)").matches) return "minimal-ui";
+  return "browser";
+}
+
+async function trackPwaInstallation(locale: string, source = "appinstalled") {
+  if (window.localStorage.getItem(INSTALL_TRACKED_KEY)) {
+    return;
+  }
+
+  const response = await fetch("/api/v1/pwa/installations", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "Accept-Language": locale,
+    },
+    body: JSON.stringify({
+      installation_id: installationId(),
+      platform: window.navigator.platform || "unknown",
+      display_mode: displayMode(),
+      source,
+      locale,
+      metadata: {
+        max_touch_points: window.navigator.maxTouchPoints ?? null,
+      },
+    }),
+  });
+
+  if (response.ok) {
+    window.localStorage.setItem(INSTALL_TRACKED_KEY, String(Date.now()));
+  }
 }
 
 function MaterialIcon({ name, className = "" }: { name: string; className?: string }) {
@@ -92,7 +145,12 @@ export function PwaInstallPrompt() {
       return;
     }
 
-    if (!isMobileContext() || isInstalledPwa() || wasRecentlyDismissed()) {
+    if (isInstalledPwa()) {
+      void trackPwaInstallation(locale, "standalone_detected");
+      return;
+    }
+
+    if (!isMobileContext() || wasRecentlyDismissed()) {
       return;
     }
 
@@ -107,6 +165,7 @@ export function PwaInstallPrompt() {
       setCanShow(false);
       setIsOpen(false);
       setDeferredPrompt(null);
+      void trackPwaInstallation(locale);
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
@@ -128,7 +187,7 @@ export function PwaInstallPrompt() {
         window.clearTimeout(fallbackTimer);
       }
     };
-  }, []);
+  }, [locale]);
 
   const close = () => {
     rememberDismissal();
