@@ -159,6 +159,27 @@ function isUrlValue(value: string): boolean {
   return /^https?:\/\//i.test(value.trim());
 }
 
+async function copyTextToClipboard(value: string): Promise<void> {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(value);
+    return;
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = value;
+  textarea.setAttribute("readonly", "true");
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.select();
+
+  try {
+    document.execCommand("copy");
+  } finally {
+    document.body.removeChild(textarea);
+  }
+}
+
 function renderLinkedText(text: string) {
   const matches = Array.from(text.matchAll(/https?:\/\/[^\s]+/gi));
 
@@ -210,7 +231,7 @@ function formatFieldLabel(field: string, t: TranslateFn): string {
     return t("common.password");
   }
 
-  if (["code", "pin"].includes(normalized)) {
+  if (["code", "key", "cle", "clé", "license", "licence", "license_key", "licence_key", "api_key", "pin"].includes(normalized)) {
     return t("common.code");
   }
 
@@ -229,6 +250,7 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [copiedEntryKey, setCopiedEntryKey] = useState("");
 
   const subscriptionId = parseSubscriptionRouteId(resolvedParams.id);
   const isValidSubscriptionId = subscriptionId !== null;
@@ -303,6 +325,18 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
   const serviceHref = subscription?.product?.slug ? `/dashboard/services/${subscription.product.slug}` : "/dashboard/services";
   const typeLabel = subscription ? getAccessModeLabel(subscription.access_mode ?? subscription.type, t) : t("common.service");
   const isActive = subscription ? isActiveSubscription(displayStatus) : false;
+
+  async function handleCopyAccessValue(value: string, entryKey: string) {
+    try {
+      await copyTextToClipboard(value);
+      setCopiedEntryKey(entryKey);
+      window.setTimeout(() => {
+        setCopiedEntryKey((current) => (current === entryKey ? "" : current));
+      }, 1800);
+    } catch (copyError) {
+      console.error("Failed to copy subscription access value:", copyError);
+    }
+  }
 
   return (
     <div className="dashboard-mode bg-[#f6f6f8] text-[#131118] min-h-screen flex justify-center sm:items-center sm:p-4">
@@ -460,8 +494,26 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
                         <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-400">{access.serviceName}</p>
                         <div className="mt-3 space-y-3">
                           {access.entries.map((entry) => (
-                            <div key={`${access.assignmentId ?? access.serviceName}-${entry.field}`}>
-                              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-400">{entry.label}</p>
+                            <div key={`${access.assignmentId ?? access.serviceName}-${entry.field}`} className="rounded-xl bg-white px-3 py-3 ring-1 ring-gray-100">
+                              <div className="flex items-center justify-between gap-3">
+                                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-400">{entry.label}</p>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    handleCopyAccessValue(
+                                      entry.value,
+                                      `${access.assignmentId ?? access.serviceName}-${entry.field}`,
+                                    )
+                                  }
+                                  className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[#f2f0f4] px-3 py-1.5 text-[11px] font-bold text-[#131118] transition-colors hover:bg-[#e8e6eb]"
+                                  aria-label={`${t("common.copy")} ${entry.label}`}
+                                >
+                                  <span className="material-symbols-outlined text-[14px]">
+                                    {copiedEntryKey === `${access.assignmentId ?? access.serviceName}-${entry.field}` ? "check" : "content_copy"}
+                                  </span>
+                                  {copiedEntryKey === `${access.assignmentId ?? access.serviceName}-${entry.field}` ? t("common.copied") : t("common.copy")}
+                                </button>
+                              </div>
                               {isUrlValue(entry.value) ? (
                                 <a
                                   href={entry.value}

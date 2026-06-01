@@ -1,9 +1,9 @@
 import type { NextConfig } from "next";
 import nextPwa from "next-pwa";
+import defaultRuntimeCaching from "next-pwa/cache";
 
 const laravelApiUrl = (process.env.LARAVEL_API_URL || "http://api.aureusprime.local/api/v1").replace(/\/$/, "");
 const laravelAppUrl = laravelApiUrl.replace(/\/api\/v1$/, "");
-const defaultRuntimeCaching = require("next-pwa/cache");
 
 const pwaRuntimeCaching = [
   {
