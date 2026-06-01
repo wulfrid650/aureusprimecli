@@ -23,6 +23,7 @@ type CatalogOptionKind = "product" | "variant" | "product_variation";
 export type CatalogVariantApi = {
   id: number;
   name?: string | null;
+  description?: string | null;
   image_url?: string | null;
   price?: number | null;
   price_formatted?: string | null;
@@ -45,6 +46,7 @@ export type CatalogPurchaseOptionApi = {
   kind?: string | null;
   id: number;
   label?: string | null;
+  description?: string | null;
   price?: number | null;
   display_price?: number | null;
   display_price_formatted?: string | null;
@@ -127,6 +129,7 @@ export type CatalogOption = {
   billingCycle: string | null;
   billingCycleLabel: string;
   billingSummary: string;
+  description: string | null;
   durationDays: number | null;
   isFeatured: boolean;
   isStudentOffer: boolean;
@@ -414,6 +417,11 @@ function normalizeLegacyLabel(value?: string | null): string {
   return trimmed;
 }
 
+function normalizeCatalogText(value?: string | null): string | null {
+  const normalized = value?.replace(/\s+/g, " ").trim();
+  return normalized ? normalized : null;
+}
+
 export function formatXaf(amount?: number | null, locale: CatalogLocale = getCatalogLocale()): string {
   const safeAmount = Number.isFinite(amount) ? Number(amount) : 0;
   return `${new Intl.NumberFormat(locale === "en" ? "en-US" : "fr-FR").format(Math.round(safeAmount)).replace(/\u202f/g, " ")} Auri`;
@@ -625,6 +633,7 @@ function buildCatalogOptions(product: CatalogProductApi, locale: CatalogLocale):
       billingCycle,
       billingCycleLabel: formatBillingCycleLabel(billingCycle, locale),
       billingSummary: formatBillingSummary(durationDays, billingCycle, locale),
+      description: normalizeCatalogText(option.description ?? variant?.description),
       durationDays,
       isFeatured: Boolean(option.is_featured),
       isStudentOffer,
@@ -669,6 +678,7 @@ function buildCatalogOptions(product: CatalogProductApi, locale: CatalogLocale):
         billingCycle,
         billingCycleLabel: formatBillingCycleLabel(billingCycle, locale),
         billingSummary: formatBillingSummary(durationDays, billingCycle, locale),
+        description: normalizeCatalogText(variant.description),
         durationDays,
         isFeatured: Boolean(variant.is_featured),
         isStudentOffer,
@@ -702,6 +712,7 @@ function buildCatalogOptions(product: CatalogProductApi, locale: CatalogLocale):
       billingCycle: fallbackBillingCycle,
       billingCycleLabel: formatBillingCycleLabel(fallbackBillingCycle, locale),
       billingSummary: formatBillingSummary(null, fallbackBillingCycle, locale),
+      description: null,
       durationDays: null,
       isFeatured: true,
       isStudentOffer: productIsStudentOffer,

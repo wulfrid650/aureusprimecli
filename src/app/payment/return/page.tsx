@@ -15,6 +15,18 @@ type PaymentFinalizeResponse = {
   kyc_required?: boolean;
 };
 
+function resolvePaymentReturnHref(data?: PaymentFinalizeResponse): string {
+  if (data?.subscription_id) {
+    return getSubscriptionDetailsHref(data.subscription_id);
+  }
+
+  if (data?.kyc_required) {
+    return "/dashboard/compte";
+  }
+
+  return "/dashboard/wallet";
+}
+
 export default function PaymentReturnPage() {
   const router = useRouter();
   const { t } = useI18n();
@@ -55,11 +67,7 @@ export default function PaymentReturnPage() {
 
           if (res.ok && data?.status === "success") {
             const requiresKyc = Boolean(data.data?.kyc_required);
-            const nextHref = requiresKyc
-              ? "/dashboard/compte"
-              : data.data?.subscription_id
-              ? getSubscriptionDetailsHref(data.data.subscription_id)
-              : "/dashboard/souscriptions";
+            const nextHref = resolvePaymentReturnHref(data.data);
 
             setRedirectHref(nextHref);
             setStatus('success');
@@ -97,11 +105,7 @@ export default function PaymentReturnPage() {
 
         if (res.ok && data?.status === "success") {
           const requiresKyc = Boolean(data.data?.kyc_required);
-          const nextHref = requiresKyc
-            ? "/dashboard/compte"
-            : data.data?.subscription_id
-            ? getSubscriptionDetailsHref(data.data.subscription_id)
-            : "/dashboard";
+          const nextHref = resolvePaymentReturnHref(data.data);
 
           setRedirectHref(nextHref);
           setStatus('success');

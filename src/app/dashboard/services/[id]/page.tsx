@@ -181,6 +181,11 @@ export default function SingleServicePage({ params }: { params: Promise<{ id: st
                           <div className="flex flex-col items-start">
                             <span className={`font-bold ${isSelected ? 'text-[#131118]' : 'text-gray-500'}`}>{option.name}</span>
                             <span className="text-xs text-gray-400">{option.billingSummary}</span>
+                            {option.description && (
+                              <span className="mt-1 text-left text-xs leading-relaxed text-gray-500">
+                                {option.description}
+                              </span>
+                            )}
                             {option.requiresKyc && (
                               <span className="mt-1 inline-flex w-fit items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
                                 <span className="material-symbols-outlined text-[12px]">school</span>
@@ -223,7 +228,14 @@ export default function SingleServicePage({ params }: { params: Promise<{ id: st
 
             <h2 className="text-lg font-bold text-[#131118] mb-3">{t("serviceDetail.aboutTitle")}</h2>
             <p className="text-gray-500 leading-relaxed text-[15px] mb-6">
-              {service.description} 
+              {service.description}
+              {selectedOption?.description && (
+                <>
+                  <br/><br/>
+                  <strong className="text-[#131118]">{selectedOption.name} : </strong>
+                  {selectedOption.description}
+                </>
+              )}
               <br/><br/>
               {t("serviceDetail.walletFlow")}
             </p>

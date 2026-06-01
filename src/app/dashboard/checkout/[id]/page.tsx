@@ -268,6 +268,17 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
   };
 
   if (paymentSuccess) {
+    const successHref =
+      paymentSuccess.mode === "renewal"
+        ? getSubscriptionDetailsHref(paymentSuccess.subscriptionId)
+        : service?.isGiftCard
+          ? "/dashboard/souscriptions"
+          : paymentSuccess.subscriptionId
+            ? getSubscriptionDetailsHref(paymentSuccess.subscriptionId)
+            : paymentSuccess.kycRequired
+              ? "/dashboard/compte"
+              : "/dashboard/souscriptions";
+
     return (
       <div className="dashboard-mode bg-[#f6f6f8] text-[#131118] min-h-screen flex justify-center sm:items-center sm:p-4">
         <div className="w-full sm:max-w-[420px] sm:h-[90vh] sm:max-h-[850px] bg-white sm:rounded-[40px] overflow-hidden relative shadow-2xl flex flex-col mx-auto h-[100dvh] sm:h-auto items-center justify-center p-6 text-center">
@@ -305,24 +316,14 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
             )}
           </p>
           <Link
-            href={
-              paymentSuccess.mode === "renewal"
-                ? getSubscriptionDetailsHref(paymentSuccess.subscriptionId)
-                : service?.isGiftCard
-                  ? "/dashboard/souscriptions"
-                  : paymentSuccess.kycRequired
-                    ? "/dashboard/compte"
-                  : paymentSuccess.subscriptionId
-                    ? getSubscriptionDetailsHref(paymentSuccess.subscriptionId)
-                    : "/dashboard/souscriptions"
-            }
+            href={successHref}
             className="w-full bg-[#f2f0f4] hover:bg-[#e8e6eb] text-[#131118] font-bold text-lg py-4 rounded-2xl transition-all"
           >
             {paymentSuccess.mode === "renewal"
               ? t("checkout.seeSubscription")
               : service?.isGiftCard
                 ? t("checkout.seeCode")
-                : paymentSuccess.kycRequired
+                : paymentSuccess.kycRequired && !paymentSuccess.subscriptionId
                   ? t("checkout.kycUploadCta")
                 : t("checkout.seeSubscription")}
           </Link>
@@ -389,6 +390,9 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
                  <span className="font-extrabold text-lg text-[#131118]">{service?.title || t("common.loading")}</span>
                  {selectedOption && <span className="text-gray-500 font-medium text-sm">{selectedOption.name}</span>}
                  {!selectedOption && service && <span className="text-gray-500 font-medium text-sm">{service.category}</span>}
+                 {selectedOption?.description && (
+                   <span className="mt-1 text-xs leading-relaxed text-gray-500">{selectedOption.description}</span>
+                 )}
                </div>
              </div>
 
