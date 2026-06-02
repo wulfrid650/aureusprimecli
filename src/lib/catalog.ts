@@ -1,5 +1,6 @@
 import { safeFetch } from "@/lib/fetch";
 import { resolveClientLocale } from "@/lib/locale";
+import { formatAuriAmount } from "@/lib/money";
 
 type ApiEnvelope<T> = {
   data?: T;
@@ -422,9 +423,8 @@ function normalizeCatalogText(value?: string | null): string | null {
   return normalized ? normalized : null;
 }
 
-export function formatXaf(amount?: number | null, locale: CatalogLocale = getCatalogLocale()): string {
-  const safeAmount = Number.isFinite(amount) ? Number(amount) : 0;
-  return `${new Intl.NumberFormat(locale === "en" ? "en-US" : "fr-FR").format(Math.round(safeAmount)).replace(/\u202f/g, " ")} Auri`;
+export function formatAuri(amount?: number | null, locale: CatalogLocale = getCatalogLocale()): string {
+  return formatAuriAmount(amount, locale);
 }
 
 function formatBillingCycleLabel(billingCycle?: string | null, locale: CatalogLocale = getCatalogLocale()): string {
@@ -627,9 +627,9 @@ function buildCatalogOptions(product: CatalogProductApi, locale: CatalogLocale):
       kind,
       name: normalizeLegacyLabel(option.label ?? variant?.name) || copy(locale, "standard"),
       price,
-      priceFormatted: option.display_price_formatted ?? formatXaf(price, locale),
+      priceFormatted: formatAuriAmount(price, locale),
       originalPrice,
-      originalPriceFormatted: originalPrice ? formatXaf(originalPrice, locale) : null,
+      originalPriceFormatted: originalPrice ? formatAuri(originalPrice, locale) : null,
       billingCycle,
       billingCycleLabel: formatBillingCycleLabel(billingCycle, locale),
       billingSummary: formatBillingSummary(durationDays, billingCycle, locale),
@@ -672,9 +672,9 @@ function buildCatalogOptions(product: CatalogProductApi, locale: CatalogLocale):
         kind: "variant",
         name: normalizeLegacyLabel(variant.name) || copy(locale, "standard"),
         price,
-        priceFormatted: formatXaf(price, locale),
+        priceFormatted: formatAuriAmount(price, locale),
         originalPrice,
-        originalPriceFormatted: originalPrice ? formatXaf(originalPrice, locale) : null,
+        originalPriceFormatted: originalPrice ? formatAuri(originalPrice, locale) : null,
         billingCycle,
         billingCycleLabel: formatBillingCycleLabel(billingCycle, locale),
         billingSummary: formatBillingSummary(durationDays, billingCycle, locale),
@@ -706,9 +706,9 @@ function buildCatalogOptions(product: CatalogProductApi, locale: CatalogLocale):
       kind: "product",
       name: copy(locale, "standard"),
       price: productPrice,
-      priceFormatted: formatXaf(productPrice, locale),
+      priceFormatted: formatAuriAmount(productPrice, locale),
       originalPrice: productOriginalPrice,
-      originalPriceFormatted: productOriginalPrice ? formatXaf(productOriginalPrice, locale) : null,
+      originalPriceFormatted: productOriginalPrice ? formatAuri(productOriginalPrice, locale) : null,
       billingCycle: fallbackBillingCycle,
       billingCycleLabel: formatBillingCycleLabel(fallbackBillingCycle, locale),
       billingSummary: formatBillingSummary(null, fallbackBillingCycle, locale),
@@ -741,9 +741,9 @@ export function normalizeCatalogProduct(product: CatalogProductApi, locale: Cata
   const defaultOption = displayOption ?? featuredOption ?? options[0] ?? null;
   const backendDisplayPrice = product.display_price;
   const currentPrice = Number(backendDisplayPrice?.amount ?? defaultOption?.price ?? product.sale_price ?? product.price ?? 0);
-  const currentPriceFormatted = backendDisplayPrice?.formatted ?? defaultOption?.priceFormatted ?? formatXaf(currentPrice, locale);
+  const currentPriceFormatted = formatAuriAmount(currentPrice, locale);
   const originalPrice = backendDisplayPrice?.original_amount ?? defaultOption?.originalPrice ?? null;
-  const originalPriceFormatted = backendDisplayPrice?.original_formatted ?? defaultOption?.originalPriceFormatted ?? null;
+  const originalPriceFormatted = originalPrice ? formatAuriAmount(originalPrice, locale) : null;
   const optionCount = options.length;
   const productKycRequiredType = normalizeKycRequiredType(product.kyc_required_type);
   const productIsStudentOffer = isStudentFlagged(product);

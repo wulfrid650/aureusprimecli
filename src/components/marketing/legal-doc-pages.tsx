@@ -283,6 +283,19 @@ const legalDocs: Record<LegalPageId, LegalDocument> = {
             type: "paragraph",
             text: "Ces frais sont inclus dans le prix affiché en Auri TTC. En validant sa commande, l'utilisateur accepte expressément que le montant total inclut cette rémunération de service, définitivement acquise à Aureus Prime dès validation de la transaction.",
           },
+          { type: "subheading", text: "7.3. Modification des prix" },
+          {
+            type: "paragraph",
+            text: "Les prix des Services Numériques Tiers peuvent varier à tout moment en fonction des décisions des fournisseurs tiers, des taux, taxes, restrictions géographiques, disponibilités, frais opérationnels ou conditions d'accès imposées par ces fournisseurs. Lorsque cette variation provient d'un fournisseur tiers ou d'une contrainte externe, Aureus Prime peut appliquer le nouveau prix immédiatement aux nouvelles commandes et aux renouvellements non encore payés.",
+          },
+          {
+            type: "paragraph",
+            text: "Lorsque la modification de prix résulte d'une décision propre d'Aureus Prime, notamment une évolution des frais de service ou de la politique commerciale interne, Aureus Prime s'engage à appliquer cette modification de manière prévisionnelle, avec information préalable raisonnable des utilisateurs lorsque le changement affecte un renouvellement automatique. Le nouveau prix ne s'applique jamais rétroactivement à une période déjà payée.",
+          },
+          {
+            type: "paragraph",
+            text: "Une commande déjà payée conserve le montant validé au moment de la transaction. En cas de renouvellement, le prix applicable est celui affiché au moment du renouvellement ou celui déjà gelé/réservé dans le wallet lorsque le système a préalablement bloqué les fonds pour cette opération.",
+          },
           { type: "subheading", text: "7.4. Caractère définitif de la recharge du Wallet" },
           {
             type: "paragraph",
@@ -999,6 +1012,19 @@ const englishLegalDocs: Record<LegalPageId, LegalDocument> = {
           {
             type: "paragraph",
             text: "The total price may include the subscription cost and Aureus Prime service fees for intermediation, technical management, transaction security and support.",
+          },
+          { type: "subheading", text: "7.3. Price changes" },
+          {
+            type: "paragraph",
+            text: "Prices for Third-party digital services may change at any time depending on decisions by third-party providers, rates, taxes, geographic restrictions, availability, operational costs or access conditions imposed by those providers. When the change comes from a third-party provider or external constraint, Aureus Prime may apply the new price immediately to new orders and renewals that have not yet been paid.",
+          },
+          {
+            type: "paragraph",
+            text: "When the price change results from Aureus Prime's own decision, including changes to service fees or internal commercial policy, Aureus Prime applies the change prospectively and provides reasonable prior information when the change affects an automatic renewal. The new price never applies retroactively to a period already paid.",
+          },
+          {
+            type: "paragraph",
+            text: "An already paid order keeps the amount confirmed at the time of the transaction. For renewals, the applicable price is the price displayed at the time of renewal or the amount already frozen/reserved in the wallet when the system has previously blocked funds for that operation.",
           },
           { type: "subheading", text: "7.4. Final delivery of wallet top-ups" },
           {

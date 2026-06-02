@@ -7,6 +7,7 @@ import { DashboardBottomNav } from "@/components/dashboard/bottom-nav";
 import { ServiceIllustration } from "@/components/dashboard/service-illustration";
 import { DashboardHeaderControls } from "@/components/dashboard/header-controls";
 import { getPlural, useI18n, type TranslateFn } from "@/lib/i18n";
+import { formatAuriAmount } from "@/lib/money";
 import {
   fetchUserSubscription,
   getDaysUntil,
@@ -444,10 +445,10 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
                     <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-400">{t("common.service")}</p>
                     <p className="mt-2 text-sm font-bold text-[#131118]">{typeLabel}</p>
                   </div>
-                  {subscription.renewal_amount_formatted && (
+                  {subscription.renewal_amount !== null && subscription.renewal_amount !== undefined && (
                     <div className="rounded-2xl bg-[#f8f8fb] px-4 py-3">
                       <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-400">{t("subscriptions.renew")}</p>
-                      <p className="mt-2 text-sm font-bold text-[#131118]">{subscription.renewal_amount_formatted}</p>
+                      <p className="mt-2 text-sm font-bold text-[#131118]">{formatAuriAmount(subscription.renewal_amount, dateLocale)}</p>
                     </div>
                   )}
                   {subscription.assignments && subscription.assignments.length > 0 && (
