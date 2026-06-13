@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { DashboardHeaderControls } from "@/components/dashboard/header-controls";
 import { apiFetch } from "@/lib/fetch";
+import { getApiFieldErrors, getApiMessage, readApiResponse } from "@/lib/api-response";
 import { useI18n } from "@/lib/i18n";
 
 export default function RechargePage() {
@@ -14,7 +15,7 @@ export default function RechargePage() {
   const [customAmount, setCustomAmount] = useState<string>("");
   const [paymentMethod, setPaymentMethod] = useState<"mobile_money" | "paypal">("mobile_money");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
   const quickAmounts = [1000, 5000, 10000];
 
@@ -35,12 +36,12 @@ export default function RechargePage() {
 
   const handleTopup = async () => {
     if (amount <= 0 || amount > 150000) {
-      setError(t("recharge.amountRangeError"));
+      setErrorMessages([t("recharge.amountRangeError")]);
       return;
     }
 
     setIsLoading(true);
-    setError(null);
+    setErrorMessages([]);
 
     try {
       const res = await apiFetch("/api/v1/wallet/topup", {
@@ -52,15 +53,26 @@ export default function RechargePage() {
         })
       });
 
-      const text = await res.text();
-      const json = text ? JSON.parse(text) : {};
+      const payload = await readApiResponse<{
+        checkout_url?: string;
+        approve_url?: string;
+        status?: string;
+      }>(res);
 
-      if (!res.ok || json.success === false) {
-        throw new Error(json.message || t("recharge.genericError"));
+      if (!res.ok) {
+        const fieldErrors = getApiFieldErrors(payload);
+        const amountErrors = fieldErrors.amount ?? [];
+
+        setErrorMessages(
+          amountErrors.length > 0
+            ? amountErrors
+            : [getApiMessage(payload, t("recharge.genericError"))]
+        );
+        return;
       }
 
       // Redirection logic based on response
-      const data = json.data;
+      const data = payload?.data ?? {};
       if (data.checkout_url && data.checkout_url !== window.location.href) {
         window.location.href = data.checkout_url;
       } else if (data.approve_url && data.approve_url !== window.location.href) {
@@ -72,7 +84,8 @@ export default function RechargePage() {
         throw new Error(t("recharge.paymentUrlMissing"));
       }
     } catch (error) {
-      setError(error instanceof Error ? error.message : t("recharge.genericError"));
+      setErrorMessages([error instanceof Error ? error.message : t("recharge.genericError")]);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -198,9 +211,13 @@ export default function RechargePage() {
             </button>
           </section>
 
-          {error && (
+          {errorMessages.length > 0 && (
             <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-center text-sm font-medium text-red-600">
-              {error}
+              <ul className="space-y-1">
+                {errorMessages.map((message) => (
+                  <li key={message}>{message}</li>
+                ))}
+              </ul>
             </div>
           )}
         </main>
