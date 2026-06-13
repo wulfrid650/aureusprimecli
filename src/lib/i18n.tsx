@@ -398,6 +398,15 @@ const dictionaries = {
       standardPlan: "Formule standard",
       assignments: "{count} affectation{plural}",
       autoRenewal: "Renouvellement auto",
+      disableAutoRenew: "Annuler le renouvellement auto",
+      disableAutoRenewTitle: "Arrêter le renouvellement automatique",
+      disableAutoRenewHelp:
+        "Vous gardez l'accès jusqu'au {date}. Aucun remboursement ni révocation d'accès n'est déclenché maintenant.",
+      disableAutoRenewConfirm:
+        "Confirmer l'arrêt du renouvellement automatique ? Vous gardez l'accès jusqu'au {date}.",
+      disableAutoRenewSuccess: "Renouvellement automatique désactivé.",
+      disableAutoRenewError:
+        "Impossible de désactiver le renouvellement automatique pour le moment.",
       activation: "Activation",
       expiry: "Échéance",
       studentKycPending:
@@ -916,6 +925,14 @@ const dictionaries = {
       standardPlan: "Standard plan",
       assignments: "{count} assignment{plural}",
       autoRenewal: "Auto renewal",
+      disableAutoRenew: "Cancel auto renewal",
+      disableAutoRenewTitle: "Stop automatic renewal",
+      disableAutoRenewHelp:
+        "You keep access until {date}. No refund or access revocation is triggered now.",
+      disableAutoRenewConfirm:
+        "Confirm automatic renewal cancellation? You keep access until {date}.",
+      disableAutoRenewSuccess: "Automatic renewal disabled.",
+      disableAutoRenewError: "Unable to disable automatic renewal right now.",
       activation: "Activation",
       expiry: "Expiry",
       studentKycPending:

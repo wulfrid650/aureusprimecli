@@ -9,6 +9,7 @@ import { DashboardHeaderControls } from "@/components/dashboard/header-controls"
 import { getPlural, useI18n, type TranslateFn } from "@/lib/i18n";
 import { formatAuriAmount } from "@/lib/money";
 import {
+  disableUserSubscriptionAutoRenew,
   fetchUserSubscription,
   getDaysUntil,
   getSubscriptionOption,
@@ -252,6 +253,8 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [copiedEntryKey, setCopiedEntryKey] = useState("");
+  const [actionMessage, setActionMessage] = useState("");
+  const [isDisablingAutoRenew, setIsDisablingAutoRenew] = useState(false);
 
   const subscriptionId = parseSubscriptionRouteId(resolvedParams.id);
   const isValidSubscriptionId = subscriptionId !== null;
@@ -336,6 +339,37 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
       }, 1800);
     } catch (copyError) {
       console.error("Failed to copy subscription access value:", copyError);
+    }
+  }
+
+  async function handleDisableAutoRenew() {
+    if (!subscription) {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      t("subscriptions.disableAutoRenewConfirm", {
+        date: formatDate(subscription.expires_at, dateLocale, t),
+      }),
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setIsDisablingAutoRenew(true);
+    setActionMessage("");
+    setError("");
+
+    try {
+      const updatedSubscription = await disableUserSubscriptionAutoRenew(subscription.id);
+      setSubscription(updatedSubscription);
+      setActionMessage(t("subscriptions.disableAutoRenewSuccess"));
+    } catch (disableError) {
+      console.error("Failed to disable auto renewal:", disableError);
+      setError(disableError instanceof Error ? disableError.message : t("subscriptions.disableAutoRenewError"));
+    } finally {
+      setIsDisablingAutoRenew(false);
     }
   }
 
@@ -555,6 +589,36 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
                   </div>
                 )}
               </section>
+
+              {actionMessage && (
+                <div className="rounded-3xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm font-bold text-emerald-800">
+                  {actionMessage}
+                </div>
+              )}
+
+              {subscription.auto_renew && isOngoingSubscription(displayStatus) && (
+                <section className="rounded-[30px] border border-amber-200 bg-amber-50 p-5 shadow-sm">
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-amber-700">
+                    {t("subscriptions.autoRenewal")}
+                  </p>
+                  <h3 className="mt-2 text-lg font-black text-[#131118]">
+                    {t("subscriptions.disableAutoRenewTitle")}
+                  </h3>
+                  <p className="mt-2 text-sm font-medium leading-6 text-amber-800">
+                    {t("subscriptions.disableAutoRenewHelp", {
+                      date: formatDate(subscription.expires_at, dateLocale, t),
+                    })}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => void handleDisableAutoRenew()}
+                    disabled={isDisablingAutoRenew}
+                    className="mt-4 w-full rounded-2xl bg-[#131118] py-3.5 text-center text-sm font-bold text-white transition-colors hover:bg-black disabled:cursor-wait disabled:opacity-60"
+                  >
+                    {isDisablingAutoRenew ? t("common.loading") : t("subscriptions.disableAutoRenew")}
+                  </button>
+                </section>
+              )}
 
               <div className="flex items-center gap-2">
                 <Link

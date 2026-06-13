@@ -196,6 +196,26 @@ export async function fetchUserSubscription(subscriptionId: number): Promise<Sub
   return payload.data;
 }
 
+export async function disableUserSubscriptionAutoRenew(subscriptionId: number): Promise<Subscription> {
+  const response = await apiFetch(`/api/v1/me/subscriptions/${subscriptionId}/auto-renew/cancel`, {
+    method: "POST",
+  });
+  const payload = await readApiResponse<Subscription>(response);
+
+  if (!response.ok) {
+    throw createSubscriptionRequestError(
+      getApiMessage(payload, "Unable to disable automatic renewal right now."),
+      response.status,
+    );
+  }
+
+  if (!payload?.data) {
+    throw createSubscriptionRequestError("Subscription not found.", 404);
+  }
+
+  return payload.data;
+}
+
 export async function fetchUserSubscriptions(): Promise<Subscription[]> {
   const response = await apiFetch("/api/v1/me/subscriptions", { cache: "no-store" });
   const payload = await readApiResponse<Subscription[]>(response);
