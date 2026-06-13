@@ -9,11 +9,7 @@ import { ServiceIllustration } from "@/components/dashboard/service-illustration
 import { getApiMessage, readApiResponse } from "@/lib/api-response";
 import { apiFetch } from "@/lib/fetch";
 import { getPlural, type Locale, type TranslateFn, useI18n } from "@/lib/i18n";
-import {
-  disableUserSubscriptionAutoRenew,
-  getSubscriptionDetailsHref,
-  getVisibleAssignmentAccesses,
-} from "@/lib/subscriptions";
+import { getSubscriptionDetailsHref, getVisibleAssignmentAccesses } from "@/lib/subscriptions";
 
 type MaskedPayloadValue = string | number | boolean | null;
 
@@ -246,7 +242,6 @@ export default function SouscriptionsPage() {
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState<"actifs" | "historique">("actifs");
   const [accessSheet, setAccessSheet] = useState<AccessSheetState | null>(null);
-  const [disablingAutoRenewId, setDisablingAutoRenewId] = useState<number | null>(null);
 
   const loadSubscriptions = useCallback(async () => {
     setIsLoading(true);
@@ -346,33 +341,6 @@ export default function SouscriptionsPage() {
       entries,
     });
   };
-
-  async function handleDisableAutoRenew(subscription: Subscription) {
-    const confirmed = window.confirm(
-      t("subscriptions.disableAutoRenewConfirm", {
-        date: formatDate(subscription.expires_at, dateLocale, t),
-      }),
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
-    setDisablingAutoRenewId(subscription.id);
-    setError("");
-
-    try {
-      const updatedSubscription = await disableUserSubscriptionAutoRenew(subscription.id);
-      setSubscriptions((current) =>
-        current.map((item) => (item.id === updatedSubscription.id ? updatedSubscription : item)),
-      );
-    } catch (disableError) {
-      console.error("Failed to disable auto renewal:", disableError);
-      setError(disableError instanceof Error ? disableError.message : t("subscriptions.disableAutoRenewError"));
-    } finally {
-      setDisablingAutoRenewId(null);
-    }
-  }
 
   return (
     <div className="dashboard-mode bg-[#f6f6f8] text-[#131118] min-h-screen flex justify-center sm:items-center sm:p-4">
@@ -617,18 +585,6 @@ export default function SouscriptionsPage() {
                           >
                             {canOpenAccessSheet ? t("common.secureAccess") : t("subscriptions.statusPending")}
                           </button>
-                          {subscription.auto_renew && (
-                            <button
-                              type="button"
-                              onClick={() => void handleDisableAutoRenew(subscription)}
-                              disabled={disablingAutoRenewId === subscription.id}
-                              className="col-span-2 min-h-12 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-3 text-sm font-bold text-amber-800 transition-colors hover:bg-amber-100 disabled:cursor-wait disabled:opacity-60"
-                            >
-                              {disablingAutoRenewId === subscription.id
-                                ? t("common.loading")
-                                : t("subscriptions.disableAutoRenew")}
-                            </button>
-                          )}
                         </>
                       ) : (
                         <Link
