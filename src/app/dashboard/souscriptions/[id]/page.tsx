@@ -635,7 +635,7 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
                       <h3 className="mt-2 text-lg font-black text-[#131118]">
                         {t("subscriptions.disableAutoRenewTitle")}
                       </h3>
-                      <p className="mt-2 text-sm font-medium leading-6 text-amber-800">
+                      <p className="mt-2 text-sm font-medium leading-6 text-gray-600">
                         {t("subscriptions.disableAutoRenewHelp", {
                           date: formatDate(subscription.expires_at, dateLocale, t),
                         })}
@@ -659,7 +659,7 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
                       <h3 className="mt-2 text-lg font-black text-[#131118]">
                         {t("subscriptions.enableAutoRenewTitle")}
                       </h3>
-                      <p className="mt-2 text-sm font-medium leading-6 text-emerald-800">
+                      <p className="mt-2 text-sm font-medium leading-6 text-gray-600">
                         {t("subscriptions.enableAutoRenewHelp", {
                           date: formatDate(subscription.expires_at, dateLocale, t),
                         })}
