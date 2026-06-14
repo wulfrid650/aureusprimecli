@@ -407,6 +407,15 @@ const dictionaries = {
       disableAutoRenewSuccess: "Renouvellement automatique désactivé.",
       disableAutoRenewError:
         "Impossible de désactiver le renouvellement automatique pour le moment.",
+      enableAutoRenew: "Réactiver le renouvellement auto",
+      enableAutoRenewTitle: "Réactiver le renouvellement automatique",
+      enableAutoRenewHelp:
+        "Le prochain renouvellement se fera automatiquement à l'échéance du {date} si votre wallet a le solde nécessaire. Aucun débit n'est effectué maintenant.",
+      enableAutoRenewConfirm:
+        "Confirmer la réactivation du renouvellement automatique ? Aucun débit n'est effectué maintenant.",
+      enableAutoRenewSuccess: "Renouvellement automatique réactivé.",
+      enableAutoRenewError:
+        "Impossible de réactiver le renouvellement automatique pour le moment.",
       activation: "Activation",
       expiry: "Échéance",
       studentKycPending:
@@ -933,6 +942,14 @@ const dictionaries = {
         "Confirm automatic renewal cancellation? You keep access until {date}.",
       disableAutoRenewSuccess: "Automatic renewal disabled.",
       disableAutoRenewError: "Unable to disable automatic renewal right now.",
+      enableAutoRenew: "Enable auto renewal",
+      enableAutoRenewTitle: "Enable automatic renewal",
+      enableAutoRenewHelp:
+        "The next renewal will run automatically on {date} if your wallet has enough balance. No charge is made now.",
+      enableAutoRenewConfirm:
+        "Confirm automatic renewal reactivation? No charge is made now.",
+      enableAutoRenewSuccess: "Automatic renewal enabled.",
+      enableAutoRenewError: "Unable to enable automatic renewal right now.",
       activation: "Activation",
       expiry: "Expiry",
       studentKycPending:

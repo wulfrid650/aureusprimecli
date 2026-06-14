@@ -10,6 +10,7 @@ import { getPlural, useI18n, type TranslateFn } from "@/lib/i18n";
 import { formatAuriAmount } from "@/lib/money";
 import {
   disableUserSubscriptionAutoRenew,
+  enableUserSubscriptionAutoRenew,
   fetchUserSubscription,
   getDaysUntil,
   getSubscriptionOption,
@@ -255,6 +256,7 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
   const [copiedEntryKey, setCopiedEntryKey] = useState("");
   const [actionMessage, setActionMessage] = useState("");
   const [isDisablingAutoRenew, setIsDisablingAutoRenew] = useState(false);
+  const [isEnablingAutoRenew, setIsEnablingAutoRenew] = useState(false);
 
   const subscriptionId = parseSubscriptionRouteId(resolvedParams.id);
   const isValidSubscriptionId = subscriptionId !== null;
@@ -370,6 +372,33 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
       setError(disableError instanceof Error ? disableError.message : t("subscriptions.disableAutoRenewError"));
     } finally {
       setIsDisablingAutoRenew(false);
+    }
+  }
+
+  async function handleEnableAutoRenew() {
+    if (!subscription) {
+      return;
+    }
+
+    const confirmed = window.confirm(t("subscriptions.enableAutoRenewConfirm"));
+
+    if (!confirmed) {
+      return;
+    }
+
+    setIsEnablingAutoRenew(true);
+    setActionMessage("");
+    setError("");
+
+    try {
+      const updatedSubscription = await enableUserSubscriptionAutoRenew(subscription.id);
+      setSubscription(updatedSubscription);
+      setActionMessage(t("subscriptions.enableAutoRenewSuccess"));
+    } catch (enableError) {
+      console.error("Failed to enable auto renewal:", enableError);
+      setError(enableError instanceof Error ? enableError.message : t("subscriptions.enableAutoRenewError"));
+    } finally {
+      setIsEnablingAutoRenew(false);
     }
   }
 
@@ -596,28 +625,56 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
                 </div>
               )}
 
-              {subscription.auto_renew && isOngoingSubscription(displayStatus) && (
-                <section className="rounded-[30px] border border-amber-200 bg-amber-50 p-5 shadow-sm">
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-amber-700">
-                    {t("subscriptions.autoRenewal")}
-                  </p>
-                  <h3 className="mt-2 text-lg font-black text-[#131118]">
-                    {t("subscriptions.disableAutoRenewTitle")}
-                  </h3>
-                  <p className="mt-2 text-sm font-medium leading-6 text-amber-800">
-                    {t("subscriptions.disableAutoRenewHelp", {
-                      date: formatDate(subscription.expires_at, dateLocale, t),
-                    })}
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => void handleDisableAutoRenew()}
-                    disabled={isDisablingAutoRenew}
-                    className="mt-4 w-full rounded-2xl bg-[#131118] py-3.5 text-center text-sm font-bold text-white transition-colors hover:bg-black disabled:cursor-wait disabled:opacity-60"
-                  >
-                    {isDisablingAutoRenew ? t("common.loading") : t("subscriptions.disableAutoRenew")}
-                  </button>
-                </section>
+              {isOngoingSubscription(displayStatus) && (
+                <>
+                  {subscription.auto_renew && (
+                    <section className="rounded-[30px] border border-amber-200 bg-amber-50 p-5 shadow-sm">
+                      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-amber-700">
+                        {t("subscriptions.autoRenewal")}
+                      </p>
+                      <h3 className="mt-2 text-lg font-black text-[#131118]">
+                        {t("subscriptions.disableAutoRenewTitle")}
+                      </h3>
+                      <p className="mt-2 text-sm font-medium leading-6 text-amber-800">
+                        {t("subscriptions.disableAutoRenewHelp", {
+                          date: formatDate(subscription.expires_at, dateLocale, t),
+                        })}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => void handleDisableAutoRenew()}
+                        disabled={isDisablingAutoRenew}
+                        className="mt-4 w-full rounded-2xl bg-[#131118] py-3.5 text-center text-sm font-bold text-white transition-colors hover:bg-black disabled:cursor-wait disabled:opacity-60"
+                      >
+                        {isDisablingAutoRenew ? t("common.loading") : t("subscriptions.disableAutoRenew")}
+                      </button>
+                    </section>
+                  )}
+
+                  {!subscription.auto_renew && subscription.can_enable_auto_renew && (
+                    <section className="rounded-[30px] border border-emerald-200 bg-emerald-50 p-5 shadow-sm">
+                      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-700">
+                        {t("subscriptions.autoRenewal")}
+                      </p>
+                      <h3 className="mt-2 text-lg font-black text-[#131118]">
+                        {t("subscriptions.enableAutoRenewTitle")}
+                      </h3>
+                      <p className="mt-2 text-sm font-medium leading-6 text-emerald-800">
+                        {t("subscriptions.enableAutoRenewHelp", {
+                          date: formatDate(subscription.expires_at, dateLocale, t),
+                        })}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => void handleEnableAutoRenew()}
+                        disabled={isEnablingAutoRenew}
+                        className="mt-4 w-full rounded-2xl bg-emerald-700 py-3.5 text-center text-sm font-bold text-white transition-colors hover:bg-emerald-800 disabled:cursor-wait disabled:opacity-60"
+                      >
+                        {isEnablingAutoRenew ? t("common.loading") : t("subscriptions.enableAutoRenew")}
+                      </button>
+                    </section>
+                  )}
+                </>
               )}
 
               <div className="flex items-center gap-2">

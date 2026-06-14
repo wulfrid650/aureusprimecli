@@ -64,6 +64,8 @@ export type Subscription = {
   is_expiring_soon?: boolean;
   is_expired?: boolean;
   auto_renew?: boolean;
+  can_auto_renew?: boolean;
+  can_enable_auto_renew?: boolean;
   pending_student_kyc?: boolean;
   renewal_amount?: number | null;
   renewal_amount_formatted?: string | null;
@@ -205,6 +207,26 @@ export async function disableUserSubscriptionAutoRenew(subscriptionId: number): 
   if (!response.ok) {
     throw createSubscriptionRequestError(
       getApiMessage(payload, "Unable to disable automatic renewal right now."),
+      response.status,
+    );
+  }
+
+  if (!payload?.data) {
+    throw createSubscriptionRequestError("Subscription not found.", 404);
+  }
+
+  return payload.data;
+}
+
+export async function enableUserSubscriptionAutoRenew(subscriptionId: number): Promise<Subscription> {
+  const response = await apiFetch(`/api/v1/me/subscriptions/${subscriptionId}/auto-renew/enable`, {
+    method: "POST",
+  });
+  const payload = await readApiResponse<Subscription>(response);
+
+  if (!response.ok) {
+    throw createSubscriptionRequestError(
+      getApiMessage(payload, "Unable to enable automatic renewal right now."),
       response.status,
     );
   }
