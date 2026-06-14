@@ -433,7 +433,7 @@ export default function SouscriptionsPage() {
           )}
 
           {isLoading ? (
-            <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {[0, 1, 2].map((item) => (
                 <div
                   key={item}
@@ -456,7 +456,7 @@ export default function SouscriptionsPage() {
               ))}
             </div>
           ) : filteredSubscriptions.length > 0 ? (
-            <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">
               {filteredSubscriptions.map((subscription) => {
                 const displayStatus = subscription.computed_status ?? subscription.status;
                 const statusMeta = getStatusMeta(displayStatus, t);

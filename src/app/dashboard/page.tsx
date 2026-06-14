@@ -97,7 +97,7 @@ export default function Dashboard() {
         {/* Scrollable Content */}
         <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth">
           {/* Hero Section */}
-          <section className="px-5 pt-8 pb-6 flex flex-col gap-6">
+          <section className="grid grid-cols-1 gap-6 px-5 pb-6 pt-8 md:grid-cols-[1.25fr_0.75fr] md:items-center">
             <div className="relative w-full aspect-[4/3] rounded-3xl overflow-hidden shadow-[0_10px_40px_-10px_rgba(91,19,236,0.1)] group">
               <div className="absolute inset-0 bg-gradient-to-br from-[#5b13ec] via-[#7e44f2] to-[#bca3f6]"></div>
               <img 
@@ -156,7 +156,7 @@ export default function Dashboard() {
 
           {/* Value Props List */}
           <section className="px-5 pb-8">
-            <div className="flex flex-col gap-3">
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
               <div className="flex items-center gap-4 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
                 <div className="size-10 rounded-full bg-[#5b13ec]/10 flex items-center justify-center text-[#5b13ec]">
                   <span className="material-symbols-outlined">bolt</span>

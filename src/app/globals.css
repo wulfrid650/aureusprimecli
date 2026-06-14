@@ -342,6 +342,14 @@ input {
   overscroll-behavior: auto;
 }
 
+.pb-safe {
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+}
+
+.pt-safe {
+  padding-top: calc(1rem + env(safe-area-inset-top));
+}
+
 .dashboard-mode main,
 .dashboard-mode .overflow-y-auto {
   min-height: 0;
@@ -352,13 +360,37 @@ input {
 @media (max-width: 639px) {
   .dashboard-mode {
     height: var(--app-height, 100dvh);
+    min-height: calc(var(--app-height, 100dvh) + env(safe-area-inset-top) + env(safe-area-inset-bottom));
+    margin:
+      calc(-1 * env(safe-area-inset-top))
+      calc(-1 * env(safe-area-inset-right))
+      calc(-1 * env(safe-area-inset-bottom))
+      calc(-1 * env(safe-area-inset-left));
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
     overflow: hidden;
     overscroll-behavior: contain;
+  }
+
+  .dashboard-mode > div {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    max-width: none !important;
+    min-height: calc(var(--app-height, 100dvh) + env(safe-area-inset-top) + env(safe-area-inset-bottom)) !important;
+  }
+
+  .dashboard-mode > div > header {
+    padding-top: calc(1rem + env(safe-area-inset-top)) !important;
   }
 
   .dashboard-mode main,
   .dashboard-mode .overflow-y-auto {
     overscroll-behavior-y: contain;
+  }
+
+  .dashboard-mode .dashboard-bottom-nav,
+  .dashboard-mode .pb-safe {
+    padding-bottom: calc(0.9rem + env(safe-area-inset-bottom)) !important;
   }
 }
 
@@ -388,6 +420,37 @@ input {
     position: fixed !important;
     transform: translateX(-50%);
     width: min(calc(100vw - 2rem), 420px);
+  }
+}
+
+@media (min-width: 768px) {
+  .dashboard-mode {
+    padding-inline: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .dashboard-mode > div {
+    border-radius: 36px !important;
+    max-width: min(760px, calc(100vw - 3rem)) !important;
+    width: min(760px, calc(100vw - 3rem)) !important;
+  }
+
+  .dashboard-mode .dashboard-bottom-nav {
+    border-radius: 999px !important;
+    max-width: min(720px, calc(100vw - 3rem));
+    padding-inline: 2rem;
+    width: min(720px, calc(100vw - 3rem));
+  }
+}
+
+@media (min-width: 1024px) {
+  .dashboard-mode > div {
+    max-width: min(900px, calc(100vw - 4rem)) !important;
+    width: min(900px, calc(100vw - 4rem)) !important;
+  }
+
+  .dashboard-mode .dashboard-bottom-nav {
+    max-width: min(820px, calc(100vw - 4rem));
+    width: min(820px, calc(100vw - 4rem));
   }
 }
 

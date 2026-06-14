@@ -174,7 +174,7 @@ export default function ServicesPage() {
             )}
 
             {isLoading ? (
-              <div className="grid grid-cols-1 gap-5 px-5">
+              <div className="grid grid-cols-1 gap-5 px-5 md:grid-cols-2">
                 {[0, 1, 2].map((item) => (
                   <div key={item} className="rounded-3xl border border-gray-100 bg-white p-5 shadow-sm">
                     <div className="h-40 w-full rounded-2xl bg-gray-100 animate-pulse" />
@@ -230,7 +230,7 @@ export default function ServicesPage() {
               </div>
             ) : (
               // Affichage filtré (Scroll Vertical)
-              <div className="flex flex-col gap-5 px-5">
+              <div className="grid grid-cols-1 gap-5 px-5 md:grid-cols-2">
                 {filteredServices.map((service) => (
                   <ServiceCard key={service.slug} service={service} />
                 ))}

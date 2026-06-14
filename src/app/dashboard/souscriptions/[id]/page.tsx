@@ -503,7 +503,7 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
                   </div>
                 </div>
 
-                <div className="mt-5 grid grid-cols-1 gap-3">
+                <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2">
                   <div className="rounded-2xl bg-[#f8f8fb] px-4 py-3">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-400">{t("common.service")}</p>
                     <p className="mt-2 text-sm font-bold text-[#131118]">{typeLabel}</p>
