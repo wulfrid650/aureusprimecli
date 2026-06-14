@@ -602,7 +602,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navItems = [
-    { href: "/accueil", label: copy.navHome, active: pathname === "/accueil" || pathname === "/" },
+    { href: "/", label: copy.navHome, active: pathname === "/" },
     { href: "/catalogue", label: copy.navOffers, active: pathname === "/catalogue" || pathname === "/offres" },
     { href: "/aide", label: copy.help, active: pathname === "/aide" },
     { href: "/contact", label: copy.contact, active: pathname === "/contact" },
@@ -614,7 +614,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
         <header className="premium-header-surface sticky top-0 z-50 w-full border-b backdrop-blur-md">
           <div className={`mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-2.5 sm:gap-3 sm:px-6 sm:py-3 lg:px-8 ${isMobileMenuOpen ? "flex-wrap" : "flex-nowrap"} md:flex-wrap`}>
             <Link
-              href="/accueil"
+              href="/"
               className="flex h-9 shrink-0 items-center rounded-full border border-[var(--premium-card-border)] bg-[var(--premium-panel)] px-2.5 shadow-[var(--shadow-card)] sm:h-10 sm:px-3.5"
             >
               <Image src="/logo-aureusprime.svg" alt="Aureus Prime" width={170} height={20} className="logo-dark h-4 w-auto max-w-[112px] sm:h-5 sm:max-w-none" />
@@ -704,7 +704,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
             <div>
               <h2 className="mb-4 text-sm font-bold uppercase tracking-[0.18em] text-[var(--premium-text)]">{copy.footerNavigation}</h2>
               <div className="grid gap-3 text-sm text-[var(--premium-text-muted)]">
-                <Link href="/accueil" className="hover:text-primary-500">{copy.home}</Link>
+                <Link href="/" className="hover:text-primary-500">{copy.home}</Link>
                 <Link href="/offres" className="hover:text-primary-500">{copy.navOffers}</Link>
                 <Link href="/blog" className="hover:text-primary-500">{copy.blog}</Link>
                 <Link href="/a-propos" className="hover:text-primary-500">{copy.about}</Link>

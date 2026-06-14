@@ -305,7 +305,7 @@ export function MarketingHomePage() {
         <header className="premium-header-surface sticky top-0 z-50 w-full border-b backdrop-blur-md">
           <div className={`mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-2.5 sm:gap-3 sm:px-6 sm:py-3 lg:px-8 ${isMobileMenuOpen ? "flex-wrap" : "flex-nowrap"} md:flex-wrap`}>
             <Link
-              href="/accueil"
+              href="/"
               className="flex h-9 shrink-0 items-center rounded-full border border-[var(--premium-card-border)] bg-[var(--premium-panel)] px-2.5 shadow-[var(--shadow-card)] sm:h-10 sm:px-3.5"
             >
               <Image src="/logo-aureusprime.svg" alt="Aureusprime Logo" width={170} height={20} className="logo-dark h-4 w-auto max-w-[112px] sm:h-5 sm:max-w-none" />
@@ -690,7 +690,7 @@ export function MarketingHomePage() {
                 <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-[var(--premium-text)]">{t("marketing.footerNavigation")}</h3>
                 <ul className="space-y-3">
                   <li>
-                    <Link className="text-sm text-[var(--premium-text-muted)] transition-colors hover:text-primary-500" href="/accueil">
+                    <Link className="text-sm text-[var(--premium-text-muted)] transition-colors hover:text-primary-500" href="/">
                       {t("marketing.navHome")}
                     </Link>
                   </li>

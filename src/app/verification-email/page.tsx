@@ -113,7 +113,7 @@ function VerificationEmailContent() {
             </Link>
 
             <Link
-              href="/accueil"
+              href="/"
               className="inline-flex w-full items-center justify-center rounded-2xl border border-[var(--premium-card-border)] bg-transparent px-5 py-3.5 text-sm font-bold text-[var(--premium-text)] transition-colors hover:bg-[var(--premium-card-deep)]"
             >
               {t("common.backHome")}

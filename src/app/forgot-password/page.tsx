@@ -69,7 +69,7 @@ export default function ForgotPasswordPage() {
 
         <div className="premium-card-surface relative flex flex-col overflow-hidden rounded-2xl border border-[var(--premium-card-border)] bg-[var(--premium-panel)] px-8 py-10 backdrop-blur-xl transition-all">
           <div className="mb-8 flex flex-col items-center">
-            <Link href="/accueil" className="mb-6 block transition-transform hover:scale-105">
+            <Link href="/" className="mb-6 block transition-transform hover:scale-105">
               <Image src="/logo-aureusprime.svg" alt="Aureus Prime Logo" width={170} height={20} className="logo-dark h-6 w-auto" />
               <Image src="/logo-aureusprime-light.svg" alt="Aureus Prime Logo" width={170} height={20} className="logo-light h-6 w-auto" />
             </Link>

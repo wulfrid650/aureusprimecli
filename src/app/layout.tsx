@@ -9,6 +9,8 @@ import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
 import { I18nProvider } from "@/lib/i18n";
 import "./globals.css";
 
+const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://app.aureusprime.com").replace(/\/$/, "");
+
 const bodyFont = localFont({
   src: [
     {
@@ -41,6 +43,7 @@ const displayFont = localFont({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(appUrl),
   applicationName: "Aureus Prime",
   title: {
     default: "Aureus Prime",

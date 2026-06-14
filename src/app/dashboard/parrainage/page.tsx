@@ -351,20 +351,22 @@ export default function ReferralPage() {
                 ))}
               </div>
             ) : referrals.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-gray-200 bg-[#fafafa] p-6 text-center">
-                <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-[#5b13ec]/10 text-[#5b13ec]">
-                  <span className="material-symbols-outlined">group_add</span>
+              <div className="rounded-[24px] border border-dashed border-gray-200 bg-[#fcfcfd] px-6 py-8">
+                <div className="mx-auto flex max-w-sm flex-col items-center text-center">
+                  <div className="mb-4 flex size-14 items-center justify-center rounded-full bg-[#5b13ec]/10 text-[#5b13ec]">
+                    <span className="material-symbols-outlined text-[26px]">group_add</span>
+                  </div>
+                  <h4 className="mb-2 text-base font-black text-[#131118]">{t("referral.emptyTitle")}</h4>
+                  <p className="mb-5 max-w-[30ch] text-sm leading-6 text-gray-500">{t("referral.emptyText")}</p>
+                  <button
+                    type="button"
+                    onClick={() => copyValue(shareLink, t("referral.linkCopied"))}
+                    className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#131118] px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#221d2c] disabled:opacity-50"
+                    disabled={!shareLink}
+                  >
+                    {t("referral.copyMyLink")}
+                  </button>
                 </div>
-                <h4 className="font-bold text-[#131118] mb-1">{t("referral.emptyTitle")}</h4>
-                <p className="text-sm text-gray-500 mb-4">{t("referral.emptyText")}</p>
-                <button
-                  type="button"
-                  onClick={() => copyValue(shareLink, t("referral.linkCopied"))}
-                  className="rounded-full bg-[#131118] text-white px-4 py-2 text-sm font-bold hover:bg-[#221d2c] transition-colors disabled:opacity-50"
-                  disabled={!shareLink}
-                >
-                  {t("referral.copyMyLink")}
-                </button>
               </div>
             ) : (
               <div className="flex flex-col gap-3">

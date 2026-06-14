@@ -92,7 +92,7 @@ function LoginContent() {
         {/* Header Options */}
         <div className="mb-6 flex w-full justify-between px-2">
           <Link
-            href="/accueil"
+            href="/"
             className="flex items-center gap-2 text-sm font-medium text-[var(--premium-text-muted)] transition-colors hover:text-primary-500"
           >
             <span className="material-symbols-outlined text-sm">arrow_back</span>
@@ -108,7 +108,7 @@ function LoginContent() {
         <div className="premium-card-surface relative flex flex-col overflow-hidden rounded-2xl border border-[var(--premium-card-border)] bg-[var(--premium-panel)] px-8 py-10 backdrop-blur-xl transition-all">
           {/* Logo Section */}
           <div className="mb-8 flex flex-col items-center">
-            <Link href="/accueil" className="mb-6 block transition-transform hover:scale-105">
+            <Link href="/" className="mb-6 block transition-transform hover:scale-105">
               <Image src="/logo-aureusprime.svg" alt="Aureus Prime Logo" width={170} height={20} className="logo-dark h-6 w-auto" />
               <Image src="/logo-aureusprime-light.svg" alt="Aureus Prime Logo" width={170} height={20} className="logo-light h-6 w-auto" />
             </Link>
