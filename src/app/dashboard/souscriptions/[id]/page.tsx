@@ -644,7 +644,7 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
                         type="button"
                         onClick={() => void handleDisableAutoRenew()}
                         disabled={isDisablingAutoRenew}
-                        className="mt-4 w-full rounded-2xl bg-[#131118] py-3.5 text-center text-sm font-bold text-white transition-colors hover:bg-black disabled:cursor-wait disabled:opacity-60"
+                        className="mt-4 w-full rounded-2xl bg-red-600 py-3.5 text-center text-sm font-bold text-white transition-colors hover:bg-red-700 disabled:cursor-wait disabled:opacity-60"
                       >
                         {isDisablingAutoRenew ? t("common.loading") : t("subscriptions.disableAutoRenew")}
                       </button>
