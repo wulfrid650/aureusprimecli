@@ -606,7 +606,7 @@ export function MarketingHomePage() {
                     className={`rounded-3xl border border-[var(--premium-card-border)] p-8 ${
                       point.tone === "cool"
                         ? "bg-[var(--premium-panel)]"
-                        : "bg-[rgba(212,169,15,0.06)]"
+                        : "bg-[rgba(219,183,35,0.06)]"
                     }`}
                   >
                     <h3 className="text-xl font-black text-[var(--premium-text)]">{point.title}</h3>
