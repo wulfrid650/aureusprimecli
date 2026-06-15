@@ -373,7 +373,7 @@ export default function SouscriptionsPage() {
                   <p className="mt-2 text-sm text-white/70">{t("subscriptions.heroSubtitle")}</p>
                 </div>
                 <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm">
-                  <span className="material-symbols-outlined text-[24px] text-[#eab308]">subscriptions</span>
+                  <span className="material-symbols-outlined text-[24px] text-[#dbb723]">subscriptions</span>
                 </div>
               </div>
 

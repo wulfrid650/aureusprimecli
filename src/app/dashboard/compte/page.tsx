@@ -344,7 +344,7 @@ export default function ComptePage() {
                 <div className="size-24 rounded-full bg-[#131118] text-white flex items-center justify-center text-3xl font-bold mb-4 shadow-xl shadow-black/10 relative">
                   {profile?.name?.charAt(0).toUpperCase() || "U"}
                   <div className="absolute bottom-0 right-0 size-7 bg-white rounded-full flex items-center justify-center shadow-sm cursor-pointer hover:bg-gray-50">
-                    <span className="material-symbols-outlined text-[#eab308] text-[16px] font-bold">edit</span>
+                    <span className="material-symbols-outlined text-[#dbb723] text-[16px] font-bold">edit</span>
                   </div>
                 </div>
                 <h2 className="text-xl font-extrabold">{profile?.name || t("account.defaultUser")}</h2>

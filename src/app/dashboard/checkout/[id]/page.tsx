@@ -410,7 +410,7 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
           {selectedRequiresKyc && (
             <div className="mb-6 rounded-3xl border border-white/10 bg-[#131118] px-4 py-4 text-white">
               <div className="flex items-start gap-3">
-                <span className="material-symbols-outlined text-[22px] text-[#eab308]">school</span>
+                <span className="material-symbols-outlined text-[22px] text-[#dbb723]">school</span>
                 <div>
                   <p className="text-sm font-bold">{t("checkout.kycNoticeTitle")}</p>
                   <p className="mt-1 text-xs leading-relaxed text-white/70">{t("checkout.kycNoticeText")}</p>
@@ -484,7 +484,7 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
            <button 
              onClick={handlePayment}
              disabled={shouldShowLoadingState || !service || (!hasEnoughFunds && !hasBlockingSubscription) || isPaying}
-             className="w-full bg-[#eab308] hover:bg-[#ca8a04] text-[#131118] font-bold text-lg py-4 rounded-2xl shadow-xl shadow-[#eab308]/20 transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+             className="w-full bg-[#dbb723] hover:bg-[#b79218] text-[#131118] font-bold text-lg py-4 rounded-2xl shadow-xl shadow-[#dbb723]/20 transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
            >
              {isPaying ? (
                <span className="material-symbols-outlined animate-spin font-light">progress_activity</span>

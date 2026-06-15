@@ -107,7 +107,7 @@ export default function WalletPage() {
 
           <section className="bg-[#131118] rounded-[32px] p-6 text-white shadow-xl shadow-black/20 relative overflow-hidden mb-8">
             <div className="absolute top-0 right-0 -mr-8 -mt-8 size-32 rounded-full bg-white/5 blur-2xl"></div>
-            <div className="absolute bottom-0 left-0 -ml-8 -mb-8 size-24 rounded-full bg-[#eab308]/10 blur-xl"></div>
+            <div className="absolute bottom-0 left-0 -ml-8 -mb-8 size-24 rounded-full bg-[#dbb723]/10 blur-xl"></div>
 
             <div className="relative z-10 flex flex-col gap-1 mb-6">
               <span className="text-gray-400 font-medium text-sm">{t("wallet.mainBalance")}</span>
@@ -119,7 +119,7 @@ export default function WalletPage() {
                     <span className="text-4xl font-extrabold tracking-tight">
                       {balance.toLocaleString(dateLocale).replace(/\s/g, " ")}
                     </span>
-                    <span className="text-lg font-bold text-[#eab308]">AURI</span>
+                    <span className="text-lg font-bold text-[#dbb723]">AURI</span>
                   </>
                 )}
               </div>
@@ -128,7 +128,7 @@ export default function WalletPage() {
             <div className="relative z-10 flex flex-col">
               <Link
                 href="/dashboard/recharge"
-                className="w-full bg-[#eab308] hover:bg-[#ca8a04] text-[#131118] font-bold py-3.5 rounded-2xl flex items-center justify-center gap-2 transition-colors shadow-xl shadow-[#eab308]/20"
+                className="w-full bg-[#dbb723] hover:bg-[#b79218] text-[#131118] font-bold py-3.5 rounded-2xl flex items-center justify-center gap-2 transition-colors shadow-xl shadow-[#dbb723]/20"
               >
                 <span className="material-symbols-outlined text-[20px]">add_circle</span>
                 {t("wallet.recharge")}

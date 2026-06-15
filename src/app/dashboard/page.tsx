@@ -87,7 +87,7 @@ export default function Dashboard() {
             )}
             <Link
               href="/dashboard/recharge"
-              className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[#eab308] text-white shadow-sm transition-transform duration-200 hover:scale-105 active:scale-95 hover:bg-[#ca8a04]"
+              className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[#dbb723] text-white shadow-sm transition-transform duration-200 hover:scale-105 active:scale-95 hover:bg-[#b79218]"
             >
               <span className="material-symbols-outlined font-bold text-[14px]">add</span>
             </Link>
@@ -200,7 +200,7 @@ export default function Dashboard() {
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl font-bold">{t("dashboard.inviteAndEarn")} <br/><span className="text-[#7e44f2]">{t("dashboard.earn")}</span></h2>
                   <div className="size-12 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm">
-                    <span className="material-symbols-outlined text-yellow-400">emoji_events</span>
+                    <span className="material-symbols-outlined text-[#dbb723]">emoji_events</span>
                   </div>
                 </div>
 

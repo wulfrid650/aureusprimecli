@@ -62,7 +62,7 @@ export function ServiceCard({ service, compact = false }: ServiceCardProps) {
             <span className="text-lg font-bold text-[#131118] whitespace-nowrap mt-1">{service.currentPriceFormatted}</span>
           </div>
 
-          <span className="flex items-center justify-center size-10 rounded-full bg-[#eab308] text-white shadow-md shadow-[#eab308]/20 transition-transform duration-200 group-hover:scale-105 group-hover:bg-[#ca8a04]">
+          <span className="flex items-center justify-center size-10 rounded-full bg-[#dbb723] text-white shadow-md shadow-[#dbb723]/20 transition-transform duration-200 group-hover:scale-105 group-hover:bg-[#b79218]">
             <span className="material-symbols-outlined font-bold text-[20px]">arrow_forward</span>
           </span>
         </div>

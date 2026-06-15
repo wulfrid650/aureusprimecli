@@ -217,7 +217,7 @@ export default function SingleServicePage({ params }: { params: Promise<{ id: st
             {selectedRequiresKyc && (
               <div className="mb-6 -mt-4 rounded-2xl border border-white/10 bg-[#131118] px-4 py-3 text-white">
                 <div className="flex items-start gap-3">
-                  <span className="material-symbols-outlined text-[20px] text-[#eab308]">school</span>
+                  <span className="material-symbols-outlined text-[20px] text-[#dbb723]">school</span>
                   <div>
                     <p className="text-sm font-bold">{t("serviceDetail.kycNoticeTitle")}</p>
                     <p className="mt-1 text-xs leading-relaxed text-white/70">{t("serviceDetail.kycNoticeText")}</p>

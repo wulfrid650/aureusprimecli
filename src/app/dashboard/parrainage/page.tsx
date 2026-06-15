@@ -211,12 +211,12 @@ export default function ReferralPage() {
                   <h2 className="text-2xl font-black leading-tight">
                     {t("referral.heroTitleLine1")}
                     <br />
-                    <span className="text-[#eab308]">{t("referral.heroTitleLine2")}</span>
+                    <span className="text-[#dbb723]">{t("referral.heroTitleLine2")}</span>
                   </h2>
                   <p className="mt-3 text-sm text-white/70">{t("referral.heroText")}</p>
                 </div>
                 <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-white/10">
-                  <span className="material-symbols-outlined text-yellow-400">emoji_events</span>
+                  <span className="material-symbols-outlined text-[#dbb723]">emoji_events</span>
                 </div>
               </div>
 

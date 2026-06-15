@@ -145,7 +145,7 @@ export default function RechargePage() {
                 value={customAmount}
                 onChange={handleCustomAmountChange}
                 placeholder={t("recharge.customAmount")}
-                className="w-full bg-[#fcfcfd] border-2 border-[#f2f0f4] rounded-2xl py-4 pl-5 pr-16 text-lg font-bold text-[#131118] font-[family:var(--font-inter)] placeholder:opacity-40 outline-none transition-colors focus:border-[#eab308]"
+                className="w-full bg-[#fcfcfd] border-2 border-[#f2f0f4] rounded-2xl py-4 pl-5 pr-16 text-lg font-bold text-[#131118] font-[family:var(--font-inter)] placeholder:opacity-40 outline-none transition-colors focus:border-[#dbb723]"
               />
               <div className="absolute right-5 top-1/2 -translate-y-1/2 font-bold text-gray-400">
                 AURI
@@ -155,7 +155,7 @@ export default function RechargePage() {
               <p className="text-xs text-red-500">{t("recharge.maxAmount")}</p>
             )}
 
-            <div className="bg-[#eab308]/10 text-[#ca8a04] px-4 py-3 rounded-2xl flex items-center gap-2 mt-1">
+            <div className="bg-[#dbb723]/10 text-[#8b6f10] px-4 py-3 rounded-2xl flex items-center gap-2 mt-1">
               <span className="material-symbols-outlined text-[18px]">info</span>
               <span className="text-sm font-bold">{t("recharge.rate")}</span>
             </div>
@@ -227,7 +227,7 @@ export default function RechargePage() {
             type="button"
             onClick={handleTopup}
             disabled={isLoading || amount <= 0 || amount > 150000}
-            className="w-full flex items-center justify-center gap-2 bg-[#eab308] hover:bg-[#ca8a04] disabled:bg-[#f2f0f4] disabled:text-gray-400 text-[#131118] font-bold text-lg py-4 rounded-2xl shadow-xl shadow-[#eab308]/20 transition-colors disabled:shadow-none"
+            className="w-full flex items-center justify-center gap-2 bg-[#dbb723] hover:bg-[#b79218] disabled:bg-[#f2f0f4] disabled:text-gray-400 text-[#131118] font-bold text-lg py-4 rounded-2xl shadow-xl shadow-[#dbb723]/20 transition-colors disabled:shadow-none"
           >
             {isLoading ? (
               <span className="material-symbols-outlined animate-spin">progress_activity</span>

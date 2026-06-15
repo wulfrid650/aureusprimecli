@@ -35,7 +35,7 @@ export function DashboardBottomNav({ active }: { active?: DashboardNavItem }) {
           <Link
             key={item.id}
             href={item.href}
-            className={`flex flex-col items-center gap-1 ${isActive ? "text-[#eab308]" : "text-gray-400 hover:text-[#131118]"}`}
+            className={`flex flex-col items-center gap-1 ${isActive ? "text-[#dbb723]" : "text-gray-400 hover:text-[#131118]"}`}
           >
             <span
               className="material-symbols-outlined"
