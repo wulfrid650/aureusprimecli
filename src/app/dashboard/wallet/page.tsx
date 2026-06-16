@@ -16,6 +16,10 @@ interface Transaction {
   status: string;
   description: string;
   processed_at: string;
+  meta?: {
+    order_type?: string;
+    product_name?: string;
+  };
   related_entity?: {
     type: string;
     id: number;
@@ -57,6 +61,14 @@ export default function WalletPage() {
   };
 
   const getTransactionLabel = (tx: Transaction) => {
+    if (tx.meta?.order_type === "renewal") {
+      return `Renouvellement (${tx.meta.product_name || t("wallet.productFallback")})`;
+    }
+
+    if (/^Renouvellement/i.test(tx.description || "")) {
+      return tx.description;
+    }
+
     if (tx.type === 'topup' || tx.type === 'deposit') {
       return `${t("wallet.topup")} ${Math.abs(tx.amount).toLocaleString(dateLocale)} Auri`;
     }
