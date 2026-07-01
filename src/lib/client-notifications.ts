@@ -20,8 +20,10 @@ type FirebaseConfig = {
   apiKey: string;
   authDomain: string;
   projectId: string;
+  storageBucket: string;
   messagingSenderId: string;
   appId: string;
+  measurementId: string;
 };
 
 export type ClientNotificationItem = {
@@ -53,14 +55,38 @@ declare global {
   }
 }
 
+const FALLBACK_FIREBASE_CONFIG: FirebaseConfig = {
+  apiKey: "AIzaSyBVo3VgGV8pvVSJdoWZJ8ZRanKpXrngc38",
+  authDomain: "aureus-prime.firebaseapp.com",
+  projectId: "aureus-prime",
+  storageBucket: "aureus-prime.firebasestorage.app",
+  messagingSenderId: "860677898986",
+  appId: "1:860677898986:web:9ae7385d9cc431c1f1cd93",
+  measurementId: "G-ZHSBBYNYMX",
+};
+
+const FALLBACK_FIREBASE_VAPID_KEY =
+  "BB_K1zhO1CIa5pCp6_ILYYpv030o8NzAoSTLVBHK3PDy3h3CbX_6vjlOoyEbW46l2lW8LY0nz5SLVWYBkhkyGg0";
+
 function firebaseConfig(): FirebaseConfig {
   return {
-    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "",
-    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "",
-    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "",
-    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "",
-    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "",
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || FALLBACK_FIREBASE_CONFIG.apiKey,
+    authDomain:
+      process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || FALLBACK_FIREBASE_CONFIG.authDomain,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || FALLBACK_FIREBASE_CONFIG.projectId,
+    storageBucket:
+      process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || FALLBACK_FIREBASE_CONFIG.storageBucket,
+    messagingSenderId:
+      process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID ||
+      FALLBACK_FIREBASE_CONFIG.messagingSenderId,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || FALLBACK_FIREBASE_CONFIG.appId,
+    measurementId:
+      process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || FALLBACK_FIREBASE_CONFIG.measurementId,
   };
+}
+
+function firebaseVapidKey() {
+  return process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY || FALLBACK_FIREBASE_VAPID_KEY;
 }
 
 export function clientNotificationsSupported() {
@@ -75,7 +101,7 @@ export function firebaseWebPushConfigured() {
       config.projectId &&
       config.messagingSenderId &&
       config.appId &&
-      process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
+      firebaseVapidKey(),
   );
 }
 
@@ -174,7 +200,7 @@ export async function registerClientPushNotifications(requestPermission = false)
   const registration = await navigator.serviceWorker.register("/firebase-messaging-sw.js");
   const messaging = await loadFirebaseCompat();
   const token = await messaging.getToken({
-    vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY || "",
+    vapidKey: firebaseVapidKey(),
     serviceWorkerRegistration: registration,
   });
 
