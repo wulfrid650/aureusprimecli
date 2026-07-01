@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
+import { ClientNotificationBridge } from "@/components/client-notification-bridge";
 import { CookieAuriNotice } from "@/components/cookie-auri-notice";
 import { DevServiceWorkerReset } from "@/components/dev-service-worker-reset";
 import { FullscreenManager } from "@/components/fullscreen-manager";
@@ -116,6 +117,7 @@ export default function RootLayout({
           </Script>
           <FullscreenManager />
           <DevServiceWorkerReset />
+          <ClientNotificationBridge />
           {children}
           <PwaInstallPrompt />
           <CookieAuriNotice />
