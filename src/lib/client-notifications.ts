@@ -4,6 +4,9 @@ import { apiFetch, safeFetch } from "@/lib/fetch";
 
 const FIREBASE_COMPAT_VERSION = "10.14.1";
 const SEEN_NOTIFICATIONS_KEY = "ap_client_seen_notifications";
+const PUSH_DEVICE_ID_KEY = "ap_client_push_device_id";
+const PUSH_PROMPT_STATE_KEY = "ap_client_push_prompt_state";
+const PWA_INSTALLED_KEY = "ap_client_pwa_installed";
 
 type FirebaseCompatMessaging = {
   getToken: (options: { vapidKey: string; serviceWorkerRegistration: ServiceWorkerRegistration }) => Promise<string>;
@@ -93,6 +96,51 @@ export function clientNotificationsSupported() {
   return typeof window !== "undefined" && "serviceWorker" in navigator && "Notification" in window;
 }
 
+export function isPwaInstalledRuntime() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  const standaloneNavigator = navigator as Navigator & { standalone?: boolean };
+  return window.matchMedia("(display-mode: standalone)").matches || standaloneNavigator.standalone === true;
+}
+
+export function rememberPwaInstalled() {
+  try {
+    window.localStorage.setItem(PWA_INSTALLED_KEY, "1");
+  } catch {
+    // Best effort uniquement: le mode standalone reste detecte au runtime.
+  }
+}
+
+export function hasKnownPwaInstall() {
+  if (isPwaInstalledRuntime()) {
+    return true;
+  }
+
+  try {
+    return window.localStorage.getItem(PWA_INSTALLED_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+export function pushPromptState() {
+  try {
+    return window.localStorage.getItem(PUSH_PROMPT_STATE_KEY) || "";
+  } catch {
+    return "";
+  }
+}
+
+export function rememberPushPromptState(state: "accepted" | "dismissed" | "denied") {
+  try {
+    window.localStorage.setItem(PUSH_PROMPT_STATE_KEY, state);
+  } catch {
+    // Le navigateur peut bloquer localStorage; la cloche reste le fallback.
+  }
+}
+
 export function firebaseWebPushConfigured() {
   const config = firebaseConfig();
 
@@ -122,6 +170,24 @@ function platformName() {
   if (agent.includes("mac os") || agent.includes("macintosh")) return "macos";
   if (agent.includes("linux")) return "linux";
   return "web";
+}
+
+function pushDeviceId() {
+  try {
+    const existing = window.localStorage.getItem(PUSH_DEVICE_ID_KEY);
+    if (existing) {
+      return existing;
+    }
+
+    const next =
+      typeof window.crypto?.randomUUID === "function"
+        ? window.crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    window.localStorage.setItem(PUSH_DEVICE_ID_KEY, next);
+    return next;
+  } catch {
+    return undefined;
+  }
 }
 
 function scriptAlreadyLoaded(src: string) {
@@ -212,6 +278,7 @@ export async function registerClientPushNotifications(requestPermission = false)
     method: "POST",
     body: JSON.stringify({
       token,
+      device_id: pushDeviceId(),
       platform: platformName(),
       browser: browserName(),
       device_name: `${browserName()} ${platformName()}`,
