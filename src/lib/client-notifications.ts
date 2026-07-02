@@ -6,7 +6,9 @@ const FIREBASE_COMPAT_VERSION = "10.14.1";
 const SEEN_NOTIFICATIONS_KEY = "ap_client_seen_notifications";
 const PUSH_DEVICE_ID_KEY = "ap_client_push_device_id";
 const PUSH_PROMPT_STATE_KEY = "ap_client_push_prompt_state";
+const PUSH_PROMPT_DISMISSED_AT_KEY = "ap_client_push_prompt_dismissed_at";
 const PWA_INSTALLED_KEY = "ap_client_pwa_installed";
+const PUSH_PROMPT_SNOOZE_MS = 7 * 24 * 60 * 60 * 1000;
 
 type FirebaseCompatMessaging = {
   getToken: (options: { vapidKey: string; serviceWorkerRegistration: ServiceWorkerRegistration }) => Promise<string>;
@@ -136,8 +138,31 @@ export function pushPromptState() {
 export function rememberPushPromptState(state: "accepted" | "dismissed" | "denied") {
   try {
     window.localStorage.setItem(PUSH_PROMPT_STATE_KEY, state);
+    if (state === "dismissed") {
+      window.localStorage.setItem(PUSH_PROMPT_DISMISSED_AT_KEY, String(Date.now()));
+    } else {
+      window.localStorage.removeItem(PUSH_PROMPT_DISMISSED_AT_KEY);
+    }
   } catch {
     // Le navigateur peut bloquer localStorage; la cloche reste le fallback.
+  }
+}
+
+export function canShowPushPrompt() {
+  const state = pushPromptState();
+  if (state === "accepted" || state === "denied") {
+    return false;
+  }
+
+  if (state !== "dismissed") {
+    return true;
+  }
+
+  try {
+    const dismissedAt = Number(window.localStorage.getItem(PUSH_PROMPT_DISMISSED_AT_KEY) || "0");
+    return !dismissedAt || Date.now() - dismissedAt > PUSH_PROMPT_SNOOZE_MS;
+  } catch {
+    return false;
   }
 }
 

@@ -38,7 +38,85 @@ function formatTime(value: string) {
 
 function notificationHref(item: ClientNotificationItem) {
   const raw = item.data.action_url;
-  return typeof raw === "string" && raw.startsWith("/") ? raw : "/dashboard";
+  if (typeof raw === "string" && raw.startsWith("/") && !raw.startsWith("//")) {
+    return raw;
+  }
+
+  const type = String(item.data.type || item.type || "");
+  const subscriptionId = item.data.subscription_id;
+
+  if (type.startsWith("subscription_")) {
+    return typeof subscriptionId === "number" || typeof subscriptionId === "string"
+      ? `/dashboard/souscriptions/${subscriptionId}`
+      : "/dashboard/souscriptions";
+  }
+
+  if (type === "referral_validated") {
+    return "/dashboard/parrainage";
+  }
+
+  if (type.startsWith("wallet_") || type === "payment_failed") {
+    return type === "wallet_topup_succeeded" ? "/dashboard/wallet" : "/dashboard/recharge";
+  }
+
+  if (type.startsWith("student_verification_") || type.startsWith("kyc_")) {
+    return "/dashboard/compte";
+  }
+
+  if (type.startsWith("security_")) {
+    return "/dashboard/compte";
+  }
+
+  return "/dashboard";
+}
+
+function notificationTitle(item: ClientNotificationItem) {
+  const title = String(item.data.title || "").trim();
+  if (title) {
+    return title;
+  }
+
+  const type = String(item.data.type || item.type || "");
+  const labels: Record<string, string> = {
+    wallet_topup_succeeded: "Recharge effectuee",
+    wallet_topup_failed: "Recharge echouee",
+    payment_failed: "Paiement echoue",
+    wallet_insufficient_balance: "Solde Auri insuffisant",
+    subscription_pending_assignment: "Abonnement en attente",
+    subscription_ready: "Abonnement pret",
+    subscription_renewed: "Renouvellement effectue",
+    subscription_expiry_reminder: "Expiration proche",
+    subscription_expired: "Abonnement expire",
+    subscription_suspended: "Abonnement suspendu",
+    referral_validated: "Parrainage valide",
+    student_verification_approved: "Verification etudiante approuvee",
+    student_verification_rejected: "Verification etudiante refusee",
+    security_password_changed: "Mot de passe modifie",
+    security_new_device_login: "Nouvelle connexion",
+  };
+
+  return labels[type] || "Notification Aureus Prime";
+}
+
+function notificationMessage(item: ClientNotificationItem) {
+  const data = item.data;
+  const direct = String(data.message || data.body || data.content || "").trim();
+  if (direct) {
+    return direct;
+  }
+
+  const serviceName = String(data.service_name || "").trim();
+  const type = String(data.type || item.type || "");
+
+  if (serviceName && type.startsWith("subscription_")) {
+    return `Voir le detail de votre abonnement ${serviceName}.`;
+  }
+
+  if (type === "referral_validated") {
+    return "Ouvrir la page parrainage.";
+  }
+
+  return "Ouvrir le detail de cette notification.";
 }
 
 export function NotificationButton({ className = "" }: { className?: string }) {
@@ -252,31 +330,38 @@ export function NotificationButton({ className = "" }: { className?: string }) {
                   <p className="mt-2 text-sm font-bold text-gray-500">Aucune notification</p>
                 </div>
               ) : (
-                items.map((item) => (
+                items.map((item) => {
+                  const href = notificationHref(item);
+                  return (
                   <button
                     key={item.id}
                     type="button"
                     onClick={() => void openItem(item)}
-                    className="flex w-full gap-3 border-b border-gray-100 px-4 py-3 text-left transition hover:bg-[#f8f7fb]"
+                    className="group flex w-full gap-3 border-b border-gray-100 bg-white px-4 py-3 text-left transition hover:bg-[#f4f0ff] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#5b13ec]"
+                    title={`Ouvrir ${href}`}
                   >
                     <span
-                      className={`mt-1 size-2 shrink-0 rounded-full ${
-                        item.read_at ? "bg-gray-200" : "bg-[#5b13ec]"
+                      className={`mt-1 size-2 shrink-0 rounded-full transition ${
+                        item.read_at ? "bg-gray-300 group-hover:bg-gray-400" : "bg-[#5b13ec]"
                       }`}
                     />
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-[13px] font-black text-[#131118]">
-                        {String(item.data.title || "Aureus Prime")}
+                      <span className="block truncate text-[13px] font-black text-[#131118] group-hover:text-[#1c0b4f]">
+                        {notificationTitle(item)}
                       </span>
-                      <span className="mt-1 line-clamp-2 block text-[12px] font-semibold leading-snug text-gray-500">
-                        {String(item.data.message || "")}
+                      <span className="mt-1 line-clamp-2 block text-[12px] font-semibold leading-snug text-[#5b5963] group-hover:text-[#342e44]">
+                        {notificationMessage(item)}
                       </span>
-                      <span className="mt-1 block text-[10px] font-bold uppercase tracking-wide text-gray-400">
+                      <span className="mt-1 block text-[10px] font-bold uppercase tracking-wide text-[#8a8791] group-hover:text-[#5b13ec]">
                         {formatTime(item.created_at)}
                       </span>
                     </span>
+                    <span className="material-symbols-outlined mt-0.5 shrink-0 text-[18px] text-[#9b98a4] opacity-0 transition group-hover:text-[#5b13ec] group-hover:opacity-100">
+                      arrow_forward
+                    </span>
                   </button>
-                ))
+                  );
+                })
               )}
             </div>
           </div>

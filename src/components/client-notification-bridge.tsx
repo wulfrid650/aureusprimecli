@@ -1,20 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { getStoredAuthToken } from "@/lib/auth-token";
 import {
+  canShowPushPrompt,
   clientNotificationsSupported,
   firebaseWebPushConfigured,
   hasKnownPwaInstall,
   isPwaInstalledRuntime,
   pollClientNotificationFallback,
-  pushPromptState,
   rememberPushPromptState,
   rememberPwaInstalled,
   registerClientPushNotifications,
 } from "@/lib/client-notifications";
 
 export function ClientNotificationBridge() {
+  const pathname = usePathname();
   const [showPrompt, setShowPrompt] = useState(false);
   const [isBusy, setIsBusy] = useState(false);
   const [message, setMessage] = useState("");
@@ -75,7 +77,7 @@ export function ClientNotificationBridge() {
       }
       window.clearInterval(intervalId);
     };
-  }, []);
+  }, [pathname]);
 
   const enablePush = async () => {
     setIsBusy(true);
@@ -167,5 +169,5 @@ function shouldExplainPush() {
     return false;
   }
 
-  return pushPromptState() === "";
+  return canShowPushPrompt();
 }
