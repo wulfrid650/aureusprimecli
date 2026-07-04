@@ -45,10 +45,11 @@ export function resolveApiUrl(url: string): string {
     process.env.NODE_ENV === "production"
       ? "https://api.aureusprime.com/api/v1"
       : "";
-  const apiBase = (process.env.NEXT_PUBLIC_API_URL || defaultApiBase).replace(
-    /\/$/,
-    "",
-  );
+  const configuredApiBase = process.env.NEXT_PUBLIC_API_URL?.trim() || "";
+  const apiBase = (
+    /^https?:\/\//i.test(configuredApiBase) ? configuredApiBase : defaultApiBase
+  ).replace(/\/+$/, "");
+
   if (!apiBase || !/^https?:\/\//i.test(apiBase)) {
     return url;
   }

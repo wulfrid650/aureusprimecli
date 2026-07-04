@@ -5,9 +5,13 @@ const defaultApiBase =
   process.env.NODE_ENV === "production"
     ? "https://api.aureusprime.com/api/v1"
     : "/api/v1";
+const configuredApiBase = process.env.NEXT_PUBLIC_API_URL?.trim() || "";
+const apiBase = (
+  /^https?:\/\//i.test(configuredApiBase) ? configuredApiBase : defaultApiBase
+).replace(/\/+$/, "");
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || defaultApiBase,
+  baseURL: apiBase,
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
