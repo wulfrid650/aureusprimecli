@@ -9,6 +9,7 @@ import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { isRecaptchaEnabled, RecaptchaField, type RecaptchaFieldHandle } from "@/components/auth/recaptcha-field";
 import { getStoredAuthToken, storeAuthToken } from "@/lib/auth-token";
 import { getApiFieldErrors, getApiMessage, readApiResponse } from "@/lib/api-response";
+import { resolveApiUrl } from "@/lib/fetch";
 import { useI18n } from "@/lib/i18n";
 
 interface AuthResponseData {
@@ -88,7 +89,7 @@ export default function RegisterPage() {
 
     setIsLoading(true);
     try {
-      const res = await fetch("/api/v1/auth/register", {
+      const res = await fetch(resolveApiUrl("/api/v1/auth/register"), {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json", "Accept-Language": locale },
         body: JSON.stringify({ ...form, recaptcha_token: recaptchaToken }),

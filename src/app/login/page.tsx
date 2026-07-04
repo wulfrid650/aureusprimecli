@@ -9,6 +9,7 @@ import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { isRecaptchaEnabled, RecaptchaField, type RecaptchaFieldHandle } from "@/components/auth/recaptcha-field";
 import { getStoredAuthToken, storeAuthToken } from "@/lib/auth-token";
 import { getApiMessage, readApiResponse } from "@/lib/api-response";
+import { resolveApiUrl } from "@/lib/fetch";
 import { useI18n } from "@/lib/i18n";
 
 interface AuthResponseData {
@@ -56,7 +57,7 @@ function LoginContent() {
     setIsLoading(true);
 
     try {
-      const res = await fetch("/api/v1/auth/login", {
+      const res = await fetch(resolveApiUrl("/api/v1/auth/login"), {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json", "Accept-Language": locale },
         body: JSON.stringify({ email: form.email, password: form.password, recaptcha_token: recaptchaToken }),

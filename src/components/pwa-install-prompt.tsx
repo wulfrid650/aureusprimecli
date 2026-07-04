@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { resolveApiUrl } from "@/lib/fetch";
 import { useI18n } from "@/lib/i18n";
 
 type BeforeInstallPromptEvent = Event & {
@@ -77,7 +78,7 @@ async function trackPwaInstallation(locale: string, source = "appinstalled") {
     return;
   }
 
-  const response = await fetch("/api/v1/pwa/installations", {
+  const response = await fetch(resolveApiUrl("/api/v1/pwa/installations"), {
     method: "POST",
     headers: {
       Accept: "application/json",

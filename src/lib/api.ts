@@ -1,8 +1,13 @@
 import axios, { AxiosHeaders } from "axios";
 import { clearStoredAuthToken, getStoredAuthToken } from "@/lib/auth-token";
 
+const defaultApiBase =
+  process.env.NODE_ENV === "production"
+    ? "https://api.aureusprime.com/api/v1"
+    : "/api/v1";
+
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "/api/v1",
+  baseURL: process.env.NEXT_PUBLIC_API_URL || defaultApiBase,
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",

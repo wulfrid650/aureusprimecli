@@ -36,9 +36,33 @@ function buildApiHeaders(options?: RequestInit, token?: string | null): Headers 
   return headers;
 }
 
+export function resolveApiUrl(url: string): string {
+  if (/^https?:\/\//i.test(url)) {
+    return url;
+  }
+
+  const defaultApiBase =
+    process.env.NODE_ENV === "production"
+      ? "https://api.aureusprime.com/api/v1"
+      : "";
+  const apiBase = (process.env.NEXT_PUBLIC_API_URL || defaultApiBase).replace(
+    /\/$/,
+    "",
+  );
+  if (!apiBase || !/^https?:\/\//i.test(apiBase)) {
+    return url;
+  }
+
+  if (url.startsWith("/api/v1")) {
+    return `${apiBase}${url.slice("/api/v1".length)}`;
+  }
+
+  return url.startsWith("/") ? `${apiBase}${url}` : `${apiBase}/${url}`;
+}
+
 export async function apiFetch(url: string, options?: RequestInit): Promise<Response> {
   const token = getStoredAuthToken();
-  const res = await fetch(url, {
+  const res = await fetch(resolveApiUrl(url), {
     ...options,
     headers: buildApiHeaders(options, token),
   });
