@@ -72,8 +72,8 @@ export default function Dashboard() {
         <header className="sticky top-0 z-50 flex items-center justify-between gap-2 border-b border-[#f2f0f4] bg-white/80 px-4 py-3 shadow-sm backdrop-blur-md">
           <div className="flex min-w-0 items-center gap-1.5">
             <Link href="/dashboard" className="flex shrink-0 items-center">
-              <Image src="/logo-aureusprime.svg" alt="Aureusprime Logo" width={110} height={16} className="logo-dark h-4 w-[96px] object-contain sm:w-[110px]" />
-              <Image src="/logo-aureusprime-light.svg" alt="Aureusprime Logo" width={110} height={16} className="logo-light h-4 w-[96px] object-contain sm:w-[110px]" />
+              <Image src="/logo-aureusprime.svg" alt="Aureusprime Logo" width={110} height={16} className="logo-dark h-4 w-[110px] object-contain max-[359px]:w-[100px]" />
+              <Image src="/logo-aureusprime-light.svg" alt="Aureusprime Logo" width={110} height={16} className="logo-light h-4 w-[110px] object-contain max-[359px]:w-[100px]" />
             </Link>
             <DashboardHeaderControls />
           </div>
