@@ -3,6 +3,8 @@
 import { apiFetch, safeFetch } from "@/lib/fetch";
 
 const FIREBASE_COMPAT_VERSION = "10.14.1";
+const FIREBASE_MESSAGING_SW_URL = "/firebase-messaging-sw.js";
+const FIREBASE_MESSAGING_SW_SCOPE = "/firebase-cloud-messaging-push-scope";
 const SEEN_NOTIFICATIONS_KEY = "ap_client_seen_notifications";
 const PUSH_DEVICE_ID_KEY = "ap_client_push_device_id";
 const PUSH_PROMPT_STATE_KEY = "ap_client_push_prompt_state";
@@ -288,7 +290,11 @@ export async function registerClientPushNotifications(requestPermission = false)
     }
   }
 
-  const registration = await navigator.serviceWorker.register("/firebase-messaging-sw.js");
+  const registration = await navigator.serviceWorker.register(FIREBASE_MESSAGING_SW_URL, {
+    scope: FIREBASE_MESSAGING_SW_SCOPE,
+    updateViaCache: "none",
+  });
+  registration.update().catch(() => undefined);
   const messaging = await loadFirebaseCompat();
   const token = await messaging.getToken({
     vapidKey: firebaseVapidKey(),
