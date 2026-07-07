@@ -69,27 +69,27 @@ export default function Dashboard() {
       <div className="w-full sm:max-w-[420px] sm:h-[90vh] sm:max-h-[850px] bg-[#f6f6f8] sm:rounded-[40px] overflow-hidden relative shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] flex flex-col mx-auto h-[100dvh] sm:h-auto">
         
         {/* Sticky Header */}
-        <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#f2f0f4] px-5 py-4 flex items-center justify-between shadow-sm">
-          <div className="flex items-center gap-2">
-            <Link href="/dashboard" className="flex items-center">
-              <Image src="/logo-aureusprime.svg" alt="Aureusprime Logo" width={110} height={16} className="logo-dark h-4 w-auto object-contain" />
-              <Image src="/logo-aureusprime-light.svg" alt="Aureusprime Logo" width={110} height={16} className="logo-light h-4 w-auto object-contain" />
+        <header className="sticky top-0 z-50 flex items-center justify-between gap-2 border-b border-[#f2f0f4] bg-white/80 px-4 py-3 shadow-sm backdrop-blur-md">
+          <div className="flex min-w-0 items-center gap-1.5">
+            <Link href="/dashboard" className="flex shrink-0 items-center">
+              <Image src="/logo-aureusprime.svg" alt="Aureusprime Logo" width={110} height={16} className="logo-dark h-4 w-[96px] object-contain sm:w-[110px]" />
+              <Image src="/logo-aureusprime-light.svg" alt="Aureusprime Logo" width={110} height={16} className="logo-light h-4 w-[96px] object-contain sm:w-[110px]" />
             </Link>
             <DashboardHeaderControls />
           </div>
 
           {/* Real-time Balance Box */}
-          <div className="flex h-7 items-center rounded-full bg-[#f2f0f4] pl-3 pr-1 shadow-inner border border-gray-200/50">
+          <div className="dashboard-balance-pill flex h-8 shrink-0 items-center rounded-full border border-gray-200/50 bg-[#f2f0f4] pl-2.5 pr-1 shadow-inner">
             {isLoading ? (
               <div className="h-3 w-8 animate-pulse rounded bg-gray-300/50 mr-2" />
             ) : (
-              <span className="text-[12px] font-bold tracking-tight text-[#131118] mr-2">{balance} Auri</span>
+              <span className="mr-1.5 whitespace-nowrap text-[11px] font-black leading-none tracking-tight text-[#131118] tabular-nums sm:text-[12px]">{balance} Auri</span>
             )}
             <Link
               href="/dashboard/recharge"
-              className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[#dbb723] text-white shadow-sm transition-transform duration-200 hover:scale-105 active:scale-95 hover:bg-[#b79218]"
+              className="flex size-6 shrink-0 items-center justify-center rounded-full bg-[#dbb723] text-white shadow-sm transition-transform duration-200 hover:scale-105 hover:bg-[#b79218] active:scale-95"
             >
-              <span className="material-symbols-outlined font-bold text-[14px]">add</span>
+              <span className="material-symbols-outlined font-bold text-[16px]">add</span>
             </Link>
           </div>
         </header>

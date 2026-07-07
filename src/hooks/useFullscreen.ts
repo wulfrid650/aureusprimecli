@@ -5,7 +5,12 @@ export function useFullscreen() {
     const root = document.documentElement;
 
     const updateAppHeight = () => {
-      root.style.setProperty('--app-height', `${window.innerHeight}px`);
+      const viewport = window.visualViewport;
+      const height = Math.round(viewport?.height ?? window.innerHeight);
+      const width = Math.round(viewport?.width ?? window.innerWidth);
+
+      root.style.setProperty('--app-height', `${height}px`);
+      root.style.setProperty('--app-width', `${width}px`);
     };
 
     updateAppHeight();
