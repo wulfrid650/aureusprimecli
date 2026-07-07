@@ -421,7 +421,7 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
 
           {matchingSubscription && (
             <div
-              className={`mb-6 rounded-3xl border px-4 py-4 ${
+              className={`checkout-subscription-notice mb-6 rounded-3xl border px-4 py-4 ${
                 isRenewalFlow ? "border-emerald-200 bg-emerald-50 text-emerald-900" : "border-amber-200 bg-amber-50 text-amber-900"
               }`}
             >
