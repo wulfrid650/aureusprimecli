@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n";
 
-type DashboardNavItem = "home" | "services" | "subscriptions" | "wallet" | "account";
+export type DashboardNavItem = "home" | "services" | "subscriptions" | "wallet" | "account";
 
-const items: Array<{
+export const dashboardNavItems: Array<{
   id: DashboardNavItem;
   href: string;
   icon: string;
@@ -27,8 +27,8 @@ export function DashboardBottomNav({ active }: { active?: DashboardNavItem }) {
   const { t } = useI18n();
 
   return (
-    <div className="dashboard-bottom-nav sticky bottom-0 mt-auto w-full bg-white border-t border-[#f2f0f4] px-4 py-3 flex justify-between items-center z-50 sm:rounded-b-[40px] shadow-[0_-5px_20px_rgba(0,0,0,0.03)] pb-safe">
-      {items.map((item) => {
+    <div className="dashboard-bottom-nav sticky bottom-0 mt-auto flex w-full items-center justify-between border-t border-[#f2f0f4] bg-white px-4 py-3 shadow-[0_-5px_20px_rgba(0,0,0,0.03)] z-50 pb-safe sm:hidden">
+      {dashboardNavItems.map((item) => {
         const isActive = item.id === active;
 
         return (
