@@ -17,6 +17,8 @@ type MockupTheme = {
   chip: string;
 };
 
+type VisualPattern = "halo" | "wave" | "orbs" | "fluid" | "beam" | "grid";
+
 const platformThemes: Array<{ match: RegExp; theme: MockupTheme }> = [
   {
     match: /netflix/i,
@@ -324,6 +326,25 @@ function getTheme(service: ServiceIllustrationProps["service"]): MockupTheme {
   return platformTheme ?? categoryThemes.find((entry) => entry.match(service))?.theme ?? defaultTheme;
 }
 
+function getVisualPattern(service: ServiceIllustrationProps["service"]): VisualPattern {
+  const searchable = `${service.title} ${service.category}`;
+
+  if (/netflix/i.test(searchable)) return "halo";
+  if (/spotify|apple\s*music|deezer|music/i.test(searchable)) return "wave";
+  if (/hbo|apple\s*tv|prime\s*video|disney|icloud|google\s*one/i.test(searchable)) return "orbs";
+  if (/canva|photoroom|capcut|adobe|photoshop|lightroom|filmora|wondershare|viki/i.test(searchable)) return "fluid";
+  if (/vpn|kaspersky|kapersky|security|securite|sécurité|telegram|numero|virtuel/i.test(searchable)) return "beam";
+  if (/robux|playstation|psn|xbox|gift|carte/i.test(searchable)) return "grid";
+
+  if (/stream/i.test(service.category)) return "orbs";
+  if (/musique|music/i.test(service.category)) return "wave";
+  if (/logic|software|design/i.test(service.category)) return "fluid";
+  if (/cloud/i.test(service.category)) return "orbs";
+  if (/securite|sécurité|security/i.test(service.category)) return "beam";
+
+  return "fluid";
+}
+
 function getInitials(title: string): string {
   const parts = title
     .split(/[\s/-]+/)
@@ -373,10 +394,80 @@ export function ServiceIllustration({
   className = "",
 }: ServiceIllustrationProps) {
   const theme = getTheme(service);
+  const visualPattern = getVisualPattern(service);
   const shell = getShellClasses(variant);
   const initials = getInitials(service.title);
   const title = variant === "thumb" ? initials : service.title;
   const subtitle = variant === "thumb" ? service.category : service.billingSummary;
+
+  if (variant !== "hero") {
+    return (
+      <div className={`relative overflow-hidden ${shell.root} ${className}`} aria-hidden="true">
+        <div className={`absolute inset-0 bg-gradient-to-br ${theme.gradient}`} />
+        <div className="absolute inset-0 bg-black/10" />
+
+        {visualPattern === "halo" && (
+          <>
+            <div className="absolute left-1/2 top-1/2 size-[70%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-500/80 blur-2xl" />
+            <div className="absolute left-1/2 top-1/2 size-[28%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-300/90 blur-md" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_55%,transparent_0_22%,rgba(0,0,0,0.65)_62%,rgba(0,0,0,0.92)_100%)]" />
+          </>
+        )}
+
+        {visualPattern === "wave" && (
+          <div className="absolute inset-x-[8%] top-1/2 flex h-[58%] -translate-y-1/2 items-center justify-between opacity-85 [mask-image:linear-gradient(90deg,transparent,black_12%,black_88%,transparent)]">
+            {[18, 34, 52, 76, 44, 28, 62, 88, 54, 36, 70, 92, 58, 30, 48, 74, 42, 22, 56, 82, 46, 30, 66, 86, 50, 24, 44, 72, 38, 20].map(
+              (height, index) => (
+                <span
+                  key={`${height}-${index}`}
+                  className="w-[2.2%] rounded-full bg-white/85 shadow-[0_0_14px_rgba(255,255,255,0.28)]"
+                  style={{ height: `${height}%` }}
+                />
+              ),
+            )}
+          </div>
+        )}
+
+        {visualPattern === "orbs" && (
+          <>
+            <div className="absolute -left-[18%] top-[10%] size-[72%] rounded-full border border-white/20 bg-white/15 shadow-[inset_-20px_-18px_40px_rgba(0,0,0,0.18)]" />
+            <div className="absolute left-[34%] -top-[24%] size-[62%] rounded-full border border-white/25 bg-white/35 shadow-[0_20px_50px_rgba(0,0,0,0.18)]" />
+            <div className="absolute left-[43%] top-[38%] size-[38%] rounded-full bg-black/25 blur-[1px]" />
+            <div className="absolute -right-[14%] bottom-[-24%] size-[70%] rounded-full border border-white/15 bg-black/15" />
+          </>
+        )}
+
+        {visualPattern === "fluid" && (
+          <>
+            <div className="absolute -left-[18%] top-[30%] h-[42%] w-[136%] rotate-[13deg] rounded-[50%] border-[18px] border-white/18 blur-[2px]" />
+            <div className="absolute -left-[12%] top-[14%] h-[50%] w-[128%] rotate-[-13deg] rounded-[50%] border-[8px] border-white/20 blur-[1px]" />
+            <div className="absolute -right-[20%] bottom-[-44%] size-[92%] rounded-full bg-white/20 blur-3xl" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_110%,rgba(255,255,255,0.35),transparent_46%),linear-gradient(125deg,transparent_32%,rgba(255,255,255,0.14)_51%,transparent_68%)]" />
+          </>
+        )}
+
+        {visualPattern === "beam" && (
+          <>
+            <div className="absolute -left-[18%] top-[34%] h-[16%] w-[138%] rotate-[-18deg] bg-white/25 blur-md" />
+            <div className="absolute -left-[12%] top-[44%] h-px w-[124%] rotate-[-18deg] bg-white/75 shadow-[0_0_18px_rgba(255,255,255,0.8)]" />
+            <div className="absolute -left-[15%] top-[58%] h-[8%] w-[132%] rotate-[-18deg] bg-black/30 blur-lg" />
+            <div className="absolute inset-0 bg-[linear-gradient(135deg,transparent_0_38%,rgba(255,255,255,0.14)_39%_40%,transparent_41%_100%)]" />
+          </>
+        )}
+
+        {visualPattern === "grid" && (
+          <>
+            <div className="absolute inset-0 opacity-40 [background-image:linear-gradient(rgba(255,255,255,0.22)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.22)_1px,transparent_1px)] [background-size:20px_20px]" />
+            <div className="absolute -right-[12%] top-[12%] size-[62%] rounded-full border border-white/30 bg-white/15 shadow-[0_0_45px_rgba(255,255,255,0.18)]" />
+            <div className="absolute -left-[24%] bottom-[-46%] size-[88%] rounded-full bg-black/30 blur-xl" />
+          </>
+        )}
+
+        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/25 to-transparent" />
+        <div className="absolute inset-0 border border-white/10" />
+      </div>
+    );
+  }
 
   return (
     <div className={`relative overflow-hidden ${shell.root} ${className}`}>
@@ -406,15 +497,13 @@ export function ServiceIllustration({
               <div className="flex size-10 items-center justify-center rounded-2xl bg-white/12 text-sm font-black tracking-[0.18em] text-white">
                 {initials}
               </div>
-              {variant !== "thumb" && (
-                <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-white/60">Aureus Prime</p>
-                  <p className="text-[11px] font-medium text-white/70">{theme.chip}</p>
-                </div>
-              )}
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-white/60">Aureus Prime</p>
+                <p className="text-[11px] font-medium text-white/70">{theme.chip}</p>
+              </div>
             </div>
 
-            {variant !== "thumb" && service.optionCount > 1 && (
+            {service.optionCount > 1 && (
               <span className="rounded-full bg-white/12 px-2.5 py-1 text-[10px] font-bold text-white/85">
                 {service.badgeLabel ?? service.optionCount}
               </span>
