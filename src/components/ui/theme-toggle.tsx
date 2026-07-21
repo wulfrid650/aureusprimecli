@@ -3,26 +3,10 @@
 import { useEffect, useState } from "react";
 import { getStoredAuthToken } from "@/lib/auth-token";
 import { apiFetch } from "@/lib/fetch";
-
-type Theme = "light" | "dark";
-
-const STORAGE_KEY = "ap_theme";
-
-function applyTheme(theme: Theme) {
-  document.documentElement.dataset.theme = theme;
-}
-
-function persistTheme(theme: Theme) {
-  window.localStorage.setItem(STORAGE_KEY, theme);
-  document.cookie = `${STORAGE_KEY}=${theme}; path=/; max-age=31536000; SameSite=Lax`;
-}
-
-function getCurrentTheme(): Theme {
-  return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
-}
+import { applyTheme, getCurrentTheme, persistTheme, type AppTheme } from "@/lib/theme";
 
 export function ThemeToggle({ className = "" }: { className?: string }) {
-  const [theme, setTheme] = useState<Theme>("light");
+  const [theme, setTheme] = useState<AppTheme>("light");
 
   useEffect(() => {
     const syncTheme = () => {
@@ -74,7 +58,7 @@ function ThemeIcon({
   theme,
 }: {
   className?: string;
-  theme: Theme;
+  theme: AppTheme;
 }) {
   return (
     <svg

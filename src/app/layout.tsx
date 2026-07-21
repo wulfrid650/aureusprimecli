@@ -6,6 +6,7 @@ import { CookieAuriNotice } from "@/components/cookie-auri-notice";
 import { DevServiceWorkerReset } from "@/components/dev-service-worker-reset";
 import { FullscreenManager } from "@/components/fullscreen-manager";
 import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
+import { ThemePersistenceBridge } from "@/components/theme-persistence-bridge";
 import { I18nProvider } from "@/lib/i18n";
 import "./globals.css";
 
@@ -120,6 +121,7 @@ export default function RootLayout({
         <I18nProvider>
           <FullscreenManager />
           <DevServiceWorkerReset />
+          <ThemePersistenceBridge />
           <ClientNotificationBridge />
           {children}
           <PwaInstallPrompt />
