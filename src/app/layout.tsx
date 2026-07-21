@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ClientNotificationBridge } from "@/components/client-notification-bridge";
 import { CookieAuriNotice } from "@/components/cookie-auri-notice";
 import { DevServiceWorkerReset } from "@/components/dev-service-worker-reset";
@@ -127,6 +128,7 @@ export default function RootLayout({
           <PwaInstallPrompt />
           <CookieAuriNotice />
           <Analytics />
+          <SpeedInsights />
         </I18nProvider>
       </body>
     </html>
