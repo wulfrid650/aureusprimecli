@@ -12,6 +12,11 @@ function applyTheme(theme: Theme) {
   document.documentElement.dataset.theme = theme;
 }
 
+function persistTheme(theme: Theme) {
+  window.localStorage.setItem(STORAGE_KEY, theme);
+  document.cookie = `${STORAGE_KEY}=${theme}; path=/; max-age=31536000; SameSite=Lax`;
+}
+
 function getCurrentTheme(): Theme {
   return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
 }
@@ -38,7 +43,7 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
   const toggleTheme = () => {
     const nextTheme = getCurrentTheme() === "dark" ? "light" : "dark";
     applyTheme(nextTheme);
-    window.localStorage.setItem(STORAGE_KEY, nextTheme);
+    persistTheme(nextTheme);
     setTheme(nextTheme);
 
     if (getStoredAuthToken()) {
