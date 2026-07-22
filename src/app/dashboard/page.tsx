@@ -6,6 +6,7 @@ import Link from "next/link";
 import { DashboardBottomNav } from "@/components/dashboard/bottom-nav";
 import { ServiceCard } from "@/components/dashboard/service-card";
 import { DashboardHeaderControls } from "@/components/dashboard/header-controls";
+import { PremiumHeroCard } from "@/components/dashboard/premium-hero-card";
 import { fetchCatalogProducts, type CatalogProduct } from "@/lib/catalog";
 import { safeFetch } from "@/lib/fetch";
 import { useI18n } from "@/lib/i18n";
@@ -98,21 +99,11 @@ export default function Dashboard() {
         <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth">
           {/* Hero Section */}
           <section className="grid grid-cols-1 gap-6 px-5 pb-6 pt-8 md:grid-cols-[1.25fr_0.75fr] md:items-center">
-            <div className="relative w-full aspect-[4/3] rounded-3xl overflow-hidden shadow-[0_10px_40px_-10px_rgba(91,19,236,0.1)] group">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#5b13ec] via-[#7e44f2] to-[#bca3f6]"></div>
-              <img 
-                alt="Abstract digital entertainment collage with vibrant colors" 
-                className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-40" 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDy46r9P3bSQNOTP2f0afIN8cALGNnf8IpJYw9N7MvgLcJVsgi9b-nYHzgHRhwGupJWobpuiH4dCDOIgtRZ8tj-qF6DMymiYHSv9jv8RiCv06Pps7qaBgyaOQJ1RtSmKG6UpOqaDhsGMwHKMRMx_Cuu6TvmmXK5_97G9G3UyPl27HqNWHK86HqUemZO0dkAWUWKeT0ajVIqmrirzXNexbkpcWp8ErgUIdEqvR0EDF_QBxtaqd7HLscq6pYEtiXg5kOoUSPdXL4qvcE"
-              />
-              <div className="absolute inset-0 p-6 flex flex-col justify-end text-white">
-                <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-bold w-max mb-3 border border-white/30">
-                    {t("dashboard.heroBadge")}
-                </span>
-                <h1 className="text-3xl font-bold leading-tight tracking-tight mb-2">{t("dashboard.heroTitle")}</h1>
-                <p className="text-white/90 text-sm font-medium">{t("dashboard.heroSubtitle")}</p>
-              </div>
-            </div>
+            <PremiumHeroCard
+              badge={t("dashboard.heroBadge")}
+              title={t("dashboard.heroTitle")}
+              subtitle={t("dashboard.heroSubtitle")}
+            />
             
             <div className="flex flex-col gap-3">
               <Link href="/dashboard/services" className="w-full h-14 bg-[#131118] text-white rounded-full font-bold text-lg shadow-lg shadow-black/20 active:scale-95 transition-transform flex items-center justify-center gap-2 hover:bg-[#221d2c]">
