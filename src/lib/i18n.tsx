@@ -145,7 +145,7 @@ const dictionaries = {
       heroTitleLine1: "Le Premium",
       heroTitleLine2: "Accessible à Tous",
       heroDescription:
-        "Accédez à Netflix, Spotify, Canva et vos services digitaux préférés à une fraction du prix. Gérez vos abonnements, votre wallet et vos accès depuis un seul espace.",
+        "Accédez à Netflix, Spotify, Canva et vos services digitaux préférés à une fraction du prix. Le tout en rechargeant votre wallet par Mobile Money. Gérez vos abonnements, votre wallet et vos accès depuis un seul espace.",
       seeOffers: "Voir les offres",
       howItWorks: "Comment ça marche ?",
       moreBrands: "Et plus...",
@@ -710,7 +710,7 @@ const dictionaries = {
       heroTitleLine1: "Premium",
       heroTitleLine2: "For Everyone",
       heroDescription:
-        "Access Netflix, Spotify, Canva and your favorite digital services for a fraction of the price. Manage your subscriptions, wallet and access from one space.",
+        "Access Netflix, Spotify, Canva and your favorite digital services for a fraction of the price. Simply top up your wallet with Mobile Money. Manage your subscriptions, wallet and access from one space.",
       seeOffers: "View offers",
       howItWorks: "How it works",
       moreBrands: "And more...",
