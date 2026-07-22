@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { DashboardBottomNav } from "@/components/dashboard/bottom-nav";
 import { DashboardHeaderControls } from "@/components/dashboard/header-controls";
+import { MissionPrimeProfileLink } from "@/components/dashboard/mission-prime-card";
 import { clearStoredAuthToken } from "@/lib/auth-token";
 import { apiFetch, safeFetch } from "@/lib/fetch";
 import { useI18n } from "@/lib/i18n";
@@ -369,6 +370,8 @@ export default function ComptePage() {
                   )}
                 </div>
               </div>
+
+              <MissionPrimeProfileLink />
 
               {!emailVerified && (
                 <div className="bg-amber-50 rounded-3xl p-6 border border-amber-200 shadow-sm mb-6">

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { DashboardBottomNav } from "@/components/dashboard/bottom-nav";
 import { ServiceCard } from "@/components/dashboard/service-card";
 import { DashboardHeaderControls } from "@/components/dashboard/header-controls";
-import { MissionPrimeTeaser } from "@/components/dashboard/mission-prime-teaser";
+import { MissionPrimeHomeCard } from "@/components/dashboard/mission-prime-card";
 import { fetchCatalogProducts, type CatalogProduct } from "@/lib/catalog";
 import { safeFetch } from "@/lib/fetch";
 import { useI18n } from "@/lib/i18n";
@@ -97,13 +97,7 @@ export default function Dashboard() {
 
         {/* Scrollable Content */}
         <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth">
-          <MissionPrimeTeaser
-            badge={t("dashboard.missionPrimeTeaserBadge")}
-            eyebrow={t("dashboard.missionPrimeTeaserEyebrow")}
-            title={t("dashboard.missionPrimeTeaserTitle")}
-            description={t("dashboard.missionPrimeTeaserDescription")}
-            levelPath={t("dashboard.missionPrimeTeaserLevels")}
-          />
+          <MissionPrimeHomeCard />
 
           {/* Popular Services Carousel */}
           <section className="py-6">
