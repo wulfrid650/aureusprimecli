@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ServiceIllustration } from "@/components/dashboard/service-illustration";
+import { isWaveIllustration, ServiceIllustration } from "@/components/dashboard/service-illustration";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { PaymentMethodLogos } from "@/components/ui/payment-method-logos";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -480,7 +480,10 @@ export function MarketingHomePage() {
                     >
                       <div className="relative aspect-video w-full overflow-hidden bg-[var(--premium-panel)]">
                         <div className="absolute inset-0 z-10 bg-black/10" />
-                        <ServiceIllustration service={service} className="transition-transform duration-500 group-hover:scale-[1.03]" />
+                        <ServiceIllustration
+                          service={service}
+                          className={isWaveIllustration(service) ? "" : "transition-transform duration-500 group-hover:scale-[1.03]"}
+                        />
                         <div
                           className={`absolute right-3 top-3 z-20 rounded-full px-2.5 py-1 text-xs font-bold text-[#F7F8F8] shadow-lg ${service.badgeClassName}`}
                         >

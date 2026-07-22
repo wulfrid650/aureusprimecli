@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ServiceIllustration } from "@/components/dashboard/service-illustration";
+import { isWaveIllustration, ServiceIllustration } from "@/components/dashboard/service-illustration";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { PaymentMethodLogos } from "@/components/ui/payment-method-logos";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -1137,7 +1137,10 @@ export function PublicOffersPage() {
                           className="group premium-card-surface w-[280px] shrink-0 snap-start overflow-hidden rounded-2xl border shadow-[var(--shadow-card)] transition-all hover:-translate-y-1 hover:border-primary-400/45 sm:w-[320px] lg:w-[340px]"
                         >
                           <div className="relative aspect-video overflow-hidden bg-[var(--premium-panel)]">
-                            <ServiceIllustration service={service} className="transition-transform duration-500 group-hover:scale-[1.03]" />
+                            <ServiceIllustration
+                              service={service}
+                              className={isWaveIllustration(service) ? "" : "transition-transform duration-500 group-hover:scale-[1.03]"}
+                            />
                             <span className={`absolute right-3 top-3 rounded-full px-2.5 py-1 text-xs font-bold text-[#F7F8F8] ${service.badgeClassName}`}>
                               {service.badgeLabel}
                             </span>

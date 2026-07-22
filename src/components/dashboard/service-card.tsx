@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { CatalogProduct } from "@/lib/catalog";
-import { ServiceIllustration } from "@/components/dashboard/service-illustration";
+import { isWaveIllustration, ServiceIllustration } from "@/components/dashboard/service-illustration";
 import { getPlural, useI18n } from "@/lib/i18n";
 
 type ServiceCardProps = {
@@ -21,7 +21,10 @@ export function ServiceCard({ service, compact = false }: ServiceCardProps) {
       }`}
     >
       <div className={`relative w-full bg-gray-100 shrink-0 ${compact ? "h-32" : "h-40"}`}>
-        <ServiceIllustration service={service} className="transition-transform duration-500 group-hover:scale-[1.02]" />
+        <ServiceIllustration
+          service={service}
+          className={isWaveIllustration(service) ? "" : "transition-transform duration-500 group-hover:scale-[1.02]"}
+        />
         <div className={`absolute right-3 top-3 z-20 rounded-full px-2.5 py-1 text-xs font-bold text-white shadow-sm ${service.badgeClassName}`}>
           {service.badgeLabel}
         </div>

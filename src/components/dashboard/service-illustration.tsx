@@ -326,7 +326,7 @@ function getTheme(service: ServiceIllustrationProps["service"]): MockupTheme {
   return platformTheme ?? categoryThemes.find((entry) => entry.match(service))?.theme ?? defaultTheme;
 }
 
-function getVisualPattern(service: ServiceIllustrationProps["service"]): VisualPattern {
+function getVisualPattern(service: Pick<CatalogProduct, "title" | "category">): VisualPattern {
   const searchable = `${service.title} ${service.category}`;
 
   if (/netflix/i.test(searchable)) return "halo";
@@ -343,6 +343,10 @@ function getVisualPattern(service: ServiceIllustrationProps["service"]): VisualP
   if (/securite|sécurité|security/i.test(service.category)) return "beam";
 
   return "fluid";
+}
+
+export function isWaveIllustration(service: Pick<CatalogProduct, "title" | "category">): boolean {
+  return getVisualPattern(service) === "wave";
 }
 
 function getInitials(title: string): string {
