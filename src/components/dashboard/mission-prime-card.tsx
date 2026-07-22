@@ -7,6 +7,12 @@ import { useI18n } from "@/lib/i18n";
 
 type MissionPrimeSnapshot = {
   available: boolean;
+  profile?: {
+    points: number;
+    level: { label: string };
+    badges: string[];
+    aureus_plus_offer?: { active: boolean; eligible_cta: boolean };
+  };
   series?: { total: number };
   current_mission?: { name: string; position: number } | null;
 };
@@ -88,28 +94,93 @@ export function MissionPrimeHomeCard() {
 }
 
 export function MissionPrimeProfileLink() {
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const snapshot = useMissionPrimeAvailability();
 
-  if (!snapshot?.available) return null;
+  if (!snapshot?.available || !snapshot.profile) return null;
+
+  const badges = snapshot.profile.badges ?? [];
 
   return (
     <Link
       href="/dashboard/missions"
-      className="mb-6 flex items-center gap-3 rounded-3xl border border-gray-100 bg-white p-4 shadow-sm"
+      className="group mb-6 block rounded-3xl border border-gray-100 bg-white p-4 shadow-sm transition-colors hover:border-gray-200"
     >
-      <span className="flex size-11 items-center justify-center rounded-2xl bg-[#eef5ff] text-[#1671db]">
-        <span className="material-symbols-outlined">hotel_class</span>
-      </span>
-      <div className="min-w-0 flex-1">
-        <p className="font-black text-[#131118]">Mission Prime</p>
-        <p className="mt-0.5 truncate text-xs font-semibold text-gray-500">
-          {snapshot.current_mission?.name ?? t("missionPrime.completedTitle")}
-        </p>
+      <div className="flex items-center gap-3">
+        <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-[#eef5ff] text-[#1671db]">
+          <span className="material-symbols-outlined">hotel_class</span>
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="font-black text-[#131118]">Mission Prime</p>
+          <p className="mt-0.5 truncate text-xs font-semibold text-gray-500">
+            {snapshot.current_mission?.name ?? t("missionPrime.completedTitle")}
+          </p>
+        </div>
+        <span className="material-symbols-outlined text-gray-400 transition-transform group-hover:translate-x-0.5">
+          chevron_right
+        </span>
       </div>
-      <span className="material-symbols-outlined text-gray-400">chevron_right</span>
+
+      <div className="mt-4 grid grid-cols-2 gap-2">
+        <div className="rounded-2xl bg-[#f6f6f8] px-3.5 py-3">
+          <p className="text-[10px] font-black uppercase tracking-[0.14em] text-gray-400">
+            {locale === "en" ? "Prime level" : "Niveau Prime"}
+          </p>
+          <p className="mt-1 text-base font-black text-[#131118]">{snapshot.profile.level.label}</p>
+        </div>
+        <div className="rounded-2xl bg-[#eef5ff] px-3.5 py-3">
+          <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#1671db]/70">
+            {t("missionPrime.primePoints")}
+          </p>
+          <p className="mt-1 text-base font-black text-[#1671db]">
+            {snapshot.profile.points.toLocaleString(locale === "en" ? "en-US" : "fr-FR")} PP
+          </p>
+        </div>
+      </div>
+
+      {badges.length > 0 ? (
+        <div className="mt-4 border-t border-gray-100 pt-3.5">
+          <p className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-gray-400">
+            <span className="material-symbols-outlined text-[16px] text-[#dbb723]">workspace_premium</span>
+            Badges
+          </p>
+          <div className="mt-2.5 flex flex-wrap gap-2">
+            {badges.map((badge) => (
+              <span
+                key={badge}
+                className="inline-flex items-center gap-1.5 rounded-full border border-amber-100 bg-amber-50 px-3 py-1.5 text-[11px] font-black text-amber-700"
+              >
+                <span className="material-symbols-outlined text-[15px]">verified</span>
+                {formatPrimeBadge(badge, locale)}
+              </span>
+            ))}
+          </div>
+        </div>
+      ) : null}
+
+      {!snapshot.profile.aureus_plus_offer?.active ? (
+        <div className="mt-4 flex items-center gap-3 rounded-2xl border border-amber-100 bg-amber-50/70 px-3.5 py-3">
+          <span className="material-symbols-outlined text-[#dbb723]">stars</span>
+          <div className="min-w-0 flex-1">
+            <p className="text-[10px] font-black uppercase tracking-[0.14em] text-amber-700/70">
+              {locale === "en" ? "Next evolution" : "Prochaine évolution"}
+            </p>
+            <p className="text-sm font-black text-[#131118]">Aureus+ · {locale === "en" ? "Coming soon" : "Bientôt disponible"}</p>
+          </div>
+        </div>
+      ) : null}
     </Link>
   );
+}
+
+function formatPrimeBadge(badge: string, locale: "fr" | "en") {
+  const labels: Record<string, { fr: string; en: string }> = {
+    confirmed_user: { fr: "Utilisateur confirmé", en: "Confirmed user" },
+    regular: { fr: "Habitué", en: "Regular" },
+    prime_elite: { fr: "Prime Elite", en: "Prime Elite" },
+  };
+
+  return labels[badge]?.[locale] ?? badge.replaceAll("_", " ");
 }
 
 function useMissionPrimeAvailability() {

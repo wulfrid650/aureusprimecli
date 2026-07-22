@@ -7,6 +7,7 @@ import { DashboardBottomNav } from "@/components/dashboard/bottom-nav";
 import { ServiceCard } from "@/components/dashboard/service-card";
 import { DashboardHeaderControls } from "@/components/dashboard/header-controls";
 import { MissionPrimeHomeCard } from "@/components/dashboard/mission-prime-card";
+import { HomePromotionCard, HomeTipCard } from "@/components/dashboard/home-highlights";
 import { fetchCatalogProducts, type CatalogProduct } from "@/lib/catalog";
 import { safeFetch } from "@/lib/fetch";
 import { useI18n } from "@/lib/i18n";
@@ -97,6 +98,7 @@ export default function Dashboard() {
 
         {/* Scrollable Content */}
         <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth">
+          <HomePromotionCard />
           <MissionPrimeHomeCard />
 
           {/* Popular Services Carousel */}
@@ -129,6 +131,8 @@ export default function Dashboard() {
               )}
             </div>
           </section>
+
+          <HomeTipCard />
 
           {/* Value Props List */}
           <section className="px-5 pb-8">

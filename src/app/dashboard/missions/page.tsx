@@ -22,10 +22,22 @@ type MissionPrimeSnapshot = {
     level: { label: string };
     next_level?: { label: string; points_remaining?: number } | null;
     aureus_plus: boolean;
+    aureus_plus_offer?: { active: boolean; eligible_cta: boolean; earned_via_prime: boolean };
+    prime_elite_reward?: {
+      offer_name?: string | null;
+      status: "selection_pending" | "fulfillment_pending" | "fulfilled" | "failed";
+      duration_days: number;
+      awarded_at?: string | null;
+    } | null;
   };
   series?: { completed: number; total: number };
   current_mission?: PrimeMission | null;
   next_mission?: { locked: boolean; title: string; description: string } | null;
+  completed_missions?: Array<PrimeMission & { completed_at?: string | null }>;
+  dynamic_missions?: {
+    active: PrimeMission[];
+    completed: Array<PrimeMission & { completed_at?: string | null }>;
+  };
 };
 
 const actionRoutes: Record<string, string> = {
@@ -42,7 +54,7 @@ const actionRoutes: Record<string, string> = {
 
 export default function MissionPrimePage() {
   const router = useRouter();
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const [snapshot, setSnapshot] = useState<MissionPrimeSnapshot | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -133,6 +145,53 @@ export default function MissionPrimePage() {
                 ) : null}
               </section>
 
+              {!profile.aureus_plus ? (
+                <section className="rounded-3xl border border-amber-100 bg-amber-50/70 p-5">
+                  <div className="flex items-start gap-3">
+                    <span className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-white text-[#dbb723] shadow-sm">
+                      <span className="material-symbols-outlined">stars</span>
+                    </span>
+                    <div>
+                      <p className="text-[11px] font-black uppercase tracking-[0.16em] text-amber-700/70">
+                        {t("missionPrime.nextEvolution")}
+                      </p>
+                      <h2 className="mt-1 text-lg font-black">Aureus+</h2>
+                      <p className="mt-1 text-sm font-medium text-gray-600">
+                        {profile.aureus_plus_offer?.eligible_cta
+                          ? t("missionPrime.aureusPlusEliteTeaser")
+                          : t("missionPrime.aureusPlusComingSoon")}
+                      </p>
+                    </div>
+                  </div>
+                </section>
+              ) : null}
+
+              {profile.prime_elite_reward ? (
+                <section className="rounded-3xl border border-emerald-100 bg-emerald-50/70 p-5">
+                  <div className="flex items-start gap-3">
+                    <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-white text-emerald-600 shadow-sm">
+                      <span className="material-symbols-outlined">card_giftcard</span>
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[11px] font-black uppercase tracking-[0.16em] text-emerald-700/70">
+                        {locale === "en" ? "Prime Elite reward" : "Cadeau Prime Elite"}
+                      </p>
+                      <h2 className="mt-1 text-lg font-black">
+                        {profile.prime_elite_reward.offer_name || (locale === "en" ? "Selection pending" : "Sélection en attente")}
+                      </h2>
+                      <p className="mt-1 text-sm font-medium text-gray-600">
+                        {primeEliteRewardStatus(profile.prime_elite_reward.status, locale, profile.prime_elite_reward.duration_days)}
+                      </p>
+                      <p className="mt-3 text-[11px] font-bold text-emerald-800/65">
+                        {locale === "en"
+                          ? "One-time reward, non-transferable, non-refundable and without automatic renewal."
+                          : "Récompense unique, non transférable, non remboursable et sans renouvellement automatique."}
+                      </p>
+                    </div>
+                  </div>
+                </section>
+              ) : null}
+
               {mission ? (
                 <section className="rounded-3xl border border-gray-100 bg-white p-5 shadow-sm">
                   <div className="flex items-center justify-between gap-3">
@@ -184,6 +243,74 @@ export default function MissionPrimePage() {
                   </div>
                 </section>
               ) : null}
+
+              {(snapshot.dynamic_missions?.active.length ?? 0) > 0 ? (
+                <section className="rounded-3xl border border-gray-100 bg-white p-5 shadow-sm">
+                  <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[#1671db]">
+                    {t("missionPrime.limitedMissions")}
+                  </p>
+                  <div className="mt-4 space-y-3">
+                    {snapshot.dynamic_missions?.active.map((dynamicMission) => (
+                      <article key={dynamicMission.code} className="rounded-2xl bg-[#f6f6f8] p-4">
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <h3 className="font-black">{dynamicMission.name}</h3>
+                            <p className="mt-1 text-sm text-gray-500">{dynamicMission.description}</p>
+                          </div>
+                          <span className="shrink-0 text-xs font-black text-gray-500">
+                            {dynamicMission.progress.current}/{dynamicMission.progress.target}
+                          </span>
+                        </div>
+                        <div className="mt-3 flex flex-wrap gap-1.5">
+                          {dynamicMission.reward.auri > 0 ? <RewardChip icon="account_balance_wallet" label={`${dynamicMission.reward.auri} Auri`} /> : null}
+                          {dynamicMission.reward.points > 0 ? <RewardChip icon="stars" label={`${dynamicMission.reward.points} PP`} /> : null}
+                          {dynamicMission.reward.badge_label ? <RewardChip icon="workspace_premium" label={dynamicMission.reward.badge_label} /> : null}
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+              ) : null}
+
+              {((snapshot.completed_missions?.length ?? 0) + (snapshot.dynamic_missions?.completed.length ?? 0)) > 0 ? (
+                <section className="rounded-3xl border border-gray-100 bg-white p-5 shadow-sm">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[#0b8553]">
+                        {t("missionPrime.completedMissions")}
+                      </p>
+                      <h2 className="mt-1 text-lg font-black">{t("missionPrime.yourJourney")}</h2>
+                    </div>
+                    <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">
+                      {(snapshot.completed_missions?.length ?? 0) + (snapshot.dynamic_missions?.completed.length ?? 0)}
+                    </span>
+                  </div>
+                  <div className="mt-4 divide-y divide-gray-100">
+                    {[...(snapshot.completed_missions ?? []), ...(snapshot.dynamic_missions?.completed ?? [])].map((completedMission) => (
+                      <article key={completedMission.code} className="flex gap-3 py-4 first:pt-0 last:pb-0">
+                        <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+                          <span className="material-symbols-outlined text-[19px]">check</span>
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-start justify-between gap-2">
+                            <h3 className="font-black">{completedMission.name}</h3>
+                            {completedMission.completed_at ? (
+                              <time className="text-[11px] font-bold text-gray-400">
+                                {new Intl.DateTimeFormat(undefined, { day: "2-digit", month: "short", year: "numeric" }).format(new Date(completedMission.completed_at))}
+                              </time>
+                            ) : null}
+                          </div>
+                          <div className="mt-2 flex flex-wrap gap-1.5">
+                            {completedMission.reward.auri > 0 ? <RewardChip icon="account_balance_wallet" label={`${completedMission.reward.auri} Auri`} /> : null}
+                            {completedMission.reward.points > 0 ? <RewardChip icon="stars" label={`${completedMission.reward.points} PP`} /> : null}
+                            {completedMission.reward.badge_label ? <RewardChip icon="workspace_premium" label={completedMission.reward.badge_label} /> : null}
+                          </div>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+              ) : null}
             </div>
           ) : null}
         </main>
@@ -191,6 +318,19 @@ export default function MissionPrimePage() {
       </div>
     </div>
   );
+}
+
+function primeEliteRewardStatus(status: string, locale: "fr" | "en", days: number) {
+  if (status === "fulfilled") {
+    return locale === "en" ? `Your ${days}-day subscription is active.` : `Votre abonnement de ${days} jours est actif.`;
+  }
+  if (status === "fulfillment_pending") {
+    return locale === "en" ? "Your subscription is being activated." : "Votre abonnement est en cours d’activation.";
+  }
+  if (status === "failed") {
+    return locale === "en" ? "Activation requires support assistance." : "L’activation nécessite l’intervention du support.";
+  }
+  return locale === "en" ? "An eligible subscription will be selected shortly." : "Un abonnement éligible sera sélectionné prochainement.";
 }
 
 function RewardChip({ icon, label }: { icon: string; label: string }) {
