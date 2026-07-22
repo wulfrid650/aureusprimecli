@@ -1134,7 +1134,11 @@ export function PublicOffersPage() {
                         <Link
                           key={service.slug}
                           href="/register"
-                          className="group premium-card-surface w-[280px] shrink-0 snap-start overflow-hidden rounded-2xl border shadow-[var(--shadow-card)] transition-all hover:-translate-y-1 hover:border-primary-400/45 sm:w-[320px] lg:w-[340px]"
+                          className={`group premium-card-surface w-[280px] shrink-0 snap-start overflow-hidden rounded-2xl border shadow-[var(--shadow-card)] sm:w-[320px] lg:w-[340px] ${
+                            isWaveIllustration(service)
+                              ? "hover:border-primary-400/45"
+                              : "transition-all hover:-translate-y-1 hover:border-primary-400/45"
+                          }`}
                         >
                           <div className="relative aspect-video overflow-hidden bg-[var(--premium-panel)]">
                             <ServiceIllustration

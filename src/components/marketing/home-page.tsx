@@ -486,7 +486,11 @@ export function MarketingHomePage() {
                     <Link
                       key={service.slug}
                       href="/register"
-                      className="group premium-card-surface relative flex flex-col overflow-hidden rounded-2xl border shadow-[var(--shadow-card)] transition-all hover:-translate-y-1 hover:border-primary-400/35"
+                      className={`group premium-card-surface relative flex flex-col overflow-hidden rounded-2xl border shadow-[var(--shadow-card)] ${
+                        isWaveIllustration(service)
+                          ? "hover:border-primary-400/35"
+                          : "transition-all hover:-translate-y-1 hover:border-primary-400/35"
+                      }`}
                     >
                       <div className="relative aspect-video w-full overflow-hidden bg-[var(--premium-panel)]">
                         <div className="absolute inset-0 z-10 bg-black/10" />

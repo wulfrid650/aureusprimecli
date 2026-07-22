@@ -419,12 +419,12 @@ export function ServiceIllustration({
         )}
 
         {visualPattern === "wave" && (
-          <div className="absolute inset-x-[8%] top-1/2 flex h-[58%] -translate-y-1/2 items-center justify-between rounded-full border border-white/15 bg-white/5 px-[2%] opacity-90 shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_0_28px_rgba(255,255,255,0.1)] backdrop-blur-[2px] [mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]">
+          <div className="absolute inset-x-[8%] top-1/2 flex h-[58%] -translate-y-1/2 items-center justify-between rounded-full border border-white/15 bg-white/5 px-[2%] opacity-90 shadow-[inset_0_1px_0_rgba(255,255,255,0.22)] [mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]">
             {[18, 34, 52, 76, 44, 28, 62, 88, 54, 36, 70, 92, 58, 30, 48, 74, 42, 22, 56, 82, 46, 30, 66, 86, 50, 24, 44, 72, 38, 20].map(
               (height, index) => (
                 <span
                   key={`${height}-${index}`}
-                  className="w-[2.2%] rounded-full border border-white/45 bg-gradient-to-b from-white/75 via-white/25 to-white/10 shadow-[inset_1px_1px_0_rgba(255,255,255,0.48),inset_-2px_-3px_6px_rgba(0,0,0,0.12),0_0_14px_rgba(255,255,255,0.24)] backdrop-blur-md"
+                  className="w-[2.2%] rounded-full border border-white/45 bg-gradient-to-b from-white/75 via-white/25 to-white/10 shadow-[inset_1px_1px_0_rgba(255,255,255,0.48),inset_-2px_-3px_6px_rgba(0,0,0,0.12)]"
                   style={{ height: `${height}%` }}
                 />
               ),
