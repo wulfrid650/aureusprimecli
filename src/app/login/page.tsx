@@ -7,7 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { GoogleAuthButton } from "@/components/auth/google-auth-button";
-import { isRecaptchaEnabled, RecaptchaField, type RecaptchaFieldHandle } from "@/components/auth/recaptcha-field";
+import { isRecaptchaEnabled, RecaptchaField, type RecaptchaFieldHandle } from "@/components/auth/recaptcha-fields";
 import { getStoredAuthToken, storeAuthToken } from "@/lib/auth-token";
 import { getApiMessage, readApiResponse } from "@/lib/api-response";
 import { resolveApiUrl } from "@/lib/fetch";

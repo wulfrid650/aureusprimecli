@@ -32,6 +32,7 @@ export type RecaptchaFieldHandle = {
 };
 
 const SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY?.trim() || "";
+let recaptchaScriptPromise: Promise<void> | null = null;
 
 export function isRecaptchaEnabled(): boolean {
   return SITE_KEY.length > 0;
@@ -39,6 +40,39 @@ export function isRecaptchaEnabled(): boolean {
 
 function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
+}
+
+function loadRecaptchaScript(): Promise<void> {
+  if (window.grecaptcha) {
+    return Promise.resolve();
+  }
+
+  if (recaptchaScriptPromise) {
+    return recaptchaScriptPromise;
+  }
+
+  recaptchaScriptPromise = new Promise<void>((resolve, reject) => {
+    const existing = document.querySelector<HTMLScriptElement>('script[src^="https://www.google.com/recaptcha/api.js"]');
+
+    if (existing) {
+      existing.addEventListener("load", () => resolve(), { once: true });
+      existing.addEventListener("error", () => reject(new Error("reCAPTCHA script failed")), { once: true });
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://www.google.com/recaptcha/api.js?render=explicit";
+    script.async = true;
+    script.defer = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("reCAPTCHA script failed"));
+    document.head.appendChild(script);
+  }).catch((error) => {
+    recaptchaScriptPromise = null;
+    throw error;
+  });
+
+  return recaptchaScriptPromise;
 }
 
 export const RecaptchaField = forwardRef<RecaptchaFieldHandle, { onTokenChange: (token: string) => void }>(
@@ -66,28 +100,7 @@ export const RecaptchaField = forwardRef<RecaptchaFieldHandle, { onTokenChange: 
 
       let mounted = true;
 
-      const loadScript = () => {
-        const existing = document.querySelector('script[src^="https://www.google.com/recaptcha/api.js"]');
-        if (existing) {
-          if (window.grecaptcha) return Promise.resolve();
-          return new Promise<void>((resolve, reject) => {
-            existing.addEventListener("load", () => resolve(), { once: true });
-            existing.addEventListener("error", () => reject(new Error("reCAPTCHA script failed")), { once: true });
-          });
-        }
-
-        return new Promise<void>((resolve, reject) => {
-          const script = document.createElement("script");
-          script.src = "https://www.google.com/recaptcha/api.js?render=explicit";
-          script.async = true;
-          script.defer = true;
-          script.onload = () => resolve();
-          script.onerror = () => reject(new Error("reCAPTCHA script failed"));
-          document.head.appendChild(script);
-        });
-      };
-
-      loadScript()
+      loadRecaptchaScript()
         .then(() => {
           if (!mounted || !containerRef.current || !window.grecaptcha) return;
           const tryRender = () => {
@@ -166,9 +179,11 @@ export const RecaptchaField = forwardRef<RecaptchaFieldHandle, { onTokenChange: 
 
     return (
       <div className="space-y-2">
-        <div ref={containerRef} className="min-h-[78px]" />
+        <div className="recaptcha-shell" aria-label="reCAPTCHA">
+          <div ref={containerRef} className="recaptcha-frame min-h-[78px]" />
+        </div>
         {loadError && (
-          <div>
+          <div className="text-center">
             <p className="text-xs font-medium text-red-600">Impossible de charger reCAPTCHA. Vérifiez votre connexion puis réessayez.</p>
             {loadErrorMessage && (
               <p className="text-xs text-red-500">Détails: {loadErrorMessage}</p>

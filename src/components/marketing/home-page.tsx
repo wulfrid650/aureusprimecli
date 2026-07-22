@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { isWaveIllustration, ServiceIllustration } from "@/components/dashboard/service-illustration";
@@ -266,6 +266,10 @@ export function MarketingHomePage() {
   const [services, setServices] = useState<CatalogProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const subscriptionRailRef = useRef<HTMLDivElement | null>(null);
+  const subscriptionRailTimerRef = useRef<number | null>(null);
+  const subscriptionRailDirectionRef = useRef<1 | -1>(1);
+  const subscriptionRailStoppedRef = useRef(false);
   const process = processCopy[locale];
   const referral = referralCopy[locale];
   const faq = faqCopy[locale];
@@ -298,6 +302,70 @@ export function MarketingHomePage() {
       isActive = false;
     };
   }, []);
+
+  useEffect(() => {
+    const rail = subscriptionRailRef.current;
+    if (!rail || isLoading || services.length < 2) return;
+
+    const mobileQuery = window.matchMedia("(max-width: 639px)");
+    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const clearAutoScroll = () => {
+      if (subscriptionRailTimerRef.current !== null) {
+        window.clearInterval(subscriptionRailTimerRef.current);
+        subscriptionRailTimerRef.current = null;
+      }
+    };
+
+    const syncAutoScroll = () => {
+      clearAutoScroll();
+
+      if (!mobileQuery.matches || reducedMotionQuery.matches || subscriptionRailStoppedRef.current) {
+        return;
+      }
+
+      subscriptionRailTimerRef.current = window.setInterval(() => {
+        if (document.visibilityState !== "visible" || subscriptionRailStoppedRef.current) {
+          return;
+        }
+
+        const firstCard = rail.firstElementChild as HTMLElement | null;
+        const maxScroll = rail.scrollWidth - rail.clientWidth;
+        if (!firstCard || maxScroll <= 0) return;
+
+        if (rail.scrollLeft >= maxScroll - 8) {
+          subscriptionRailDirectionRef.current = -1;
+        } else if (rail.scrollLeft <= 8) {
+          subscriptionRailDirectionRef.current = 1;
+        }
+
+        const step = firstCard.getBoundingClientRect().width + 16;
+        rail.scrollBy({
+          left: step * subscriptionRailDirectionRef.current,
+          behavior: "smooth",
+        });
+      }, 3200);
+    };
+
+    syncAutoScroll();
+    mobileQuery.addEventListener("change", syncAutoScroll);
+    reducedMotionQuery.addEventListener("change", syncAutoScroll);
+
+    return () => {
+      clearAutoScroll();
+      mobileQuery.removeEventListener("change", syncAutoScroll);
+      reducedMotionQuery.removeEventListener("change", syncAutoScroll);
+    };
+  }, [isLoading, services.length]);
+
+  const stopSubscriptionRailAutoScroll = () => {
+    subscriptionRailStoppedRef.current = true;
+
+    if (subscriptionRailTimerRef.current !== null) {
+      window.clearInterval(subscriptionRailTimerRef.current);
+      subscriptionRailTimerRef.current = null;
+    }
+  };
 
   return (
     <main className="premium-page min-h-screen overflow-x-hidden selection:bg-primary-300 selection:text-[var(--premium-contrast)]">
@@ -466,12 +534,18 @@ export function MarketingHomePage() {
                 </a>
               </div>
 
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              <div
+                ref={subscriptionRailRef}
+                className="home-subscription-rail -mx-4 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto px-4 pb-4 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3 xl:grid-cols-4"
+                onPointerDown={stopSubscriptionRailAutoScroll}
+                onWheel={stopSubscriptionRailAutoScroll}
+                onKeyDown={stopSubscriptionRailAutoScroll}
+              >
                 {isLoading &&
                   [0, 1, 2, 3].map((item) => (
                     <div
                       key={item}
-                      className="premium-card-surface relative flex flex-col overflow-hidden rounded-2xl border shadow-[var(--shadow-card)] p-5"
+                      className="premium-card-surface relative flex min-w-[82vw] max-w-[320px] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border p-5 shadow-[var(--shadow-card)] sm:min-w-0 sm:max-w-none"
                     >
                       <div className="aspect-video w-full rounded-2xl bg-[var(--premium-card-deep)] animate-pulse" />
                       <div className="mt-5 h-4 w-20 rounded bg-[var(--premium-card-deep)] animate-pulse" />
@@ -486,7 +560,7 @@ export function MarketingHomePage() {
                     <Link
                       key={service.slug}
                       href="/register"
-                      className={`group premium-card-surface relative flex flex-col overflow-hidden rounded-2xl border shadow-[var(--shadow-card)] ${
+                      className={`group premium-card-surface relative flex min-w-[82vw] max-w-[320px] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border shadow-[var(--shadow-card)] sm:min-w-0 sm:max-w-none ${
                         isWaveIllustration(service)
                           ? "hover:border-primary-400/35"
                           : "transition-all hover:-translate-y-1 hover:border-primary-400/35"
