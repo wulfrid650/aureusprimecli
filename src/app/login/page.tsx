@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { GoogleAuthButton } from "@/components/auth/google-auth-button";
 import { isRecaptchaEnabled, RecaptchaField, type RecaptchaFieldHandle } from "@/components/auth/recaptcha-field";
 import { getStoredAuthToken, storeAuthToken } from "@/lib/auth-token";
 import { getApiMessage, readApiResponse } from "@/lib/api-response";
@@ -32,8 +33,12 @@ function LoginContent() {
   const [recaptchaToken, setRecaptchaToken] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [error, setError] = useState("");
   const isEmailVerifiedNoticeVisible = searchParams.get("verified") === "1";
+  const googleExchangeToken = searchParams.get("google_exchange");
+  const googleError = searchParams.get("google_error");
+  const referralCode = searchParams.get("referral_code")?.trim().toUpperCase() ?? "";
   const legalNotice =
     locale === "fr"
       ? "En vous connectant, vous acceptez automatiquement les documents légaux en vigueur :"
@@ -44,6 +49,57 @@ function LoginContent() {
       router.replace("/dashboard");
     }
   }, [router]);
+
+  useEffect(() => {
+    if (googleError) {
+      queueMicrotask(() => {
+        setError(googleError === "cancelled" ? t("auth.googleCancelled") : t("auth.googleUnavailable"));
+      });
+      return;
+    }
+
+    if (!googleExchangeToken) {
+      return;
+    }
+
+    let active = true;
+    queueMicrotask(() => {
+      if (active) setIsGoogleLoading(true);
+    });
+
+    void fetch(resolveApiUrl("/api/v1/auth/google/exchange"), {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json", "Accept-Language": locale },
+      body: JSON.stringify({ exchange_token: googleExchangeToken }),
+    })
+      .then((res) => readApiResponse<AuthResponseData>(res).then((data) => ({ res, data })))
+      .then(({ res, data }) => {
+        if (!active) return;
+        if (!res.ok) {
+          setError(getApiMessage(data, "La connexion Google a expire. Veuillez recommencer."));
+          return;
+        }
+
+        const token = data?.data?.access_token || data?.data?.token;
+        if (!token) {
+          setError(t("auth.loginTokenMissing"));
+          return;
+        }
+
+        storeAuthToken(token);
+        router.replace("/dashboard");
+      })
+      .catch(() => {
+        if (active) setError(t("common.networkError"));
+      })
+      .finally(() => {
+        if (active) setIsGoogleLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [googleError, googleExchangeToken, locale, router, t]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -132,6 +188,15 @@ function LoginContent() {
             </div>
           )}
 
+          <div className="mb-5 space-y-3">
+            <GoogleAuthButton intent="login" referralCode={referralCode} disabled={isLoading || isGoogleLoading} />
+            <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--premium-text-soft)]">
+              <span className="h-px flex-1 bg-[var(--premium-card-border)]" />
+              <span>{locale === "fr" ? "ou" : "or"}</span>
+              <span className="h-px flex-1 bg-[var(--premium-card-border)]" />
+            </div>
+          </div>
+
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             {/* Email Field */}
             <div className="space-y-1.5">
@@ -200,7 +265,7 @@ function LoginContent() {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || isGoogleLoading}
               className="group mt-2 relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-primary-500 px-4 py-3.5 text-sm font-bold text-[var(--premium-contrast)] transition-all hover:-translate-y-0.5 hover:bg-primary-400 active:translate-y-0 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed disabled:translate-y-0"
             >
               {isLoading ? (

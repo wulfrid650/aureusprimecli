@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { GoogleAuthButton } from "@/components/auth/google-auth-button";
 import { isRecaptchaEnabled, RecaptchaField, type RecaptchaFieldHandle } from "@/components/auth/recaptcha-field";
 import { getStoredAuthToken, storeAuthToken } from "@/lib/auth-token";
 import { getApiFieldErrors, getApiMessage, readApiResponse } from "@/lib/api-response";
@@ -41,6 +42,8 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
   const [hasReferralLink, setHasReferralLink] = useState(false);
+  const [googleOnboardingToken, setGoogleOnboardingToken] = useState("");
+  const isGoogleSignup = Boolean(googleOnboardingToken);
   const legalNotice =
     locale === "fr"
       ? "En créant un compte, vous acceptez automatiquement les documents légaux en vigueur :"
@@ -72,12 +75,34 @@ export default function RegisterPage() {
     });
   }, []);
 
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const onboardingToken = params.get("google_onboarding")?.trim() ?? "";
+    const googleEmail = params.get("google_email")?.trim() ?? "";
+    const googleName = params.get("google_name")?.trim() ?? "";
+
+    if (onboardingToken) {
+      queueMicrotask(() => {
+        setGoogleOnboardingToken(onboardingToken);
+        setForm((currentForm) => ({
+          ...currentForm,
+          name: currentForm.name || googleName,
+          email: googleEmail || currentForm.email,
+        }));
+      });
+    }
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setFieldErrors({});
 
-    if (form.password !== form.password_confirmation) {
+    if (!isGoogleSignup && form.password !== form.password_confirmation) {
       setFieldErrors({ password_confirmation: [t("auth.passwordMismatch")] });
       return;
     }
@@ -89,10 +114,20 @@ export default function RegisterPage() {
 
     setIsLoading(true);
     try {
-      const res = await fetch(resolveApiUrl("/api/v1/auth/register"), {
+      const res = await fetch(resolveApiUrl(isGoogleSignup ? "/api/v1/auth/google/complete" : "/api/v1/auth/register"), {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json", "Accept-Language": locale },
-        body: JSON.stringify({ ...form, recaptcha_token: recaptchaToken }),
+        body: JSON.stringify(
+          isGoogleSignup
+            ? {
+                onboarding_token: googleOnboardingToken,
+                name: form.name,
+                phone: form.phone,
+                referral_code: hasReferralLink ? undefined : form.referral_code,
+                recaptcha_token: recaptchaToken,
+              }
+            : { ...form, recaptcha_token: recaptchaToken },
+        ),
       });
       const data = await readApiResponse<AuthResponseData>(res);
 
@@ -167,6 +202,28 @@ export default function RegisterPage() {
             </div>
           )}
 
+          {!isGoogleSignup && (
+            <div className="mb-5 space-y-3">
+              <GoogleAuthButton intent="signup" referralCode={form.referral_code || undefined} disabled={isLoading} />
+              <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--premium-text-soft)]">
+                <span className="h-px flex-1 bg-[var(--premium-card-border)]" />
+                <span>{locale === "fr" ? "ou" : "or"}</span>
+                <span className="h-px flex-1 bg-[var(--premium-card-border)]" />
+              </div>
+            </div>
+          )}
+
+          {isGoogleSignup && (
+            <div className="mb-5 rounded-2xl border border-primary-500/25 bg-primary-500/8 px-4 py-3 text-sm text-[var(--premium-text)]">
+              <p className="font-bold">{t("auth.googleAccountVerified")}</p>
+              <p className="mt-1 text-xs text-[var(--premium-text-muted)]">{form.email}</p>
+              <p className="mt-2 text-xs text-[var(--premium-text-soft)]">
+                {t("auth.googleCompleteHint")}
+              </p>
+              {hasReferralLink && <p className="mt-2 text-xs font-semibold text-primary-500">{t("auth.referralDetected")}</p>}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             {/* Name */}
             <div className="space-y-1.5">
@@ -197,7 +254,7 @@ export default function RegisterPage() {
             </div>
 
             {/* Email */}
-            <div className="space-y-1.5">
+            {!isGoogleSignup && <div className="space-y-1.5">
               <label htmlFor="email" className="text-sm font-medium text-[var(--premium-text)]">{t("common.emailAddress")}</label>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-[var(--premium-text-soft)]">
@@ -208,16 +265,17 @@ export default function RegisterPage() {
                   required />
               </div>
               {getFieldError("email") && <p className="text-xs text-red-600 font-medium">{getFieldError("email")}</p>}
-            </div>
+            </div>}
 
-            <div className="space-y-1.5">
+            {hasReferralLink && !isGoogleSignup && (
+              <div className="-mt-2 rounded-xl border border-primary-500/20 bg-primary-500/8 px-3 py-2 text-xs font-semibold text-primary-600">
+                {t("auth.referralDetected")}
+              </div>
+            )}
+
+            {(!isGoogleSignup || !hasReferralLink) && <div className="space-y-1.5">
               <div className="flex items-center justify-between gap-3">
                 <label htmlFor="referral_code" className="text-sm font-medium text-[var(--premium-text)]">{t("auth.referralCode")}</label>
-                {hasReferralLink && (
-                  <span className="rounded-full bg-primary-500/10 px-2.5 py-1 text-[11px] font-bold text-primary-500">
-                    {t("auth.referralDetected")}
-                  </span>
-                )}
               </div>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-[var(--premium-text-soft)]">
@@ -237,10 +295,10 @@ export default function RegisterPage() {
               ) : (
                 <p className="text-xs text-[var(--premium-text-soft)]">{t("auth.referralHint")}</p>
               )}
-            </div>
+            </div>}
 
             {/* Password */}
-            <div className="space-y-1.5">
+            {!isGoogleSignup && <div className="space-y-1.5">
               <label htmlFor="password" className="text-sm font-medium text-[var(--premium-text)]">{t("common.password")}</label>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-[var(--premium-text-soft)]">
@@ -255,10 +313,10 @@ export default function RegisterPage() {
               </div>
               {getFieldError("password") && <p className="text-xs text-red-600 font-medium">{getFieldError("password")}</p>}
               <p id="register-password-help" className="text-xs leading-relaxed text-[var(--premium-text-soft)]">{t("auth.passwordHint")}</p>
-            </div>
+            </div>}
 
             {/* Confirm Password */}
-            <div className="space-y-1.5">
+            {!isGoogleSignup && <div className="space-y-1.5">
               <label htmlFor="password_confirmation" className="text-sm font-medium text-[var(--premium-text)]">{t("auth.confirmPassword")}</label>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-[var(--premium-text-soft)]">
@@ -269,7 +327,7 @@ export default function RegisterPage() {
                   required />
               </div>
               {getFieldError("password_confirmation") && <p className="text-xs text-red-600 font-medium">{getFieldError("password_confirmation")}</p>}
-            </div>
+            </div>}
 
             <RecaptchaField ref={recaptchaRef} onTokenChange={setRecaptchaToken} />
 
@@ -297,7 +355,7 @@ export default function RegisterPage() {
                 <span className="material-symbols-outlined animate-spin text-lg">refresh</span>
               ) : (
                 <span className="relative z-10 flex items-center gap-2">
-                  {t("auth.registerSubmit")}
+                  {isGoogleSignup ? t("auth.googleCompleteSubmit") : t("auth.registerSubmit")}
                   <span className="material-symbols-outlined text-lg transition-transform duration-300 group-hover:translate-x-1">arrow_forward</span>
                 </span>
               )}
