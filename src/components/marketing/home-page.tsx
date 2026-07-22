@@ -409,30 +409,40 @@ export function MarketingHomePage() {
                 </a>
               </div>
 
-              <div className="mt-16 flex max-w-full flex-nowrap gap-8 overflow-x-auto px-1 pb-2 opacity-70 no-scrollbar transition-all duration-500">
-                {[
-                  "Netflix",
-                  "Canva",
-                  "CapCut Pro",
-                  "Duolingo",
-                  "Crunchyroll",
-                  "Spotify",
-                  "Prime Video",
-                  "iCloud+",
-                  "Apple Music",
-                  "HBO MAX",
-                  "Disney+",
-                  "Microsoft 365",
-                  "Telegram Premium",
-                  t("marketing.moreBrands")
-                ].map((brand) => (
-                  <div
-                    key={brand}
-                    className="flex h-8 shrink-0 items-center gap-2 whitespace-nowrap text-xl font-bold text-[var(--premium-text-muted)]"
-                  >
-                    {brand}
-                  </div>
-                ))}
+              <div className="group mt-16 max-w-full overflow-hidden px-1 pb-2 opacity-70" aria-label="Services disponibles">
+                <div className="flex w-max animate-brand-marquee group-hover:[animation-play-state:paused] group-focus-within:[animation-play-state:paused] motion-reduce:animate-none">
+                  {[0, 1].map((copy) => (
+                    <div
+                      key={copy}
+                      className="flex shrink-0 gap-8 pr-8"
+                      aria-hidden={copy === 1}
+                    >
+                      {[
+                        "Netflix",
+                        "Canva",
+                        "CapCut Pro",
+                        "Duolingo",
+                        "Crunchyroll",
+                        "Spotify",
+                        "Prime Video",
+                        "iCloud+",
+                        "Apple Music",
+                        "HBO MAX",
+                        "Disney+",
+                        "Microsoft 365",
+                        "Telegram Premium",
+                        t("marketing.moreBrands"),
+                      ].map((brand) => (
+                        <div
+                          key={`${copy}-${brand}`}
+                          className="flex h-8 shrink-0 items-center whitespace-nowrap text-xl font-bold text-[var(--premium-text-muted)]"
+                        >
+                          {brand}
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </section>

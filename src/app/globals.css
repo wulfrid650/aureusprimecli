@@ -2,6 +2,20 @@
 @import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap");
 @import "tailwindcss";
 
+@keyframes brand-marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-brand-marquee {
+  animation: brand-marquee 34s linear infinite;
+}
+
 /* Fullscreen mobile */
 html, body {
   width: 100%;
