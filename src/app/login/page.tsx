@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { GoogleAuthButton } from "@/components/auth/google-auth-button";
+import { GoogleAccountLinkForm } from "@/components/auth/google-account-link-form";
 import { isRecaptchaEnabled, RecaptchaField, type RecaptchaFieldHandle } from "@/components/auth/recaptcha-fields";
 import { getStoredAuthToken, storeAuthToken } from "@/lib/auth-token";
 import { getApiMessage, readApiResponse } from "@/lib/api-response";
@@ -37,6 +38,7 @@ function LoginContent() {
   const [error, setError] = useState("");
   const isEmailVerifiedNoticeVisible = searchParams.get("verified") === "1";
   const googleExchangeToken = searchParams.get("google_exchange");
+  const googleLinkToken = searchParams.get("google_link")?.trim() ?? "";
   const googleError = searchParams.get("google_error");
   const referralCode = searchParams.get("referral_code")?.trim().toUpperCase() ?? "";
   const legalNotice =
@@ -45,15 +47,21 @@ function LoginContent() {
       : "By signing in, you automatically accept the current legal documents:";
 
   useEffect(() => {
-    if (getStoredAuthToken()) {
+    if (getStoredAuthToken() && !googleLinkToken) {
       router.replace("/dashboard");
     }
-  }, [router]);
+  }, [googleLinkToken, router]);
 
   useEffect(() => {
     if (googleError) {
       queueMicrotask(() => {
-        setError(googleError === "cancelled" ? t("auth.googleCancelled") : t("auth.googleUnavailable"));
+        setError(
+          googleError === "cancelled"
+            ? t("auth.googleCancelled")
+            : googleError === "account_conflict"
+              ? t("auth.googleAccountConflict")
+              : t("auth.googleUnavailable"),
+        );
       });
       return;
     }
@@ -169,8 +177,12 @@ function LoginContent() {
               <Image src="/logo-aureusprime.svg" alt="Aureus Prime Logo" width={170} height={20} className="logo-dark h-6 w-auto" />
               <Image src="/logo-aureusprime-light.svg" alt="Aureus Prime Logo" width={170} height={20} className="logo-light h-6 w-auto" />
             </Link>
-            <h1 className="text-2xl font-bold tracking-tight text-[var(--premium-text)]">{t("auth.loginTitle")}</h1>
-            <p className="mt-2 text-sm text-[var(--premium-text-muted)]">{t("auth.loginSubtitle")}</p>
+            <h1 className="text-2xl font-bold tracking-tight text-[var(--premium-text)]">
+              {googleLinkToken ? t("auth.googleLinkTitle") : t("auth.loginTitle")}
+            </h1>
+            <p className="mt-2 text-center text-sm text-[var(--premium-text-muted)]">
+              {googleLinkToken ? t("auth.googleLinkSubtitle") : t("auth.loginSubtitle")}
+            </p>
           </div>
 
           {/* Error Banner */}
@@ -181,13 +193,17 @@ function LoginContent() {
             </div>
           )}
 
-          {isEmailVerifiedNoticeVisible && (
+          {!googleLinkToken && isEmailVerifiedNoticeVisible && (
             <div className="mb-4 flex items-center gap-2 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-semibold text-green-700">
               <span className="material-symbols-outlined text-[18px]">verified</span>
               {t("auth.emailVerifiedNotice")}
             </div>
           )}
 
+          {googleLinkToken ? (
+            <GoogleAccountLinkForm linkToken={googleLinkToken} />
+          ) : (
+          <>
           <div className="mb-5 space-y-3">
             <GoogleAuthButton intent="login" referralCode={referralCode} disabled={isLoading || isGoogleLoading} />
             <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--premium-text-soft)]">
@@ -288,6 +304,8 @@ function LoginContent() {
               </Link>
             </p>
           </div>
+          </>
+          )}
         </div>
       </div>
     </main>
