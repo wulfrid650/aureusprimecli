@@ -40,7 +40,7 @@ export function HomePromotionCard() {
     <section className="px-5 pt-5">
       <Link
         href={promotion.action_url || `/dashboard/services/${promotion.product.slug}`}
-        className="group relative block overflow-hidden rounded-3xl border border-[#d8e8ff] bg-[linear-gradient(135deg,#f7fbff_0%,#eef7ff_48%,#f4fff9_100%)] p-5 shadow-sm transition-transform active:scale-[0.99]"
+        className="home-promotion-card group relative block overflow-hidden rounded-3xl border border-[#d8e8ff] bg-[linear-gradient(135deg,#f7fbff_0%,#eef7ff_48%,#f4fff9_100%)] p-5 shadow-sm transition-transform active:scale-[0.99]"
       >
         <div aria-hidden="true" className="absolute inset-x-0 top-0 flex h-1">
           <span className="flex-1 bg-[#2388ff]" />

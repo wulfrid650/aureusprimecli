@@ -840,6 +840,11 @@ input {
   color: rgba(247, 248, 248, 0.36) !important;
 }
 
+[data-theme="dark"] .dashboard-mode .home-promotion-card {
+  background: linear-gradient(135deg, #17263a 0%, #102b40 52%, #12352f 100%) !important;
+  border-color: rgba(96, 165, 250, 0.3) !important;
+}
+
 [data-theme="dark"] .dashboard-mode input,
 [data-theme="dark"] .dashboard-mode textarea,
 [data-theme="dark"] .dashboard-mode select {
