@@ -246,12 +246,62 @@ function StoryViewer({
 }) {
   const { locale } = useI18n();
   const pointerStart = useRef<number | null>(null);
+  const pointerStartedAt = useRef<number | null>(null);
+  const remainingMs = useRef(Math.max(3, tip.pages[pageIndex].duration_seconds) * 1000);
+  const suppressNavigationClick = useRef(false);
+  const [isPaused, setIsPaused] = useState(false);
   const page = tip.pages[pageIndex];
 
   useEffect(() => {
-    const timer = window.setTimeout(onNext, Math.max(3, page.duration_seconds) * 1000);
-    return () => window.clearTimeout(timer);
-  }, [onNext, page.duration_seconds, page.id]);
+    if (isPaused) return;
+    const startedAt = Date.now();
+    const timer = window.setTimeout(onNext, remainingMs.current);
+    return () => {
+      window.clearTimeout(timer);
+      remainingMs.current = Math.max(0, remainingMs.current - (Date.now() - startedAt));
+    };
+  }, [isPaused, onNext, page.id]);
+
+  const pauseStory = (clientX: number) => {
+    pointerStart.current = clientX;
+    pointerStartedAt.current = Date.now();
+    setIsPaused(true);
+  };
+
+  const resumeStory = (clientX: number) => {
+    const startedX = pointerStart.current;
+    const heldFor = Date.now() - (pointerStartedAt.current ?? Date.now());
+    pointerStart.current = null;
+    pointerStartedAt.current = null;
+    setIsPaused(false);
+
+    if (startedX === null) return;
+    const delta = clientX - startedX;
+    if (Math.abs(delta) > 45) {
+      suppressNavigationClick.current = true;
+      window.setTimeout(() => {
+        suppressNavigationClick.current = false;
+      }, 0);
+      if (delta < 0) {
+        onNext();
+      } else {
+        onPrevious();
+      }
+      return;
+    }
+
+    if (heldFor >= 220) {
+      suppressNavigationClick.current = true;
+      window.setTimeout(() => {
+        suppressNavigationClick.current = false;
+      }, 0);
+    }
+  };
+
+  const navigateUnlessHeld = (action: () => void) => {
+    if (suppressNavigationClick.current) return;
+    action();
+  };
 
   return (
     <div className="tip-story-shell fixed inset-0 z-[90] bg-black/80" role="dialog" aria-modal="true" aria-label={tip.title}>
@@ -259,14 +309,16 @@ function StoryViewer({
         className="tip-story-card relative mx-auto flex select-none flex-col overflow-hidden bg-[#111827] text-white"
         style={{ backgroundColor: page.background_color }}
         onPointerDown={(event) => {
-          pointerStart.current = event.clientX;
+          event.currentTarget.setPointerCapture(event.pointerId);
+          pauseStory(event.clientX);
         }}
         onPointerUp={(event) => {
-          if (pointerStart.current === null) return;
-          const delta = event.clientX - pointerStart.current;
+          resumeStory(event.clientX);
+        }}
+        onPointerCancel={() => {
           pointerStart.current = null;
-          if (delta < -45) onNext();
-          if (delta > 45) onPrevious();
+          pointerStartedAt.current = null;
+          setIsPaused(false);
         }}
       >
         {page.image_url ? (
@@ -279,7 +331,10 @@ function StoryViewer({
             <span key={storyPage.id} className="h-1 flex-1 overflow-hidden rounded-full bg-white/30">
               <span
                 className={`block h-full rounded-full bg-white ${index < pageIndex ? "w-full" : index > pageIndex ? "w-0" : "story-progress"}`}
-                style={index === pageIndex ? { animationDuration: `${Math.max(3, page.duration_seconds)}s` } : undefined}
+                style={index === pageIndex ? {
+                  animationDuration: `${Math.max(3, page.duration_seconds)}s`,
+                  animationPlayState: isPaused ? "paused" : "running",
+                } : undefined}
               />
             </span>
           ))}
@@ -298,8 +353,16 @@ function StoryViewer({
           </button>
         </div>
 
-        <button type="button" className="absolute bottom-[42%] left-0 top-20 z-20 w-1/3" onClick={onPrevious} aria-label={locale === "en" ? "Previous" : "Précédent"} />
-        <button type="button" className="absolute bottom-[42%] right-0 top-20 z-20 w-1/3" onClick={onNext} aria-label={locale === "en" ? "Next" : "Suivant"} />
+        <button type="button" className="absolute bottom-[42%] left-0 top-20 z-20 w-1/3" onClick={() => navigateUnlessHeld(onPrevious)} aria-label={locale === "en" ? "Previous" : "Précédent"} />
+        <button type="button" className="absolute bottom-[42%] right-0 top-20 z-20 w-1/3" onClick={() => navigateUnlessHeld(onNext)} aria-label={locale === "en" ? "Next" : "Suivant"} />
+
+        {isPaused ? (
+          <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center" aria-hidden="true">
+            <span className="flex size-14 items-center justify-center rounded-full bg-black/25 backdrop-blur-md">
+              <span className="material-symbols-outlined text-[28px]">pause</span>
+            </span>
+          </div>
+        ) : null}
 
         <div className="tip-story-content relative z-10 mt-auto overflow-y-auto overscroll-contain px-7 pb-[max(38px,env(safe-area-inset-bottom))]">
           <p className="text-[11px] font-black uppercase tracking-[0.2em] text-white/65">
