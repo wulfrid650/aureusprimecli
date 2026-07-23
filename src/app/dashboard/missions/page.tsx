@@ -19,7 +19,7 @@ type MissionPrimeSnapshot = {
   available: boolean;
   profile?: {
     points: number;
-    level: { label: string };
+    level: { key: string; label: string };
     next_level?: { label: string; points_remaining?: number } | null;
     aureus_plus: boolean;
     aureus_plus_offer?: { active: boolean; eligible_cta: boolean; earned_via_prime: boolean };
@@ -30,7 +30,7 @@ type MissionPrimeSnapshot = {
       awarded_at?: string | null;
     } | null;
   };
-  series?: { completed: number; total: number };
+  series?: { completed: number; total: number; percentage: number };
   current_mission?: PrimeMission | null;
   next_mission?: { locked: boolean; title: string; description: string } | null;
   completed_missions?: Array<PrimeMission & { completed_at?: string | null }>;
@@ -50,6 +50,7 @@ const actionRoutes: Record<string, string> = {
   premium_collection: "/dashboard/services",
   premium_explorer: "/dashboard/services",
   first_referral: "/dashboard/parrainage",
+  dynamic_enable_notifications: "/dashboard/compte",
 };
 
 export default function MissionPrimePage() {
@@ -143,9 +144,21 @@ export default function MissionPrimePage() {
                     })}
                   </p>
                 ) : null}
+                <div className="mt-4">
+                  <div className="mb-2 flex items-center justify-between text-[11px] font-black text-gray-500">
+                    <span>{t("missionPrime.programProgress")}</span>
+                    <span>{series.percentage}%</span>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-gray-100">
+                    <div
+                      className="h-full rounded-full bg-[#dbb723] transition-[width] duration-500"
+                      style={{ width: `${Math.min(100, Math.max(0, series.percentage))}%` }}
+                    />
+                  </div>
+                </div>
               </section>
 
-              {!profile.aureus_plus ? (
+              {profile.level.key === "prime_elite" && !profile.aureus_plus ? (
                 <section className="rounded-3xl border border-amber-100 bg-amber-50/70 p-5">
                   <div className="flex items-start gap-3">
                     <span className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-white text-[#dbb723] shadow-sm">
@@ -210,6 +223,10 @@ export default function MissionPrimePage() {
                       <span className="text-gray-500">{t("missionPrime.progress")}</span>
                       <span>{mission.progress.current} / {mission.progress.target}</span>
                     </div>
+                    <MissionProgress
+                      current={mission.progress.current}
+                      target={mission.progress.target}
+                    />
                     <p className="mt-5 text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">{t("missionPrime.reward")}</p>
                     <div className="mt-2 flex flex-wrap gap-2">
                       {mission.reward.auri > 0 ? <RewardChip icon="account_balance_wallet" label={`${mission.reward.auri} Auri`} /> : null}
@@ -266,6 +283,21 @@ export default function MissionPrimePage() {
                           {dynamicMission.reward.points > 0 ? <RewardChip icon="stars" label={`${dynamicMission.reward.points} PP`} /> : null}
                           {dynamicMission.reward.badge_label ? <RewardChip icon="workspace_premium" label={dynamicMission.reward.badge_label} /> : null}
                         </div>
+                        <MissionProgress
+                          current={dynamicMission.progress.current}
+                          target={dynamicMission.progress.target}
+                          compact
+                        />
+                        {actionRoutes[dynamicMission.code] ? (
+                          <button
+                            type="button"
+                            onClick={() => router.push(actionRoutes[dynamicMission.code])}
+                            className="mt-3 inline-flex items-center gap-1.5 text-xs font-black text-[#9b7a08]"
+                          >
+                            {t("missionPrime.continue")}
+                            <span className="material-symbols-outlined text-[17px]">arrow_forward</span>
+                          </button>
+                        ) : null}
                       </article>
                     ))}
                   </div>
@@ -338,6 +370,15 @@ function RewardChip({ icon, label }: { icon: string; label: string }) {
     <span className="inline-flex items-center gap-1.5 rounded-full bg-[#eef5ff] px-3 py-2 text-xs font-black text-[#1671db]">
       <span className="material-symbols-outlined text-[16px]">{icon}</span>{label}
     </span>
+  );
+}
+
+function MissionProgress({ current, target, compact = false }: { current: number; target: number; compact?: boolean }) {
+  const percent = target > 0 ? Math.min(100, Math.max(0, (current / target) * 100)) : 0;
+  return (
+    <div className={compact ? "mt-3 h-1.5 overflow-hidden rounded-full bg-gray-200" : "mt-3 h-2 overflow-hidden rounded-full bg-gray-100"}>
+      <div className="h-full rounded-full bg-[#dbb723] transition-[width] duration-500" style={{ width: `${percent}%` }} />
+    </div>
   );
 }
 

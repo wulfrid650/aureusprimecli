@@ -9,7 +9,7 @@ type MissionPrimeSnapshot = {
   available: boolean;
   profile?: {
     points: number;
-    level: { label: string };
+    level: { key: string; label: string };
     badges: string[];
     aureus_plus_offer?: { active: boolean; eligible_cta: boolean };
   };
@@ -158,7 +158,7 @@ export function MissionPrimeProfileLink() {
         </div>
       ) : null}
 
-      {!snapshot.profile.aureus_plus_offer?.active ? (
+      {snapshot.profile.level.key === "prime_elite" && !snapshot.profile.aureus_plus_offer?.active ? (
         <div className="mt-4 flex items-center gap-3 rounded-2xl border border-amber-100 bg-amber-50/70 px-3.5 py-3">
           <span className="material-symbols-outlined text-[#dbb723]">stars</span>
           <div className="min-w-0 flex-1">
