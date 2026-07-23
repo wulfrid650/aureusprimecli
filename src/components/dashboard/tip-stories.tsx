@@ -60,6 +60,15 @@ export function TipStories() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (activeTipIndex === null) return;
+    const previousOverflow = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = "hidden";
+    return () => {
+      document.documentElement.style.overflow = previousOverflow;
+    };
+  }, [activeTipIndex]);
+
+  useEffect(() => {
     let active = true;
     safeFetch<TipsResponse>("/api/v1/me/tips")
       .then((response) => {
@@ -245,9 +254,9 @@ function StoryViewer({
   }, [onNext, page.duration_seconds, page.id]);
 
   return (
-    <div className="fixed inset-0 z-[90] bg-black/75 sm:flex sm:items-center sm:justify-center sm:p-4" role="dialog" aria-modal="true" aria-label={tip.title}>
+    <div className="tip-story-shell fixed inset-0 z-[90] bg-black/80" role="dialog" aria-modal="true" aria-label={tip.title}>
       <div
-        className="relative mx-auto flex h-[100dvh] w-full max-w-[430px] select-none flex-col overflow-hidden bg-[#111827] text-white sm:h-[850px] sm:max-h-[calc(100vh-2rem)] sm:rounded-[36px] sm:shadow-2xl"
+        className="tip-story-card relative mx-auto flex select-none flex-col overflow-hidden bg-[#111827] text-white"
         style={{ backgroundColor: page.background_color }}
         onPointerDown={(event) => {
           pointerStart.current = event.clientX;
@@ -265,7 +274,7 @@ function StoryViewer({
         ) : null}
         <div aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,10,20,.45),rgba(7,10,20,.08)_35%,rgba(7,10,20,.72))]" />
 
-        <div className="relative z-10 flex gap-1.5 px-4 pt-[max(14px,env(safe-area-inset-top))]">
+        <div className="tip-story-progress relative z-10 flex gap-1.5 px-4 pt-[max(14px,env(safe-area-inset-top))]">
           {tip.pages.map((storyPage, index) => (
             <span key={storyPage.id} className="h-1 flex-1 overflow-hidden rounded-full bg-white/30">
               <span
@@ -276,7 +285,7 @@ function StoryViewer({
           ))}
         </div>
 
-        <div className="relative z-10 flex items-center gap-3 px-4 py-4">
+        <div className="tip-story-header relative z-10 flex items-center gap-3 px-4 py-4">
           <span className="flex size-10 items-center justify-center rounded-full bg-white/18 backdrop-blur-md">
             <span className="material-symbols-outlined text-[21px]">{categoryIcons[tip.category] ?? "lightbulb"}</span>
           </span>
@@ -289,17 +298,17 @@ function StoryViewer({
           </button>
         </div>
 
-        <button type="button" className="absolute inset-y-20 left-0 z-10 w-1/3" onClick={onPrevious} aria-label={locale === "en" ? "Previous" : "Précédent"} />
-        <button type="button" className="absolute inset-y-20 right-0 z-10 w-1/3" onClick={onNext} aria-label={locale === "en" ? "Next" : "Suivant"} />
+        <button type="button" className="absolute bottom-[42%] left-0 top-20 z-20 w-1/3" onClick={onPrevious} aria-label={locale === "en" ? "Previous" : "Précédent"} />
+        <button type="button" className="absolute bottom-[42%] right-0 top-20 z-20 w-1/3" onClick={onNext} aria-label={locale === "en" ? "Next" : "Suivant"} />
 
-        <div className="relative z-10 mt-auto px-7 pb-[max(38px,env(safe-area-inset-bottom))] pointer-events-none">
+        <div className="tip-story-content relative z-10 mt-auto overflow-y-auto overscroll-contain px-7 pb-[max(38px,env(safe-area-inset-bottom))]">
           <p className="text-[11px] font-black uppercase tracking-[0.2em] text-white/65">
             {locale === "en" ? "Good to know" : "Bon à savoir"}
           </p>
-          {page.title ? <h3 className="mt-3 text-3xl font-black leading-tight tracking-tight">{page.title}</h3> : null}
-          <p className="mt-3 text-base font-semibold leading-relaxed text-white/90">{page.content}</p>
+          {page.title ? <h3 className="tip-story-title mt-3 font-black leading-tight tracking-tight">{page.title}</h3> : null}
+          <p className="tip-story-copy mt-3 font-semibold leading-relaxed text-white/90">{page.content}</p>
           {page.action_url && page.action_label ? (
-            <Link href={page.action_url} className="pointer-events-auto mt-6 inline-flex h-12 items-center gap-2 rounded-full bg-white px-5 text-sm font-black text-[#131118] shadow-lg">
+            <Link href={page.action_url} className="mt-6 inline-flex min-h-12 max-w-full items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-black text-[#131118] shadow-lg">
               {page.action_label}
               <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
             </Link>
