@@ -63,6 +63,11 @@ export default function WalletPage() {
   };
 
   const getTransactionLabel = (tx: Transaction) => {
+    const apiLabel = String(tx.description || "").trim();
+    if (/^(Recharge|Ajustement\s+[+-]|CMD\s|RNV\s|Carte\s|Crédit|Débit)/i.test(apiLabel)) {
+      return apiLabel;
+    }
+
     const source = String(tx.meta?.source || "").toLowerCase();
     const isAdminAdjustment = tx.meta?.admin_action === true || source === "admin_manual_adjustment";
 
