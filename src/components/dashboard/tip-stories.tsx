@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { createPortal } from "react-dom";
 import { useEffect, useRef, useState } from "react";
 import { safeFetch } from "@/lib/fetch";
 import { useI18n } from "@/lib/i18n";
@@ -61,10 +62,24 @@ export function TipStories() {
 
   useEffect(() => {
     if (activeTipIndex === null) return;
-    const previousOverflow = document.documentElement.style.overflow;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousBodyPosition = document.body.style.position;
+    const previousBodyTop = document.body.style.top;
+    const previousBodyWidth = document.body.style.width;
+    const scrollY = window.scrollY;
     document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = "100%";
     return () => {
-      document.documentElement.style.overflow = previousOverflow;
+      document.documentElement.style.overflow = previousHtmlOverflow;
+      document.body.style.overflow = previousBodyOverflow;
+      document.body.style.position = previousBodyPosition;
+      document.body.style.top = previousBodyTop;
+      document.body.style.width = previousBodyWidth;
+      window.scrollTo(0, scrollY);
     };
   }, [activeTipIndex]);
 
@@ -198,16 +213,19 @@ export function TipStories() {
         ))}
       </div>
 
-      {activeTip ? (
-        <StoryViewer
-          key={`${activeTip.id}-${activePageIndex}`}
-          tip={activeTip}
-          pageIndex={activePageIndex}
-          onClose={closeStory}
-          onNext={goNext}
-          onPrevious={goPrevious}
-        />
-      ) : null}
+      {activeTip && typeof document !== "undefined"
+        ? createPortal(
+            <StoryViewer
+              key={`${activeTip.id}-${activePageIndex}`}
+              tip={activeTip}
+              pageIndex={activePageIndex}
+              onClose={closeStory}
+              onNext={goNext}
+              onPrevious={goPrevious}
+            />,
+            document.body,
+          )
+        : null}
     </section>
   );
 }
@@ -245,10 +263,10 @@ function StoryViewer({
   onPrevious: () => void;
 }) {
   const { locale } = useI18n();
+  const cardRef = useRef<HTMLDivElement | null>(null);
   const pointerStart = useRef<number | null>(null);
   const pointerStartedAt = useRef<number | null>(null);
   const remainingMs = useRef(Math.max(3, tip.pages[pageIndex].duration_seconds) * 1000);
-  const suppressNavigationClick = useRef(false);
   const [isPaused, setIsPaused] = useState(false);
   const page = tip.pages[pageIndex];
 
@@ -262,13 +280,16 @@ function StoryViewer({
     };
   }, [isPaused, onNext, page.id]);
 
+  const isInteractiveTarget = (target: EventTarget | null) =>
+    target instanceof Element && Boolean(target.closest("button,a"));
+
   const pauseStory = (clientX: number) => {
     pointerStart.current = clientX;
     pointerStartedAt.current = Date.now();
     setIsPaused(true);
   };
 
-  const resumeStory = (clientX: number) => {
+  const resumeStory = (clientX: number, target: EventTarget | null) => {
     const startedX = pointerStart.current;
     const heldFor = Date.now() - (pointerStartedAt.current ?? Date.now());
     pointerStart.current = null;
@@ -278,10 +299,6 @@ function StoryViewer({
     if (startedX === null) return;
     const delta = clientX - startedX;
     if (Math.abs(delta) > 45) {
-      suppressNavigationClick.current = true;
-      window.setTimeout(() => {
-        suppressNavigationClick.current = false;
-      }, 0);
       if (delta < 0) {
         onNext();
       } else {
@@ -290,30 +307,33 @@ function StoryViewer({
       return;
     }
 
-    if (heldFor >= 220) {
-      suppressNavigationClick.current = true;
-      window.setTimeout(() => {
-        suppressNavigationClick.current = false;
-      }, 0);
+    if (heldFor >= 220 || isInteractiveTarget(target)) {
+      return;
+    }
+
+    const rect = cardRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const relativeX = clientX - rect.left;
+    if (relativeX < rect.width / 2) {
+      onPrevious();
+    } else {
+      onNext();
     }
   };
 
-  const navigateUnlessHeld = (action: () => void) => {
-    if (suppressNavigationClick.current) return;
-    action();
-  };
-
   return (
-    <div className="tip-story-shell fixed inset-0 z-[90] bg-black/80" role="dialog" aria-modal="true" aria-label={tip.title}>
+    <div className="tip-story-shell fixed inset-0 z-[300] bg-black/80" role="dialog" aria-modal="true" aria-label={tip.title}>
       <div
+        ref={cardRef}
         className="tip-story-card relative mx-auto flex select-none flex-col overflow-hidden bg-[#111827] text-white"
         style={{ backgroundColor: page.background_color }}
         onPointerDown={(event) => {
+          if (isInteractiveTarget(event.target)) return;
           event.currentTarget.setPointerCapture(event.pointerId);
           pauseStory(event.clientX);
         }}
         onPointerUp={(event) => {
-          resumeStory(event.clientX);
+          resumeStory(event.clientX, event.target);
         }}
         onPointerCancel={() => {
           pointerStart.current = null;
@@ -352,9 +372,6 @@ function StoryViewer({
             <span className="material-symbols-outlined">close</span>
           </button>
         </div>
-
-        <button type="button" className="absolute bottom-[42%] left-0 top-20 z-20 w-1/3" onClick={() => navigateUnlessHeld(onPrevious)} aria-label={locale === "en" ? "Previous" : "Précédent"} />
-        <button type="button" className="absolute bottom-[42%] right-0 top-20 z-20 w-1/3" onClick={() => navigateUnlessHeld(onNext)} aria-label={locale === "en" ? "Next" : "Suivant"} />
 
         {isPaused ? (
           <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center" aria-hidden="true">
