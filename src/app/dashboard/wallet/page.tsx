@@ -6,7 +6,6 @@ import { DashboardBottomNav } from "@/components/dashboard/bottom-nav";
 import { DashboardHeaderControls } from "@/components/dashboard/header-controls";
 import { safeFetch } from "@/lib/fetch";
 import { getPlural, useI18n } from "@/lib/i18n";
-import { formatAuriAmount } from "@/lib/money";
 
 interface Transaction {
   id: number;
@@ -64,20 +63,20 @@ export default function WalletPage() {
   };
 
   const getTransactionLabel = (tx: Transaction) => {
-    const amount = formatAuriAmount(Math.abs(tx.amount), dateLocale);
     const source = String(tx.meta?.source || "").toLowerCase();
     const isAdminAdjustment = tx.meta?.admin_action === true || source === "admin_manual_adjustment";
 
     if (isAdminAdjustment) {
-      return t("wallet.adminAdjustment", { sign: tx.is_credit ? "+" : "-", amount });
+      return t("wallet.adminAdjustment", { sign: tx.is_credit ? "+" : "-" });
     }
 
     if (tx.is_credit && (tx.type === "topup" || tx.type === "deposit" || source.includes("topup"))) {
-      return t("wallet.topupReason", { amount });
+      return t("wallet.topupReason");
     }
 
     if (!tx.is_credit) {
       const rawProductName = tx.meta?.product_name || tx.related_entity?.summary || tx.description || "";
+      const isRenewal = tx.meta?.order_type === "renewal" || /^Renouvellement/i.test(rawProductName);
       const productName = rawProductName
         .replace(/^Renouvellement\s*[-(:]?\s*/i, "")
         .replace(/^CMD\s+pour\s+/i, "")
@@ -87,13 +86,16 @@ export default function WalletPage() {
       const isCard = /robux|carte|gift|cadeau/i.test(productName);
 
       if (productName) {
-        return t(isCard ? "wallet.cardDebit" : "wallet.subscriptionDebit", { product: productName, amount });
+        const cardProductName = productName.replace(/^Carte\s+/i, "").trim();
+        return t(isCard ? "wallet.cardDebit" : isRenewal ? "wallet.renewalDebit" : "wallet.orderDebit", {
+          product: isCard ? cardProductName : productName,
+        });
       }
     }
 
     return tx.is_credit
-      ? t("wallet.creditFallback", { amount })
-      : t("wallet.debitFallback", { amount });
+      ? t("wallet.creditFallback")
+      : t("wallet.debitFallback");
   };
 
   const filteredTransactions = useMemo(() => {
@@ -218,8 +220,8 @@ export default function WalletPage() {
                       <span className="text-xs text-gray-500 font-medium">{formatDate(tx.processed_at)}</span>
                     </div>
                     <div className="flex flex-col items-end shrink-0 pl-2">
-                      <span className={`font-bold ${tx.is_credit ? 'text-green-600' : 'text-[#131118]'}`}>
-                        {tx.is_credit ? '+' : ''}{Math.abs(tx.amount).toLocaleString(dateLocale).replace(/\s/g, ' ')} Auri
+                      <span className={`font-bold ${tx.is_credit ? 'text-green-600' : 'text-red-600'}`}>
+                        {tx.is_credit ? '+' : '-'}{Math.abs(tx.amount).toLocaleString(dateLocale).replace(/\s/g, ' ')} Auri
                       </span>
                       <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded uppercase mt-1 ${tx.status === 'completed' ? 'bg-green-100 text-green-700' :
                         tx.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
