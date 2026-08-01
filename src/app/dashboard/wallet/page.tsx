@@ -80,6 +80,7 @@ export default function WalletPage() {
       const productName = rawProductName
         .replace(/^Renouvellement\s*[-(:]?\s*/i, "")
         .replace(/^CMD\s+pour\s+/i, "")
+        .replace(/^(?:CMD|RNV|ORD|RNL)\s+/i, "")
         .replace(/^Paiement commande\s+[A-Z0-9-]+\s*/i, "")
         .replace(/[)]$/, "")
         .trim();
