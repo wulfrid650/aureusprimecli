@@ -64,7 +64,7 @@ export default function WalletPage() {
 
   const getTransactionLabel = (tx: Transaction) => {
     const apiLabel = String(tx.description || "").trim();
-    if (/^(Recharge|Ajustement\s+[+-]|CMD\s|RNV\s|Carte\s|Crédit|Débit)/i.test(apiLabel)) {
+    if (/^(Recharge|Mission Prime|Ajustement\s+[+-]|CMD\s|RNV\s|Carte\s|Crédit|Débit)/i.test(apiLabel)) {
       return apiLabel;
     }
 
@@ -77,6 +77,10 @@ export default function WalletPage() {
 
     if (tx.is_credit && (tx.type === "topup" || tx.type === "deposit" || source.includes("topup"))) {
       return t("wallet.topupReason");
+    }
+
+    if (tx.is_credit && source === "mission_prime") {
+      return t("wallet.missionPrimeReward");
     }
 
     if (!tx.is_credit) {
