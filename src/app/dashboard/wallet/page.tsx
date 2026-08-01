@@ -6,6 +6,7 @@ import { DashboardBottomNav } from "@/components/dashboard/bottom-nav";
 import { DashboardHeaderControls } from "@/components/dashboard/header-controls";
 import { safeFetch } from "@/lib/fetch";
 import { getPlural, useI18n } from "@/lib/i18n";
+import { formatAuriAmount } from "@/lib/money";
 
 interface Transaction {
   id: number;
@@ -19,6 +20,8 @@ interface Transaction {
   meta?: {
     order_type?: string;
     product_name?: string;
+    source?: string;
+    admin_action?: boolean;
   };
   related_entity?: {
     type: string;
@@ -61,24 +64,36 @@ export default function WalletPage() {
   };
 
   const getTransactionLabel = (tx: Transaction) => {
-    if (tx.meta?.order_type === "renewal") {
-      return `Renouvellement (${tx.meta.product_name || t("wallet.productFallback")})`;
+    const amount = formatAuriAmount(Math.abs(tx.amount), dateLocale);
+    const source = String(tx.meta?.source || "").toLowerCase();
+    const isAdminAdjustment = tx.meta?.admin_action === true || source === "admin_manual_adjustment";
+
+    if (isAdminAdjustment) {
+      return t("wallet.adminAdjustment", { sign: tx.is_credit ? "+" : "-", amount });
     }
 
-    if (/^Renouvellement/i.test(tx.description || "")) {
-      return tx.description;
+    if (tx.is_credit && (tx.type === "topup" || tx.type === "deposit" || source.includes("topup"))) {
+      return t("wallet.topupReason", { amount });
     }
 
-    if (tx.type === 'topup' || tx.type === 'deposit') {
-      return `${t("wallet.topup")} ${Math.abs(tx.amount).toLocaleString(dateLocale)} Auri`;
+    if (!tx.is_credit) {
+      const rawProductName = tx.meta?.product_name || tx.related_entity?.summary || tx.description || "";
+      const productName = rawProductName
+        .replace(/^Renouvellement\s*[-(:]?\s*/i, "")
+        .replace(/^CMD\s+pour\s+/i, "")
+        .replace(/^Paiement commande\s+[A-Z0-9-]+\s*/i, "")
+        .replace(/[)]$/, "")
+        .trim();
+      const isCard = /robux|carte|gift|cadeau/i.test(productName);
+
+      if (productName) {
+        return t(isCard ? "wallet.cardDebit" : "wallet.subscriptionDebit", { product: productName, amount });
+      }
     }
 
-    if (tx.type === 'payment' || !tx.is_credit) {
-      const productName = tx.related_entity?.summary || tx.description?.replace(/Paiement commande\s+[A-Z0-9-]+/i, '').trim();
-      return t("wallet.commandFor", { product: productName || t("wallet.productFallback") });
-    }
-
-    return tx.description || (tx.is_credit ? t("wallet.creditFallback") : t("wallet.debitFallback"));
+    return tx.is_credit
+      ? t("wallet.creditFallback", { amount })
+      : t("wallet.debitFallback", { amount });
   };
 
   const filteredTransactions = useMemo(() => {
