@@ -302,6 +302,10 @@ export function getVisibleAccountPayload(
   return assignedAccount?.masked_payload ?? {};
 }
 
+export function getActiveAssignmentsCount(subscription: Subscription): number {
+  return subscription.assignments?.filter((assignment) => !assignment.revoked && !assignment.revoked_at).length ?? 0;
+}
+
 export type SubscriptionVisibleAccess = {
   assignmentId?: number | null;
   serviceName: string;

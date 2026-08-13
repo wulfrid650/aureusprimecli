@@ -266,6 +266,7 @@ export function MarketingHomePage() {
   const [services, setServices] = useState<CatalogProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeSectionId, setActiveSectionId] = useState("accueil");
   const subscriptionRailRef = useRef<HTMLDivElement | null>(null);
   const subscriptionRailTimerRef = useRef<number | null>(null);
   const subscriptionRailDirectionRef = useRef<1 | -1>(1);
@@ -274,12 +275,40 @@ export function MarketingHomePage() {
   const referral = referralCopy[locale];
   const faq = faqCopy[locale];
   const navItems = [
-    { href: "#accueil", label: t("marketing.navHome"), active: true },
-    { href: "#abonnements", label: t("marketing.navSubscriptions") },
-    { href: "#avantages", label: t("marketing.navTraining") },
-    { href: "/catalogue", label: locale === "fr" ? "Catalogue" : "Catalog" },
+    { href: "#accueil", sectionId: "accueil", label: t("marketing.navHome") },
+    { href: "#abonnements", sectionId: "abonnements", label: t("marketing.navSubscriptions") },
+    { href: "#avantages", sectionId: "avantages", label: t("marketing.navTraining") },
+    { href: "/offres", label: locale === "fr" ? "Catalogue" : "Catalog" },
     { href: "/contact", label: t("marketing.navContact") },
-  ];
+  ].map((item) => ({ ...item, active: item.sectionId === activeSectionId }));
+
+  useEffect(() => {
+    const sectionIds = ["accueil", "abonnements", "avantages"];
+    const sections = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+
+    if (sections.length === 0) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+        if (visible?.target.id) {
+          setActiveSectionId(visible.target.id);
+        }
+      },
+      { rootMargin: "-45% 0px -45% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] },
+    );
+
+    sections.forEach((section) => observer.observe(section));
+
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     let isActive = true;
@@ -397,9 +426,9 @@ export function MarketingHomePage() {
             </nav>
 
             <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
-              <LanguageToggle className="h-9 p-0.5 sm:h-11 sm:p-1 [&_button]:h-7 [&_button]:min-w-8 [&_button]:px-1.5 sm:[&_button]:h-8 sm:[&_button]:min-w-9 sm:[&_button]:px-2" />
+              <LanguageToggle className="h-9 p-0.5 sm:h-11 sm:p-1 [&_button]:h-8 [&_button]:min-w-8 [&_button]:px-1.5 sm:[&_button]:h-9 sm:[&_button]:min-w-10 sm:[&_button]:px-2" />
               <ThemeToggle className="size-9 sm:size-11" />
-              <Link href="/login" className="premium-primary-cta group flex size-9 shrink-0 items-center justify-center gap-2 rounded-full px-0 text-sm font-semibold transition-all sm:h-10 sm:w-auto sm:px-4">
+              <Link href="/login" className="premium-primary-cta group flex size-10 shrink-0 items-center justify-center gap-2 rounded-full px-0 text-sm font-semibold transition-all sm:h-10 sm:w-auto sm:px-4">
                 <span className="hidden sm:inline">{t("marketing.login")}</span>
                 <MaterialIcon
                   name="login"
@@ -408,8 +437,8 @@ export function MarketingHomePage() {
               </Link>
               <button
                 type="button"
-                className="flex size-9 shrink-0 items-center justify-center rounded-full border border-[var(--premium-card-border)] bg-[var(--premium-panel)] text-[var(--premium-text)] shadow-[var(--shadow-card)] transition-colors hover:bg-primary-500/10 sm:size-10 md:hidden"
-                aria-label={isMobileMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+                className="flex size-10 shrink-0 items-center justify-center rounded-full border border-[var(--premium-card-border)] bg-[var(--premium-panel)] text-[var(--premium-text)] shadow-[var(--shadow-card)] transition-colors hover:bg-primary-500/10 sm:size-11 md:hidden"
+                aria-label={isMobileMenuOpen ? t("common.closeMenu") : t("common.openMenu")}
                 aria-expanded={isMobileMenuOpen}
                 aria-controls="home-mobile-menu"
                 onClick={() => setIsMobileMenuOpen((open) => !open)}
@@ -767,10 +796,18 @@ export function MarketingHomePage() {
                   {t("marketing.footerDescription")}
                 </p>
                 <div className="flex gap-4">
-                  <Link className="text-[var(--premium-text-muted)] transition-colors hover:text-primary-500" href="/contact">
+                  <Link
+                    className="text-[var(--premium-text-muted)] transition-colors hover:text-primary-500"
+                    href="/contact"
+                    aria-label={locale === "fr" ? "Nous contacter" : "Contact us"}
+                  >
                     <MaterialIcon name="public" />
                   </Link>
-                  <Link className="text-[var(--premium-text-muted)] transition-colors hover:text-primary-500" href="/contact">
+                  <Link
+                    className="text-[var(--premium-text-muted)] transition-colors hover:text-primary-500"
+                    href="/contact"
+                    aria-label={locale === "fr" ? "Nous écrire par email" : "Email us"}
+                  >
                     <MaterialIcon name="alternate_email" />
                   </Link>
                 </div>

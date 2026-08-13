@@ -142,7 +142,7 @@ function LoginContent() {
       }
 
       storeAuthToken(token);
-      router.push("/dashboard");
+      router.replace("/dashboard");
     } catch {
       recaptchaRef.current?.reset();
       setError(t("common.networkError"));
@@ -185,6 +185,13 @@ function LoginContent() {
             </p>
           </div>
 
+          {isGoogleLoading && (
+            <div className="mb-4 flex items-center gap-3 rounded-xl border border-[var(--premium-card-border)] bg-[var(--premium-card-deep)] px-4 py-3 text-sm font-semibold text-[var(--premium-text)]">
+              <span className="material-symbols-outlined animate-spin text-lg text-primary-500">progress_activity</span>
+              {locale === "fr" ? "Connexion Google en cours..." : "Signing in with Google..."}
+            </div>
+          )}
+
           {/* Error Banner */}
           {error && (
             <div className="mb-4 flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
@@ -224,6 +231,7 @@ function LoginContent() {
                 <input
                   id="email"
                   type="email"
+                  autoComplete="email"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                   placeholder="nom@exemple.com"
@@ -248,6 +256,7 @@ function LoginContent() {
                 <input
                   id="password"
                   type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
                   placeholder="••••••••"

@@ -278,6 +278,14 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
             : paymentSuccess.kycRequired
               ? "/dashboard/compte"
               : "/dashboard/souscriptions";
+    const successCtaLabel =
+      paymentSuccess.mode === "renewal"
+        ? t("checkout.seeSubscription")
+        : service?.isGiftCard
+          ? t("checkout.seeCode")
+          : paymentSuccess.kycRequired && !paymentSuccess.subscriptionId
+            ? t("checkout.kycUploadCta")
+            : t("checkout.seeSubscription");
 
     return (
       <div className="dashboard-mode bg-[#f6f6f8] text-[#131118] min-h-screen flex justify-center sm:items-center sm:p-4">
@@ -319,13 +327,7 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
             href={successHref}
             className="w-full bg-[#f2f0f4] hover:bg-[#e8e6eb] text-[#131118] font-bold text-lg py-4 rounded-2xl transition-all"
           >
-            {paymentSuccess.mode === "renewal"
-              ? t("checkout.seeSubscription")
-              : service?.isGiftCard
-                ? t("checkout.seeCode")
-                : paymentSuccess.kycRequired && !paymentSuccess.subscriptionId
-                  ? t("checkout.kycUploadCta")
-                : t("checkout.seeSubscription")}
+            {successCtaLabel}
           </Link>
         </div>
       </div>
@@ -355,9 +357,9 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
       <div className="w-full sm:max-w-[420px] sm:h-[90vh] sm:max-h-[850px] bg-[#f6f6f8] sm:rounded-[40px] overflow-hidden relative shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] flex flex-col mx-auto h-[100dvh] sm:h-auto">
         
         {/* Header */}
-        <header className="sticky top-0 z-50 bg-[#f6f6f8] px-5 py-4 flex items-center justify-between gap-4">
+        <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-[#f2f0f4] px-5 py-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <button onClick={() => router.back()} className="flex items-center justify-center size-9 rounded-full bg-white border border-gray-100 text-[#131118] hover:bg-gray-50 transition-colors">
+            <button onClick={() => router.back()} className="flex items-center justify-center size-10 rounded-full bg-white border border-gray-100 text-[#131118] hover:bg-gray-50 transition-colors">
               <span className="material-symbols-outlined text-[20px]">arrow_back</span>
             </button>
             <h1 className="text-lg font-bold tracking-tight">{t("checkout.title")}</h1>

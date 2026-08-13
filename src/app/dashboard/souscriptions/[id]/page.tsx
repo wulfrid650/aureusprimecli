@@ -12,6 +12,7 @@ import {
   disableUserSubscriptionAutoRenew,
   enableUserSubscriptionAutoRenew,
   fetchUserSubscription,
+  getActiveAssignmentsCount,
   getDaysUntil,
   getSubscriptionOption,
   getVisibleAssignmentAccesses,
@@ -331,6 +332,7 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
   const serviceHref = subscription?.product?.slug ? `/dashboard/services/${subscription.product.slug}` : "/dashboard/services";
   const typeLabel = subscription ? getAccessModeLabel(subscription.access_mode ?? subscription.type, t) : t("common.service");
   const isActive = subscription ? isActiveSubscription(displayStatus) : false;
+  const activeAssignmentsCount = subscription ? getActiveAssignmentsCount(subscription) : 0;
 
   async function handleCopyAccessValue(value: string, entryKey: string) {
     try {
@@ -405,11 +407,11 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
   return (
     <div className="dashboard-mode bg-[#f6f6f8] text-[#131118] min-h-screen flex justify-center sm:items-center sm:p-4">
       <div className="w-full sm:max-w-[420px] sm:h-[90vh] sm:max-h-[850px] bg-[#f6f6f8] sm:rounded-[40px] overflow-hidden relative shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] flex flex-col mx-auto h-[100dvh] sm:h-auto">
-        <header className="sticky top-0 z-50 bg-[#f6f6f8]/95 backdrop-blur-md px-5 py-4 flex items-center justify-between gap-4">
+        <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-[#f2f0f4] px-5 py-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 min-w-0">
             <button
               onClick={() => router.back()}
-              className="flex items-center justify-center size-9 shrink-0 rounded-full bg-white border border-gray-100 text-[#131118] hover:bg-gray-50 transition-colors"
+              className="flex items-center justify-center size-10 shrink-0 rounded-full bg-white border border-gray-100 text-[#131118] hover:bg-gray-50 transition-colors"
             >
               <span className="material-symbols-outlined text-[20px]">arrow_back</span>
             </button>
@@ -514,14 +516,11 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
                       <p className="mt-2 text-sm font-bold text-[#131118]">{formatAuriAmount(subscription.renewal_amount, dateLocale)}</p>
                     </div>
                   )}
-                  {subscription.assignments && subscription.assignments.length > 0 && (
+                  {activeAssignmentsCount > 0 && (
                     <div className="rounded-2xl bg-[#f8f8fb] px-4 py-3">
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-400">{t("subscriptions.assignments", {
-                        count: subscription.assignments.length,
-                        plural: getPlural(locale, subscription.assignments.length),
-                      })}</p>
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-400">{t("subscriptions.assignmentsLabel")}</p>
                       <p className="mt-2 text-sm font-bold text-[#131118]">
-                        {subscription.assignments.length}
+                        {activeAssignmentsCount}
                       </p>
                     </div>
                   )}

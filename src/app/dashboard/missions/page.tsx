@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DashboardBottomNav } from "@/components/dashboard/bottom-nav";
 import { safeFetch } from "@/lib/fetch";
-import { useI18n } from "@/lib/i18n";
+import { type TranslateFn, useI18n } from "@/lib/i18n";
 
 type PrimeMission = {
   code: string;
@@ -55,7 +55,7 @@ const actionRoutes: Record<string, string> = {
 
 export default function MissionPrimePage() {
   const router = useRouter();
-  const { locale, t } = useI18n();
+  const { dateLocale, t } = useI18n();
   const [snapshot, setSnapshot] = useState<MissionPrimeSnapshot | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -110,7 +110,7 @@ export default function MissionPrimePage() {
   return (
     <div className="dashboard-mode flex min-h-screen justify-center bg-[#f6f6f8] text-[#131118] sm:items-center sm:p-4">
       <div className="relative mx-auto flex h-[100dvh] w-full flex-col overflow-hidden bg-[#f6f6f8] sm:h-auto sm:max-h-[850px] sm:max-w-[420px] sm:rounded-[40px] sm:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]">
-        <header className="sticky top-0 z-40 flex items-center justify-between border-b border-[#f2f0f4] bg-white/85 px-5 py-4 backdrop-blur-md">
+        <header className="sticky top-0 z-50 flex items-center justify-between border-b border-[#f2f0f4] bg-white/80 shadow-sm px-5 py-4 backdrop-blur-md">
           <CircleButton icon="arrow_back" label={t("missionPrime.back")} onClick={() => router.back()} />
           <h1 className="text-lg font-black">{t("missionPrime.title")}</h1>
           <CircleButton icon="refresh" label={t("missionPrime.refresh")} onClick={load} />
@@ -187,18 +187,16 @@ export default function MissionPrimePage() {
                     </span>
                     <div className="min-w-0 flex-1">
                       <p className="text-[11px] font-black uppercase tracking-[0.16em] text-emerald-700/70">
-                        {locale === "en" ? "Prime Elite reward" : "Cadeau Prime Elite"}
+                        {t("missionPrime.primeEliteRewardLabel")}
                       </p>
                       <h2 className="mt-1 text-lg font-black">
-                        {profile.prime_elite_reward.offer_name || (locale === "en" ? "Selection pending" : "Sélection en attente")}
+                        {profile.prime_elite_reward.offer_name || t("missionPrime.primeEliteRewardSelectionPending")}
                       </h2>
                       <p className="mt-1 text-sm font-medium text-gray-600">
-                        {primeEliteRewardStatus(profile.prime_elite_reward.status, locale, profile.prime_elite_reward.duration_days)}
+                        {primeEliteRewardStatus(profile.prime_elite_reward.status, t, profile.prime_elite_reward.duration_days)}
                       </p>
                       <p className="mt-3 text-[11px] font-bold text-emerald-800/65">
-                        {locale === "en"
-                          ? "One-time reward, non-transferable, non-refundable and without automatic renewal."
-                          : "Récompense unique, non transférable, non remboursable et sans renouvellement automatique."}
+                        {t("missionPrime.primeEliteRewardTerms")}
                       </p>
                     </div>
                   </div>
@@ -328,7 +326,7 @@ export default function MissionPrimePage() {
                             <h3 className="font-black">{completedMission.name}</h3>
                             {completedMission.completed_at ? (
                               <time className="text-[11px] font-bold text-gray-400">
-                                {new Intl.DateTimeFormat(undefined, { day: "2-digit", month: "short", year: "numeric" }).format(new Date(completedMission.completed_at))}
+                                {new Intl.DateTimeFormat(dateLocale, { day: "2-digit", month: "short", year: "numeric" }).format(new Date(completedMission.completed_at))}
                               </time>
                             ) : null}
                           </div>
@@ -346,23 +344,23 @@ export default function MissionPrimePage() {
             </div>
           ) : null}
         </main>
-        <DashboardBottomNav />
+        <DashboardBottomNav active="home" />
       </div>
     </div>
   );
 }
 
-function primeEliteRewardStatus(status: string, locale: "fr" | "en", days: number) {
+function primeEliteRewardStatus(status: string, t: TranslateFn, days: number) {
   if (status === "fulfilled") {
-    return locale === "en" ? `Your ${days}-day subscription is active.` : `Votre abonnement de ${days} jours est actif.`;
+    return t("missionPrime.primeEliteRewardFulfilled", { days });
   }
   if (status === "fulfillment_pending") {
-    return locale === "en" ? "Your subscription is being activated." : "Votre abonnement est en cours d’activation.";
+    return t("missionPrime.primeEliteRewardFulfillmentPending");
   }
   if (status === "failed") {
-    return locale === "en" ? "Activation requires support assistance." : "L’activation nécessite l’intervention du support.";
+    return t("missionPrime.primeEliteRewardFailed");
   }
-  return locale === "en" ? "An eligible subscription will be selected shortly." : "Un abonnement éligible sera sélectionné prochainement.";
+  return t("missionPrime.primeEliteRewardDefault");
 }
 
 function RewardChip({ icon, label }: { icon: string; label: string }) {

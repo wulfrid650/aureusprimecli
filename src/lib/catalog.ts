@@ -807,7 +807,11 @@ export function normalizeCatalogProduct(product: CatalogProductApi, locale: Cata
               plural: getCatalogPlural(locale, defaultOption.durationDays),
             })
           : defaultOption?.billingCycleLabel ?? copy(locale, "available")),
-    badgeClassName: hasStudentOffer ? "bg-emerald-600" : resolveBadgeClassName(category),
+    badgeClassName: hasStudentOffer
+      ? "bg-emerald-600"
+      : /\bclaude\b|anthropic/i.test(title)
+        ? "bg-[#c2530f]"
+        : resolveBadgeClassName(category),
   };
 }
 

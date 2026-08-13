@@ -61,22 +61,36 @@ export default function ServicesPage() {
     setError("");
 
     try {
-      const nextPage = await fetchCatalogProductsPage(currentPage + 1, PAGE_SIZE);
+      let page = currentPage;
+      let more: boolean = hasMore;
+      let gainedVisibleService = false;
 
-      setServices((previousServices) => {
-        const mergedServices = [...previousServices];
+      // When a category filter is active, a single page of raw products may
+      // not contain any item from that category: keep fetching until the
+      // filtered list actually grows, or there are no more pages left.
+      do {
+        const nextPage = await fetchCatalogProductsPage(page + 1, PAGE_SIZE);
+        page = nextPage.currentPage;
+        more = nextPage.hasMore;
 
-        nextPage.products.forEach((service) => {
-          if (!mergedServices.some((existingService) => existingService.slug === service.slug)) {
-            mergedServices.push(service);
-          }
+        setServices((previousServices) => {
+          const mergedServices = [...previousServices];
+
+          nextPage.products.forEach((service) => {
+            if (!mergedServices.some((existingService) => existingService.slug === service.slug)) {
+              mergedServices.push(service);
+              if (activeCategory === ALL_CATEGORY || service.category === activeCategory) {
+                gainedVisibleService = true;
+              }
+            }
+          });
+
+          return mergedServices;
         });
-
-        return mergedServices;
-      });
-      setCurrentPage(nextPage.currentPage);
-      setHasMore(nextPage.hasMore);
-      setTotalServices(nextPage.total);
+        setCurrentPage(page);
+        setHasMore(more);
+        setTotalServices(nextPage.total);
+      } while (more && !gainedVisibleService);
     } catch (err) {
       console.error("Failed to load more catalog services:", err);
       setError(t("services.loadMoreError"));
@@ -109,7 +123,7 @@ export default function ServicesPage() {
         <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#f2f0f4] px-5 py-4 flex flex-col shadow-sm gap-4">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-            <Link href="/dashboard" className="flex items-center justify-center size-9 rounded-full bg-[#f2f0f4] text-[#131118] hover:bg-[#e8e6eb] transition-colors mr-1">
+            <Link href="/dashboard" className="flex items-center justify-center size-10 rounded-full bg-[#f2f0f4] text-[#131118] hover:bg-[#e8e6eb] transition-colors mr-1">
               <span className="material-symbols-outlined text-[20px]">arrow_back</span>
             </Link>
             <h1 className="text-lg font-bold tracking-tight">{t("services.title")}</h1>

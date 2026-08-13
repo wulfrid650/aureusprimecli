@@ -8,6 +8,7 @@ import { MissionPrimeProfileLink } from "@/components/dashboard/mission-prime-ca
 import { clearStoredAuthToken } from "@/lib/auth-token";
 import { apiFetch, safeFetch } from "@/lib/fetch";
 import { useI18n } from "@/lib/i18n";
+import { hasPhoneCountryCode } from "@/lib/phone";
 
 interface UserProfile {
   name: string;
@@ -229,9 +230,15 @@ export default function ComptePage() {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSaving(true);
     setSaveSuccess(false);
     setSaveError("");
+
+    if (!hasPhoneCountryCode(formData.phone)) {
+      setSaveError(t("common.phoneCountryCodeRequired"));
+      return;
+    }
+
+    setIsSaving(true);
 
     try {
       const res = await apiFetch("/api/v1/me/profile", {
@@ -314,10 +321,10 @@ export default function ComptePage() {
       <div className="w-full sm:max-w-[420px] sm:h-[90vh] sm:max-h-[850px] bg-[#f6f6f8] sm:rounded-[40px] overflow-hidden relative shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] flex flex-col mx-auto h-[100dvh] sm:h-auto">
         
         {/* Sticky Header */}
-        <header className="sticky top-0 z-50 bg-[#f6f6f8] px-5 py-4 flex flex-col gap-4">
+        <header className="sticky top-0 z-50 border-b border-[#f2f0f4] bg-white/80 backdrop-blur-md shadow-sm px-5 py-4 flex flex-col gap-4">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <button onClick={() => router.back()} className="flex items-center justify-center size-9 rounded-full bg-white border border-gray-100 text-[#131118] hover:bg-gray-50 transition-colors mr-1">
+              <button onClick={() => router.back()} className="flex items-center justify-center size-10 rounded-full bg-white border border-gray-100 text-[#131118] hover:bg-gray-50 transition-colors mr-1">
                 <span className="material-symbols-outlined text-[20px]">arrow_back</span>
               </button>
               <h1 className="text-lg font-bold tracking-tight">{t("account.title")}</h1>
@@ -433,13 +440,16 @@ export default function ComptePage() {
                   
                   <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-bold text-gray-500 uppercase">{t("common.phone")}</label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="tel"
+                      inputMode="tel"
+                      autoComplete="tel"
                       value={formData.phone}
                       onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                      placeholder="+237 ..."
+                      placeholder="+237600000000"
                       className="w-full bg-[#f6f6f8] border-none rounded-xl px-4 py-3 text-sm font-semibold focus:ring-2 focus:ring-[#5b13ec] outline-none transition-all"
                     />
+                    <p className="text-[11px] font-medium text-gray-400">{t("common.phoneCountryCodeRequired")}</p>
                   </div>
 
                   {saveError && (
@@ -448,7 +458,7 @@ export default function ComptePage() {
 
                   <button 
                     type="submit" 
-                    disabled={isSaving || (formData.name === profile?.name && formData.phone === profile?.phone)}
+                    disabled={isSaving || (formData.name === (profile?.name || "") && formData.phone === (profile?.phone || ""))}
                     className="mt-2 w-full bg-[#131118] hover:bg-black text-white font-bold py-3.5 rounded-xl shadow-lg shadow-black/10 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     {isSaving ? <span className="material-symbols-outlined animate-spin text-[20px]">refresh</span> : <span>{t("account.saveChanges")}</span>}
@@ -525,8 +535,11 @@ export default function ComptePage() {
                     {kycStatus === "pending" && (
                       <span className="text-xs font-bold px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded-md">{t("account.pending")}</span>
                     )}
-                    {(kycStatus === "rejected" || kycStatus === "revoked") && (
+                    {kycStatus === "rejected" && (
                       <span className="text-xs font-bold px-2 py-0.5 bg-red-100 text-red-700 rounded-md">{t("account.rejected")}</span>
+                    )}
+                    {kycStatus === "revoked" && (
+                      <span className="text-xs font-bold px-2 py-0.5 bg-zinc-200 text-zinc-700 rounded-md">{t("account.revoked")}</span>
                     )}
                   </div>
                   <p className="text-xs text-gray-500 mb-4">

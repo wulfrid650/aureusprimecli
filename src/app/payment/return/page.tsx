@@ -27,12 +27,21 @@ function resolvePaymentReturnHref(data?: PaymentFinalizeResponse): string {
   return "/dashboard/wallet";
 }
 
+function resolveRetryHref(data?: PaymentFinalizeResponse): string {
+  if (data?.subscription_id) {
+    return getSubscriptionDetailsHref(data.subscription_id);
+  }
+
+  return "/dashboard/recharge";
+}
+
 export default function PaymentReturnPage() {
   const router = useRouter();
   const { t } = useI18n();
   const [status, setStatus] = useState<'loading' | 'success' | 'failed'>('loading');
   const [message, setMessage] = useState('');
   const [redirectHref, setRedirectHref] = useState("/dashboard");
+  const [retryHref, setRetryHref] = useState("/dashboard/recharge");
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
@@ -77,6 +86,7 @@ export default function PaymentReturnPage() {
             }, 3000);
           } else {
             setStatus('failed');
+            setRetryHref(resolveRetryHref(data?.data));
             setMessage(getApiMessage(data, t("paymentReturn.verifyFailed")));
           }
         })
@@ -115,6 +125,7 @@ export default function PaymentReturnPage() {
           }, 3000);
         } else {
           setStatus('failed');
+          setRetryHref(resolveRetryHref(data?.data));
           setMessage(getApiMessage(data, t("paymentReturn.verifyFailed")));
         }
       })
@@ -126,7 +137,7 @@ export default function PaymentReturnPage() {
   }, [router, t]);
 
   return (
-    <div className="bg-[#f6f6f8] text-[#131118] min-h-screen flex justify-center items-center p-4">
+    <div className="dashboard-mode bg-[#f6f6f8] text-[#131118] min-h-screen flex justify-center items-center p-4">
       <div className="w-full max-w-md bg-white rounded-[40px] p-8 text-center shadow-lg">
         {status === 'loading' && (
           <>
@@ -140,10 +151,10 @@ export default function PaymentReturnPage() {
 
         {status === 'success' && (
           <>
-            <div className="size-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="material-symbols-outlined text-green-600">check_circle</span>
+            <div className="size-16 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="material-symbols-outlined text-emerald-700">check_circle</span>
             </div>
-            <h1 className="text-xl font-bold mb-2 text-green-600">{t("paymentReturn.successTitle")}</h1>
+            <h1 className="text-xl font-bold mb-2 text-emerald-700">{t("paymentReturn.successTitle")}</h1>
             <p className="text-gray-600 mb-6">{message}</p>
             <p className="text-sm text-gray-500">{t("paymentReturn.redirectDashboard")}</p>
             <Link href={redirectHref} className="inline-block mt-4 px-6 py-3 bg-[#5b13ec] text-white rounded-full font-bold hover:bg-[#4a0ebb] transition-colors">
@@ -154,12 +165,12 @@ export default function PaymentReturnPage() {
 
         {status === 'failed' && (
           <>
-            <div className="size-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="material-symbols-outlined text-red-600">error</span>
+            <div className="size-16 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="material-symbols-outlined text-rose-600">error</span>
             </div>
-            <h1 className="text-xl font-bold mb-2 text-red-600">{t("paymentReturn.failedTitle")}</h1>
+            <h1 className="text-xl font-bold mb-2 text-rose-600">{t("paymentReturn.failedTitle")}</h1>
             <p className="text-gray-600 mb-6">{message}</p>
-            <Link href="/dashboard/recharge" className="inline-block px-6 py-3 bg-[#5b13ec] text-white rounded-full font-bold hover:bg-[#4a0ebb] transition-colors">
+            <Link href={retryHref} className="inline-block px-6 py-3 bg-[#5b13ec] text-white rounded-full font-bold hover:bg-[#4a0ebb] transition-colors">
               {t("paymentReturn.retry")}
             </Link>
           </>

@@ -105,9 +105,9 @@ export default function WalletPage() {
     <div className="dashboard-mode bg-[#f6f6f8] text-[#131118] min-h-screen flex justify-center sm:items-center sm:p-4">
       <div className="w-full sm:max-w-[420px] sm:h-[90vh] sm:max-h-[850px] bg-[#f6f6f8] sm:rounded-[40px] overflow-hidden relative shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] flex flex-col mx-auto h-[100dvh] sm:h-auto">
 
-        <header className="sticky top-0 z-50 bg-[#f6f6f8]/95 backdrop-blur-md px-5 py-4 flex items-center justify-between gap-3 border-b border-transparent">
+        <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md shadow-sm px-5 py-4 flex items-center justify-between gap-3 border-b border-[#f2f0f4]">
           <div className="flex min-w-0 items-center gap-3">
-            <Link href="/dashboard" className="flex items-center justify-center size-9 shrink-0 rounded-full bg-white border border-gray-100 text-[#131118] hover:bg-gray-50 transition-colors">
+            <Link href="/dashboard" className="flex items-center justify-center size-10 shrink-0 rounded-full bg-white border border-gray-100 text-[#131118] hover:bg-gray-50 transition-colors">
               <span className="material-symbols-outlined text-[20px]">arrow_back</span>
             </Link>
             <h1 className="truncate text-lg font-bold tracking-tight">{t("wallet.title")}</h1>
@@ -131,7 +131,7 @@ export default function WalletPage() {
                     <span className="text-4xl font-extrabold tracking-tight">
                       {balance.toLocaleString(dateLocale).replace(/\s/g, " ")}
                     </span>
-                    <span className="text-lg font-bold text-[#dbb723]">AURI</span>
+                    <span className="text-lg font-bold text-[#dbb723]">Auri</span>
                   </>
                 )}
               </div>
@@ -210,7 +210,13 @@ export default function WalletPage() {
                         tx.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
                           'bg-red-100 text-red-700'
                         }`}>
-                        {tx.status}
+                        {tx.status === 'completed'
+                          ? t("wallet.statusCompleted")
+                          : tx.status === 'pending'
+                            ? t("wallet.statusPending")
+                            : tx.status === 'failed'
+                              ? t("wallet.statusFailed")
+                              : tx.status}
                       </span>
                     </div>
                   </div>

@@ -12,6 +12,7 @@ import { getStoredAuthToken, storeAuthToken } from "@/lib/auth-token";
 import { getApiFieldErrors, getApiMessage, readApiResponse } from "@/lib/api-response";
 import { resolveApiUrl } from "@/lib/fetch";
 import { useI18n } from "@/lib/i18n";
+import { hasPhoneCountryCode } from "@/lib/phone";
 
 interface AuthResponseData {
   access_token?: string;
@@ -101,6 +102,11 @@ export default function RegisterPage() {
     e.preventDefault();
     setError("");
     setFieldErrors({});
+
+    if (!hasPhoneCountryCode(form.phone)) {
+      setFieldErrors({ phone: [t("common.phoneCountryCodeRequired")] });
+      return;
+    }
 
     if (!isGoogleSignup && form.password !== form.password_confirmation) {
       setFieldErrors({ password_confirmation: [t("auth.passwordMismatch")] });
@@ -232,7 +238,7 @@ export default function RegisterPage() {
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-[var(--premium-text-soft)]">
                   <span className="material-symbols-outlined text-lg">person</span>
                 </div>
-                <input id="name" type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Faris Kemoe"
+                <input id="name" type="text" autoComplete="name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Faris Kemoe"
                   className={`w-full rounded-xl border bg-[var(--premium-card-deep)] py-3 pl-11 pr-4 text-sm text-[var(--premium-text)] placeholder:text-[var(--premium-text-soft)] outline-none transition-all focus:ring-1 focus:ring-primary-500/50 ${getFieldError("name") ? "border-red-400" : "border-[var(--premium-card-border)] focus:border-primary-500 hover:border-primary-400/50"}`}
                   required />
               </div>
@@ -246,11 +252,15 @@ export default function RegisterPage() {
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-[var(--premium-text-soft)]">
                   <span className="material-symbols-outlined text-lg">phone</span>
                 </div>
-                <input id="phone" type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="+237 600000000"
+                <input id="phone" type="tel" autoComplete="tel" inputMode="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="+237600000000"
                   className={`w-full rounded-xl border bg-[var(--premium-card-deep)] py-3 pl-11 pr-4 text-sm text-[var(--premium-text)] placeholder:text-[var(--premium-text-soft)] outline-none transition-all focus:ring-1 focus:ring-primary-500/50 ${getFieldError("phone") ? "border-red-400" : "border-[var(--premium-card-border)] focus:border-primary-500 hover:border-primary-400/50"}`}
                   required />
               </div>
-              {getFieldError("phone") && <p className="text-xs text-red-600 font-medium">{getFieldError("phone")}</p>}
+              {getFieldError("phone") ? (
+                <p className="text-xs text-red-600 font-medium">{getFieldError("phone")}</p>
+              ) : (
+                <p className="text-xs text-[var(--premium-text-soft)]">{t("common.phoneCountryCodeRequired")}</p>
+              )}
             </div>
 
             {/* Email */}
@@ -260,7 +270,7 @@ export default function RegisterPage() {
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-[var(--premium-text-soft)]">
                   <span className="material-symbols-outlined text-lg">mail</span>
                 </div>
-                <input id="email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="nom@exemple.com"
+                <input id="email" type="email" autoComplete="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="nom@exemple.com"
                   className={`w-full rounded-xl border bg-[var(--premium-card-deep)] py-3 pl-11 pr-4 text-sm text-[var(--premium-text)] placeholder:text-[var(--premium-text-soft)] outline-none transition-all focus:ring-1 focus:ring-primary-500/50 ${getFieldError("email") ? "border-red-400" : "border-[var(--premium-card-border)] focus:border-primary-500 hover:border-primary-400/50"}`}
                   required />
               </div>
@@ -304,7 +314,17 @@ export default function RegisterPage() {
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-[var(--premium-text-soft)]">
                   <span className="material-symbols-outlined text-lg">lock</span>
                 </div>
-                <input id="password" type={showPassword ? "text" : "password"} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder="••••••••" aria-describedby="register-password-help"
+                <input id="password" type={showPassword ? "text" : "password"} autoComplete="new-password" value={form.password} onChange={(e) => {
+                  const nextPassword = e.target.value;
+                  setForm({ ...form, password: nextPassword });
+                  if (fieldErrors.password_confirmation && nextPassword === form.password_confirmation) {
+                    setFieldErrors((current) => {
+                      const rest = { ...current };
+                      delete rest.password_confirmation;
+                      return rest;
+                    });
+                  }
+                }} placeholder="••••••••" aria-describedby="register-password-help"
                   className={`w-full rounded-xl border bg-[var(--premium-card-deep)] py-3 pl-11 pr-11 text-sm text-[var(--premium-text)] placeholder:text-[var(--premium-text-soft)] outline-none transition-all focus:ring-1 focus:ring-primary-500/50 ${getFieldError("password") ? "border-red-400" : "border-[var(--premium-card-border)] focus:border-primary-500 hover:border-primary-400/50"}`}
                   required />
                 <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 flex items-center pr-4 text-[var(--premium-text-soft)] transition-colors hover:text-primary-500 focus:outline-none">
@@ -322,7 +342,17 @@ export default function RegisterPage() {
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-[var(--premium-text-soft)]">
                   <span className="material-symbols-outlined text-lg">lock_clock</span>
                 </div>
-                <input id="password_confirmation" type={showPassword ? "text" : "password"} value={form.password_confirmation} onChange={(e) => setForm({ ...form, password_confirmation: e.target.value })} placeholder="••••••••"
+                <input id="password_confirmation" type={showPassword ? "text" : "password"} autoComplete="new-password" value={form.password_confirmation} onChange={(e) => {
+                  const nextConfirmation = e.target.value;
+                  setForm({ ...form, password_confirmation: nextConfirmation });
+                  if (fieldErrors.password_confirmation && nextConfirmation === form.password) {
+                    setFieldErrors((current) => {
+                      const rest = { ...current };
+                      delete rest.password_confirmation;
+                      return rest;
+                    });
+                  }
+                }} placeholder="••••••••"
                   className={`w-full rounded-xl border bg-[var(--premium-card-deep)] py-3 pl-11 pr-4 text-sm text-[var(--premium-text)] placeholder:text-[var(--premium-text-soft)] outline-none transition-all focus:ring-1 focus:ring-primary-500/50 ${getFieldError("password_confirmation") ? "border-red-400" : "border-[var(--premium-card-border)] focus:border-primary-500 hover:border-primary-400/50"}`}
                   required />
               </div>

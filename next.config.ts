@@ -74,6 +74,15 @@ const nextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: "/catalogue",
+        destination: "/offres",
+        permanent: true,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {

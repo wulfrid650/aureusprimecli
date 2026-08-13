@@ -1455,7 +1455,7 @@ function renderBlock(block: LegalBlock) {
 
   if (block.type === "list") {
     return (
-      <ul className="mt-4 grid gap-3">
+      <ul className="mt-4 grid max-w-prose gap-3">
         {block.items.map((item) => (
           <li key={item} className="flex gap-3 text-sm leading-relaxed text-[var(--premium-text-muted)] sm:text-base">
             <span className="mt-2 size-1.5 shrink-0 rounded-full bg-primary-500" />
@@ -1468,7 +1468,7 @@ function renderBlock(block: LegalBlock) {
 
   if (block.type === "ordered") {
     return (
-      <ol className="mt-4 grid list-decimal gap-3 pl-5 text-sm leading-relaxed text-[var(--premium-text-muted)] sm:text-base">
+      <ol className="mt-4 grid max-w-prose list-decimal gap-3 pl-5 text-sm leading-relaxed text-[var(--premium-text-muted)] sm:text-base">
         {block.items.map((item) => (
           <li key={item}>{item}</li>
         ))}
@@ -1478,13 +1478,13 @@ function renderBlock(block: LegalBlock) {
 
   if (block.type === "note") {
     return (
-      <p className="mt-5 rounded-2xl border border-primary-400/25 bg-primary-500/10 p-4 text-sm font-bold leading-relaxed text-[var(--premium-text)] sm:text-base">
+      <p className="mt-5 max-w-prose rounded-2xl border border-primary-400/25 bg-primary-500/10 p-4 text-sm font-bold leading-relaxed text-[var(--premium-text)] sm:text-base">
         {block.text}
       </p>
     );
   }
 
-  return <p className="mt-4 leading-relaxed text-[var(--premium-text-muted)]">{block.text}</p>;
+  return <p className="mt-4 max-w-prose leading-relaxed text-[var(--premium-text-muted)]">{block.text}</p>;
 }
 
 export function PublicLegalDocumentPage({ page }: { page: LegalPageId }) {
@@ -1532,7 +1532,7 @@ export function PublicLegalDocumentPage({ page }: { page: LegalPageId }) {
 
           <footer className="mt-8 rounded-3xl border border-primary-400/25 bg-primary-500/10 p-6 text-center sm:p-8">
             <p className="text-lg font-black leading-relaxed text-[var(--premium-text)]">{document.closing}</p>
-            <p className="mt-5 text-sm text-[var(--premium-text-muted)]">© 2026 Aureus Prime - MBC SARL - {legalEntityLocation}</p>
+            <p className="mt-5 text-sm text-[var(--premium-text-muted)]">© {new Date().getFullYear()} Aureus Prime - MBC SARL - {legalEntityLocation}</p>
             <Link href="/contact" className="premium-primary-cta mt-6 inline-flex h-11 items-center justify-center rounded-full px-6 text-sm font-bold">
               {contactLabel}
             </Link>

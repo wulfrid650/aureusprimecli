@@ -259,10 +259,10 @@ export function NotificationButton({ className = "" }: { className?: string }) {
       <button
         type="button"
         onClick={() => setIsOpen((value) => !value)}
-        className="relative flex size-9 items-center justify-center rounded-full bg-white text-[#131118] shadow-sm ring-1 ring-black/5 transition hover:bg-[#f2f0f4]"
+        className="relative flex size-8 items-center justify-center rounded-full bg-white text-[#131118] shadow-sm ring-1 ring-black/5 transition hover:bg-[#f2f0f4] max-[380px]:size-7 sm:size-9"
         aria-label="Notifications"
       >
-        <span className="material-symbols-outlined text-[20px]">notifications</span>
+        <span className="material-symbols-outlined text-[18px] max-[380px]:text-[16px] sm:text-[20px]">notifications</span>
         {unreadCount > 0 && (
           <span className="absolute -right-1 -top-1 min-w-4 rounded-full bg-[#e11d48] px-1 text-[10px] font-black leading-4 text-white">
             {unreadCount > 9 ? "9+" : unreadCount}

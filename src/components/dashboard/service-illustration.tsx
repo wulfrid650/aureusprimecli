@@ -181,6 +181,14 @@ const platformThemes: Array<{ match: RegExp; theme: MockupTheme }> = [
     },
   },
   {
+    match: /\bclaude\b|anthropic/i,
+    theme: {
+      gradient: "from-[#1a1207] via-[#c2530f] to-[#ffb066]",
+      icon: "auto_awesome",
+      chip: "AI",
+    },
+  },
+  {
     match: /deezer/i,
     theme: {
       gradient: "from-[#19002d] via-[#8b1fe8] to-[#ff2e8a]",
@@ -311,6 +319,30 @@ const categoryThemes: Array<{ match: (service: ServiceIllustrationProps["service
       chip: "Securite",
     },
   },
+  {
+    match: (service) => /cloud/i.test(service.category),
+    theme: {
+      gradient: "from-[#04101f] via-[#1478d4] to-[#8fd3ff]",
+      icon: "cloud",
+      chip: "Cloud",
+    },
+  },
+  {
+    match: (service) => /education|éducation/i.test(service.category),
+    theme: {
+      gradient: "from-[#071a09] via-[#58a700] to-[#c8f28c]",
+      icon: "school",
+      chip: "Education",
+    },
+  },
+  {
+    match: (service) => /carte cadeau|gift/i.test(service.category),
+    theme: {
+      gradient: "from-[#241405] via-[#b45309] to-[#ffcf6b]",
+      icon: "redeem",
+      chip: "Gift",
+    },
+  },
 ];
 
 const defaultTheme: MockupTheme = {
@@ -319,11 +351,40 @@ const defaultTheme: MockupTheme = {
   chip: "Premium",
 };
 
+// Categories with no explicit theme above still need a symbol that sets them
+// apart from one another. Only these two stay on the plain defaultTheme.
+const unthemedCategoryPattern = /^(non\s*classe|non\s*class[ée]|uncategorized|autre|other)$/i;
+
+const fallbackThemePool: Array<{ theme: MockupTheme; pattern: VisualPattern }> = [
+  { theme: { gradient: "from-[#1d0b2e] via-[#7c3aed] to-[#c4b5fd]", icon: "workspace_premium", chip: "Service" }, pattern: "fluid" },
+  { theme: { gradient: "from-[#031b2e] via-[#0891b2] to-[#67e8f9]", icon: "bolt", chip: "Service" }, pattern: "beam" },
+  { theme: { gradient: "from-[#2a0a05] via-[#ea580c] to-[#fdba74]", icon: "local_fire_department", chip: "Service" }, pattern: "orbs" },
+  { theme: { gradient: "from-[#031f14] via-[#059669] to-[#6ee7b7]", icon: "eco", chip: "Service" }, pattern: "grid" },
+  { theme: { gradient: "from-[#1f0a1a] via-[#db2777] to-[#f9a8d4]", icon: "favorite", chip: "Service" }, pattern: "halo" },
+  { theme: { gradient: "from-[#0a1f3d] via-[#2563eb] to-[#93c5fd]", icon: "hub", chip: "Service" }, pattern: "orbs" },
+  { theme: { gradient: "from-[#241f05] via-[#ca8a04] to-[#fde68a]", icon: "diamond", chip: "Service" }, pattern: "wave" },
+  { theme: { gradient: "from-[#031326] via-[#0d9488] to-[#5eead4]", icon: "rocket_launch", chip: "Service" }, pattern: "beam" },
+];
+
+function hashCategoryName(value: string): number {
+  return Array.from(value.trim().toLowerCase()).reduce((sum, char) => sum + char.charCodeAt(0), 0);
+}
+
+function getFallbackForCategory(category: string): { theme: MockupTheme; pattern: VisualPattern } | null {
+  if (!category.trim() || unthemedCategoryPattern.test(category.trim())) {
+    return null;
+  }
+
+  const index = hashCategoryName(category) % fallbackThemePool.length;
+  return fallbackThemePool[index];
+}
+
 function getTheme(service: ServiceIllustrationProps["service"]): MockupTheme {
   const searchable = `${service.title} ${service.category}`;
   const platformTheme = platformThemes.find((entry) => entry.match.test(searchable))?.theme;
+  const categoryTheme = categoryThemes.find((entry) => entry.match(service))?.theme;
 
-  return platformTheme ?? categoryThemes.find((entry) => entry.match(service))?.theme ?? defaultTheme;
+  return platformTheme ?? categoryTheme ?? getFallbackForCategory(service.category)?.theme ?? defaultTheme;
 }
 
 function getVisualPattern(service: Pick<CatalogProduct, "title" | "category">): VisualPattern {
@@ -341,8 +402,11 @@ function getVisualPattern(service: Pick<CatalogProduct, "title" | "category">): 
   if (/logic|software|design/i.test(service.category)) return "fluid";
   if (/cloud/i.test(service.category)) return "orbs";
   if (/securite|sécurité|security/i.test(service.category)) return "beam";
+  if (/education|éducation/i.test(service.category)) return "grid";
+  if (/carte cadeau|gift/i.test(service.category)) return "grid";
 
-  return "fluid";
+  const fallback = getFallbackForCategory(service.category);
+  return fallback?.pattern ?? "fluid";
 }
 
 export function isWaveIllustration(service: Pick<CatalogProduct, "title" | "category">): boolean {

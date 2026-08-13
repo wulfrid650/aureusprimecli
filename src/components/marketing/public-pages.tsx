@@ -11,7 +11,7 @@ import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { fetchCatalogProducts, type CatalogProduct } from "@/lib/catalog";
 import { useI18n } from "@/lib/i18n";
 
-type PublicPageId = "about" | "help" | "terms" | "privacy" | "contact";
+type PublicPageId = "about" | "help";
 
 type StaticPageCopy = {
   eyebrow: string;
@@ -142,99 +142,6 @@ const staticPages: Record<"fr" | "en", Record<PublicPageId, StaticPageCopy>> = {
       ctaText: "Connectez-vous pour retrouver vos commandes et préparer les informations utiles au support.",
       ctaLabel: "Ouvrir mon espace",
     },
-    terms: {
-      eyebrow: "Cadre d'utilisation",
-      title: "Conditions générales",
-      subtitle:
-        "Ces conditions résument les règles d'utilisation d'Aureus Prime pour les comptes, commandes, wallets, abonnements et services livrés.",
-      highlights: [
-        { icon: "gavel", label: "Règles", value: "Utilisation loyale du service" },
-        { icon: "payments", label: "Paiement", value: "Solde Auri et commandes" },
-        { icon: "lock", label: "Accès", value: "Identifiants personnels ou partagés" },
-      ],
-      sections: [
-        {
-          title: "Compte et sécurité",
-          body: "Chaque utilisateur est responsable des informations fournies, de la confidentialité de son compte et du respect des services achetés.",
-          points: ["Email valide recommandé", "Mot de passe sécurisé", "Interdiction de revendre ou publier les accès livrés"],
-        },
-        {
-          title: "Commandes et wallet Auri",
-          body: "Les achats peuvent être réglés via le solde Auri. Les remboursements, gestes commerciaux ou corrections peuvent être crédités sur le wallet.",
-          points: ["Le solde Auri sert aux achats internes", "Une commande peut attendre une validation ou une assignation", "Les montants affichés peuvent dépendre de la formule choisie"],
-        },
-        {
-          title: "Souscriptions et livraison",
-          body: "Les accès sont livrés sous forme d'identifiants, de codes ou de liens selon le service. Une réassignation peut être faite si un slot devient indisponible.",
-          points: ["Respecter les limites du service", "Ne pas modifier les mots de passe partagés", "Signaler tout accès défaillant rapidement"],
-        },
-      ],
-      ctaTitle: "Une question avant achat ?",
-      ctaText: "Consultez le centre d'aide ou contactez-nous avant de valider votre commande.",
-      ctaLabel: "Contacter le support",
-    },
-    privacy: {
-      eyebrow: "Données",
-      title: "Politique de confidentialité",
-      subtitle:
-        "Aureus Prime collecte uniquement les données nécessaires au compte client, aux paiements, aux souscriptions, au support et à l'amélioration du service.",
-      highlights: [
-        { icon: "badge", label: "Compte", value: "Nom, email, téléphone si fourni" },
-        { icon: "receipt_long", label: "Commandes", value: "Historique et wallet" },
-        { icon: "analytics", label: "Analyse", value: "Mesure d'usage via Vercel" },
-      ],
-      sections: [
-        {
-          title: "Données utilisées",
-          body: "Nous utilisons les informations utiles pour créer le compte, sécuriser l'accès, traiter les commandes et afficher le contenu dans la bonne langue.",
-          points: ["Profil client", "Historique wallet et commandes", "Préférence de langue et thème", "Événements techniques et analytiques"],
-        },
-        {
-          title: "KYC étudiant",
-          body: "Lorsque vous demandez une offre étudiante, un justificatif peut être transmis pour vérification. Il doit servir uniquement à confirmer l'éligibilité.",
-          points: ["Document consulté par l'administration", "Validation ou refus avec motif", "Renouvellement possible si expiré"],
-        },
-        {
-          title: "Sécurité et cookies",
-          body: "La langue, le thème et certaines informations de session sont mémorisés pour fluidifier l'expérience. Vous pouvez nettoyer ces données depuis votre navigateur.",
-          points: ["Préférence de langue en cookie", "Thème en stockage local", "Token de session côté navigateur", "Analytics pour comprendre l'usage global"],
-        },
-      ],
-      ctaTitle: "Gardez le contrôle",
-      ctaText: "Depuis votre compte, vous pouvez mettre à jour vos informations et gérer votre sécurité.",
-      ctaLabel: "Aller au compte",
-    },
-    contact: {
-      eyebrow: "Assistance",
-      title: "Contact",
-      subtitle:
-        "Pour une réponse rapide, préparez le service concerné, l'email du compte Aureus Prime et le numéro de commande si vous l'avez.",
-      highlights: [
-        { icon: "support_agent", label: "Support", value: "Commandes et accès" },
-        { icon: "sync_alt", label: "Réassignation", value: "Slot ou credential défaillant" },
-        { icon: "verified", label: "KYC", value: "Document étudiant" },
-      ],
-      sections: [
-        {
-          title: "Commandes et abonnements",
-          body: "Contactez le support si votre commande est payée mais non livrée, si un accès ne fonctionne plus ou si une souscription doit être réassignée.",
-          points: ["Email du compte", "Service acheté", "Capture ou détail du problème"],
-        },
-        {
-          title: "Wallet et remboursement",
-          body: "Pour une correction de solde ou un remboursement en Auri, indiquez la transaction ou commande concernée.",
-          points: ["Montant", "Date approximative", "Mode de paiement ou recharge"],
-        },
-        {
-          title: "Partenariats",
-          body: "Pour proposer un service, une offre ou une collaboration, envoyez un résumé clair de votre besoin.",
-          points: ["Nom de l'organisation", "Offre proposée", "Contact de suivi"],
-        },
-      ],
-      ctaTitle: "Accéder à votre espace",
-      ctaText: "Le dashboard contient les informations les plus utiles pour traiter votre demande rapidement.",
-      ctaLabel: "Se connecter",
-    },
   },
   en: {
     about: {
@@ -292,97 +199,6 @@ const staticPages: Record<"fr" | "en", Record<PublicPageId, StaticPageCopy>> = {
       ctaTitle: "Need help with an order?",
       ctaText: "Sign in to find your orders and prepare the useful support details.",
       ctaLabel: "Open my space",
-    },
-    terms: {
-      eyebrow: "Usage rules",
-      title: "Terms",
-      subtitle: "These terms summarize the rules for Aureus Prime accounts, orders, wallets, subscriptions and delivered services.",
-      highlights: [
-        { icon: "gavel", label: "Rules", value: "Fair use of the service" },
-        { icon: "payments", label: "Payment", value: "Auri balance and orders" },
-        { icon: "lock", label: "Access", value: "Personal or shared credentials" },
-      ],
-      sections: [
-        {
-          title: "Account and security",
-          body: "Each user is responsible for provided information, account confidentiality and respecting purchased services.",
-          points: ["Valid email recommended", "Secure password", "No resale or public sharing of delivered access"],
-        },
-        {
-          title: "Orders and Auri wallet",
-          body: "Purchases can be paid from the Auri balance. Refunds, gestures or corrections may be credited to the wallet.",
-          points: ["Auri balance is used for internal purchases", "An order can wait for validation or assignment", "Displayed amounts can depend on the selected plan"],
-        },
-        {
-          title: "Subscriptions and delivery",
-          body: "Access is delivered as credentials, codes or links depending on the service. Reassignment can happen when a slot becomes unavailable.",
-          points: ["Respect service limits", "Do not change shared account passwords", "Report faulty access quickly"],
-        },
-      ],
-      ctaTitle: "Question before buying?",
-      ctaText: "Check the help center or contact us before validating your order.",
-      ctaLabel: "Contact support",
-    },
-    privacy: {
-      eyebrow: "Data",
-      title: "Privacy policy",
-      subtitle:
-        "Aureus Prime only collects data needed for customer accounts, payments, subscriptions, support and service improvement.",
-      highlights: [
-        { icon: "badge", label: "Account", value: "Name, email, phone if provided" },
-        { icon: "receipt_long", label: "Orders", value: "History and wallet" },
-        { icon: "analytics", label: "Analytics", value: "Usage measurement via Vercel" },
-      ],
-      sections: [
-        {
-          title: "Data we use",
-          body: "We use helpful information to create the account, secure access, process orders and display content in the right language.",
-          points: ["Customer profile", "Wallet and order history", "Language and theme preference", "Technical and analytics events"],
-        },
-        {
-          title: "Student KYC",
-          body: "When you request a student offer, a document may be submitted for verification. It should only confirm eligibility.",
-          points: ["Document reviewed by administration", "Approval or rejection with reason", "Renewal possible when expired"],
-        },
-        {
-          title: "Security and cookies",
-          body: "Language, theme and some session information are remembered to smooth the experience. You can clear them from your browser.",
-          points: ["Language preference in cookie", "Theme in local storage", "Session token in browser storage", "Analytics to understand overall usage"],
-        },
-      ],
-      ctaTitle: "Stay in control",
-      ctaText: "From your account, you can update your details and manage security.",
-      ctaLabel: "Go to account",
-    },
-    contact: {
-      eyebrow: "Assistance",
-      title: "Contact",
-      subtitle: "For a faster answer, prepare the service, your Aureus Prime email and the order number if you have it.",
-      highlights: [
-        { icon: "support_agent", label: "Support", value: "Orders and access" },
-        { icon: "sync_alt", label: "Reassignment", value: "Faulty slot or credential" },
-        { icon: "verified", label: "KYC", value: "Student document" },
-      ],
-      sections: [
-        {
-          title: "Orders and subscriptions",
-          body: "Contact support if your order is paid but not delivered, if access no longer works or if a subscription must be reassigned.",
-          points: ["Account email", "Purchased service", "Screenshot or problem details"],
-        },
-        {
-          title: "Wallet and refunds",
-          body: "For a balance correction or Auri refund, provide the related transaction or order.",
-          points: ["Amount", "Approximate date", "Payment or top-up method"],
-        },
-        {
-          title: "Partnerships",
-          body: "To suggest a service, offer or collaboration, send a clear summary of your need.",
-          points: ["Organization name", "Proposed offer", "Follow-up contact"],
-        },
-      ],
-      ctaTitle: "Access your space",
-      ctaText: "The dashboard contains the most useful information to process your request quickly.",
-      ctaLabel: "Sign in",
     },
   },
 };
@@ -636,7 +452,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
               ))}
             </nav>
             <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
-              <LanguageToggle className="h-9 p-0.5 sm:h-11 sm:p-1 [&_button]:h-7 [&_button]:min-w-8 [&_button]:px-1.5 sm:[&_button]:h-8 sm:[&_button]:min-w-9 sm:[&_button]:px-2" />
+              <LanguageToggle className="h-9 p-0.5 sm:h-11 sm:p-1 [&_button]:h-8 [&_button]:min-w-8 [&_button]:px-1.5 sm:[&_button]:h-9 sm:[&_button]:min-w-10 sm:[&_button]:px-2" />
               <ThemeToggle className="size-9 sm:size-11" />
               <Link href="/login" className="premium-primary-cta hidden h-10 items-center justify-center gap-2 rounded-full px-4 text-sm font-bold sm:flex">
                 {copy.login}
@@ -644,8 +460,12 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
               </Link>
               <button
                 type="button"
-                className="flex size-9 shrink-0 items-center justify-center rounded-full border border-[var(--premium-card-border)] bg-[var(--premium-panel)] text-[var(--premium-text)] shadow-[var(--shadow-card)] transition-colors hover:bg-primary-500/10 sm:size-10 md:hidden"
-                aria-label={isMobileMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+                className="flex size-10 shrink-0 items-center justify-center rounded-full border border-[var(--premium-card-border)] bg-[var(--premium-panel)] text-[var(--premium-text)] shadow-[var(--shadow-card)] transition-colors hover:bg-primary-500/10 sm:size-11 md:hidden"
+                aria-label={
+                  isMobileMenuOpen
+                    ? locale === "fr" ? "Fermer le menu" : "Close menu"
+                    : locale === "fr" ? "Ouvrir le menu" : "Open menu"
+                }
                 aria-expanded={isMobileMenuOpen}
                 aria-controls="public-mobile-menu"
                 onClick={() => setIsMobileMenuOpen((open) => !open)}
@@ -741,7 +561,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
 export function PublicContentPage({ page }: { page: PublicPageId }) {
   const { locale } = useI18n();
   const copy = staticPages[locale][page];
-  const ctaHref = page === "contact" ? "/login" : page === "privacy" ? "/dashboard/compte" : page === "terms" ? "/contact" : "/register";
+  const ctaHref = page === "help" ? "/login" : "/register";
 
   return (
     <PublicShell>

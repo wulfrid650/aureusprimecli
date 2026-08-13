@@ -94,9 +94,9 @@ export default function RechargePage() {
     <div className="dashboard-mode bg-[#f6f6f8] text-[#131118] min-h-screen flex justify-center sm:items-center sm:p-4">
       <div className="w-full sm:max-w-[420px] sm:h-[90vh] sm:max-h-[850px] bg-[#f6f6f8] sm:rounded-[40px] overflow-hidden relative shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] flex flex-col mx-auto h-[100dvh] sm:h-auto">
         
-        <header className="sticky top-0 z-50 bg-[#f6f6f8]/95 backdrop-blur-md px-5 py-4 flex items-center justify-between gap-3 border-b border-transparent">
+        <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md shadow-sm px-5 py-4 flex items-center justify-between gap-3 border-b border-[#f2f0f4]">
           <div className="flex min-w-0 items-center gap-3">
-            <Link href="/dashboard" className="flex items-center justify-center size-9 shrink-0 rounded-full bg-white border border-gray-100 text-[#131118] hover:bg-gray-50 transition-colors">
+            <Link href="/dashboard" className="flex items-center justify-center size-10 shrink-0 rounded-full bg-white border border-gray-100 text-[#131118] hover:bg-gray-50 transition-colors">
               <span className="material-symbols-outlined text-[20px]">arrow_back</span>
             </Link>
             <div className="min-w-0">
@@ -148,7 +148,7 @@ export default function RechargePage() {
                 className="w-full bg-[#fcfcfd] border-2 border-[#f2f0f4] rounded-2xl py-4 pl-5 pr-16 text-lg font-bold text-[#131118] font-[family:var(--font-inter)] placeholder:opacity-40 outline-none transition-colors focus:border-[#dbb723]"
               />
               <div className="absolute right-5 top-1/2 -translate-y-1/2 font-bold text-gray-400">
-                AURI
+                Auri
               </div>
             </div>
             {amount > 150000 && (
