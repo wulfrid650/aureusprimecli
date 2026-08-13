@@ -19,6 +19,8 @@ interface Transaction {
   meta?: {
     order_type?: string;
     product_name?: string;
+    source?: string;
+    admin_action?: boolean;
   };
   related_entity?: {
     type: string;
@@ -61,24 +63,49 @@ export default function WalletPage() {
   };
 
   const getTransactionLabel = (tx: Transaction) => {
-    if (tx.meta?.order_type === "renewal") {
-      return `Renouvellement (${tx.meta.product_name || t("wallet.productFallback")})`;
+    const apiLabel = String(tx.description || "").trim();
+    if (/^(Recharge|Mission Prime|Ajustement\s+[+-]|CMD\s|RNV\s|Carte\s|Crédit|Débit)/i.test(apiLabel)) {
+      return apiLabel;
     }
 
-    if (/^Renouvellement/i.test(tx.description || "")) {
-      return tx.description;
+    const source = String(tx.meta?.source || "").toLowerCase();
+    const isAdminAdjustment = tx.meta?.admin_action === true || source === "admin_manual_adjustment";
+
+    if (isAdminAdjustment) {
+      return t("wallet.adminAdjustment", { sign: tx.is_credit ? "+" : "-" });
     }
 
-    if (tx.type === 'topup' || tx.type === 'deposit') {
-      return `${t("wallet.topup")} ${Math.abs(tx.amount).toLocaleString(dateLocale)} Auri`;
+    if (tx.is_credit && (tx.type === "topup" || tx.type === "deposit" || source.includes("topup"))) {
+      return t("wallet.topupReason");
     }
 
-    if (tx.type === 'payment' || !tx.is_credit) {
-      const productName = tx.related_entity?.summary || tx.description?.replace(/Paiement commande\s+[A-Z0-9-]+/i, '').trim();
-      return t("wallet.commandFor", { product: productName || t("wallet.productFallback") });
+    if (tx.is_credit && source === "mission_prime") {
+      return t("wallet.missionPrimeReward");
     }
 
-    return tx.description || (tx.is_credit ? t("wallet.creditFallback") : t("wallet.debitFallback"));
+    if (!tx.is_credit) {
+      const rawProductName = tx.meta?.product_name || tx.related_entity?.summary || tx.description || "";
+      const isRenewal = tx.meta?.order_type === "renewal" || /^Renouvellement/i.test(rawProductName);
+      const productName = rawProductName
+        .replace(/^Renouvellement\s*[-(:]?\s*/i, "")
+        .replace(/^CMD\s+pour\s+/i, "")
+        .replace(/^(?:CMD|RNV|ORD|RNL)\s+/i, "")
+        .replace(/^Paiement commande\s+[A-Z0-9-]+\s*/i, "")
+        .replace(/[)]$/, "")
+        .trim();
+      const isCard = /robux|carte|gift|cadeau/i.test(productName);
+
+      if (productName) {
+        const cardProductName = productName.replace(/^Carte\s+/i, "").trim();
+        return t(isCard ? "wallet.cardDebit" : isRenewal ? "wallet.renewalDebit" : "wallet.orderDebit", {
+          product: isCard ? cardProductName : productName,
+        });
+      }
+    }
+
+    return tx.is_credit
+      ? t("wallet.creditFallback")
+      : t("wallet.debitFallback");
   };
 
   const filteredTransactions = useMemo(() => {
@@ -203,8 +230,8 @@ export default function WalletPage() {
                       <span className="text-xs text-gray-500 font-medium">{formatDate(tx.processed_at)}</span>
                     </div>
                     <div className="flex flex-col items-end shrink-0 pl-2">
-                      <span className={`font-bold ${tx.is_credit ? 'text-green-600' : 'text-[#131118]'}`}>
-                        {tx.is_credit ? '+' : ''}{Math.abs(tx.amount).toLocaleString(dateLocale).replace(/\s/g, ' ')} Auri
+                      <span className={`font-bold ${tx.is_credit ? 'text-green-600' : 'text-red-600'}`}>
+                        {tx.is_credit ? '+' : '-'}{Math.abs(tx.amount).toLocaleString(dateLocale).replace(/\s/g, ' ')} Auri
                       </span>
                       <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded uppercase mt-1 ${tx.status === 'completed' ? 'bg-green-100 text-green-700' :
                         tx.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
