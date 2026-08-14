@@ -8,7 +8,7 @@ import { isWaveIllustration, ServiceIllustration } from "@/components/dashboard/
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { PaymentMethodLogos } from "@/components/ui/payment-method-logos";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { fetchCatalogProducts, type CatalogProduct } from "@/lib/catalog";
+import { fetchCatalogProducts, type CatalogOption, type CatalogProduct } from "@/lib/catalog";
 import { useI18n } from "@/lib/i18n";
 
 type PublicPageId = "about" | "help";
@@ -1041,6 +1041,117 @@ export function PublicBlogPage() {
                 </Link>
               </article>
             ))}
+          </div>
+        </div>
+      </section>
+    </PublicShell>
+  );
+}
+
+const serviceDetailCopy = {
+  fr: {
+    back: "Retour au catalogue",
+    formulasTitle: "Formules disponibles",
+    from: "À partir de",
+    descriptionTitle: "À propos de ce service",
+    walletFlow: "Le paiement se fait depuis le wallet Auri (1 Auri = 1 XAF), rechargeable par Mobile Money.",
+    cta: "Créer un compte pour commander",
+    secureTitle: "Paiement sécurisé",
+    secureText: "Livraison suivie et support disponible après commande.",
+    plansLabel: (count: number) => `${count} formule${count > 1 ? "s" : ""}`,
+  },
+  en: {
+    back: "Back to catalog",
+    formulasTitle: "Available plans",
+    from: "Starting at",
+    descriptionTitle: "About this service",
+    walletFlow: "Payment is made from the Auri wallet (1 Auri = 1 XAF), rechargeable via Mobile Money.",
+    cta: "Create an account to order",
+    secureTitle: "Secure checkout",
+    secureText: "Tracked delivery and support available after your order.",
+    plansLabel: (count: number) => `${count} plan${count > 1 ? "s" : ""}`,
+  },
+} as const;
+
+export function PublicServicePage({ service }: { service: CatalogProduct }) {
+  const { locale } = useI18n();
+  const copy = serviceDetailCopy[locale];
+
+  return (
+    <PublicShell>
+      <section className="py-10 sm:py-14">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <Link href="/catalogue" className="inline-flex items-center gap-1.5 text-sm font-bold text-[var(--premium-text-muted)] hover:text-primary-500">
+            <MaterialIcon name="arrow_back" className="text-[16px]" />
+            {copy.back}
+          </Link>
+
+          <div className="mt-6 grid gap-8 lg:grid-cols-[1.1fr_1fr] lg:items-start">
+            <div>
+              <div className="relative aspect-video overflow-hidden rounded-3xl border border-[var(--premium-card-border)] bg-[var(--premium-panel)]">
+                <ServiceIllustration service={service} variant="hero" />
+                <span className={`absolute right-4 top-4 rounded-full px-3 py-1.5 text-sm font-bold text-[#F7F8F8] ${service.badgeClassName}`}>
+                  {service.badgeLabel}
+                </span>
+              </div>
+
+              <p className="mt-3 text-[11px] font-bold uppercase tracking-[0.22em] text-[var(--premium-text-soft)]">{service.category}</p>
+              <h1 className="mt-2 text-3xl font-black tracking-tight text-[var(--premium-text)] sm:text-4xl">{service.title}</h1>
+
+              <div className="mt-6 flex items-baseline gap-3 border-b border-[var(--premium-card-border)] pb-6">
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--premium-text-soft)]">{copy.from}</p>
+                  <p className="text-3xl font-black text-primary-500">{service.currentPriceFormatted}</p>
+                </div>
+                {service.originalPriceFormatted ? (
+                  <span className="ml-auto text-sm font-bold text-red-500 line-through">{service.originalPriceFormatted}</span>
+                ) : null}
+              </div>
+
+              <h2 className="mt-8 text-lg font-black text-[var(--premium-text)]">{copy.descriptionTitle}</h2>
+              <p className="mt-3 leading-relaxed text-[var(--premium-text-muted)]">{service.description || service.shortDescription}</p>
+              <p className="mt-4 text-sm leading-relaxed text-[var(--premium-text-soft)]">{copy.walletFlow}</p>
+            </div>
+
+            <div className="premium-card-surface rounded-3xl border p-6 shadow-[var(--shadow-card)] lg:sticky lg:top-24">
+              {service.options.length > 0 ? (
+                <>
+                  <h2 className="text-sm font-black uppercase tracking-[0.18em] text-[var(--premium-text-soft)]">
+                    {copy.formulasTitle} · {copy.plansLabel(service.options.length)}
+                  </h2>
+                  <ul className="mt-4 flex flex-col gap-3">
+                    {service.options.map((option: CatalogOption) => (
+                      <li
+                        key={option.id}
+                        className="flex items-center justify-between gap-3 rounded-2xl border border-[var(--premium-card-border)] bg-[var(--premium-card-deep)] px-4 py-3"
+                      >
+                        <div className="flex min-w-0 flex-col">
+                          <span className="truncate font-bold text-[var(--premium-text)]">{option.name}</span>
+                          <span className="text-xs text-[var(--premium-text-soft)]">{option.billingSummary}</span>
+                        </div>
+                        <span className="shrink-0 font-black text-[var(--premium-text)]">{option.priceFormatted}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              ) : null}
+
+              <Link
+                href="/register"
+                className="premium-primary-cta mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full text-sm font-bold"
+              >
+                {copy.cta}
+                <MaterialIcon name="arrow_forward" className="text-[18px]" />
+              </Link>
+
+              <div className="mt-5 flex items-start gap-3 rounded-2xl bg-[var(--trust-green-soft)] p-4 text-[var(--trust-green)]">
+                <MaterialIcon name="verified" className="mt-0.5 text-[20px]" />
+                <div>
+                  <p className="text-sm font-bold">{copy.secureTitle}</p>
+                  <p className="mt-1 text-xs leading-relaxed opacity-90">{copy.secureText}</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
