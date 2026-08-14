@@ -965,7 +965,7 @@ export function PublicOffersPage({
                       {categoryServices.map((service) => (
                         <Link
                           key={service.slug}
-                          href="/register"
+                          href={`/catalogue/${service.slug}`}
                           className={`group premium-card-surface w-[280px] shrink-0 snap-start overflow-hidden rounded-2xl border shadow-[var(--shadow-card)] sm:w-[320px] lg:w-[340px] ${
                             isWaveIllustration(service)
                               ? "hover:border-primary-400/45"
