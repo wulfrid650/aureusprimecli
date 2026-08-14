@@ -734,12 +734,18 @@ export function PublicContactPage() {
   );
 }
 
-export function PublicOffersPage() {
+export function PublicOffersPage({
+  initialServices = [],
+  initialError = false,
+}: {
+  initialServices?: CatalogProduct[];
+  initialError?: boolean;
+} = {}) {
   const { locale } = useI18n();
   const copy = offersCopy[locale];
-  const [services, setServices] = useState<CatalogProduct[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [services, setServices] = useState<CatalogProduct[]>(initialServices);
+  const [isLoading, setIsLoading] = useState(initialServices.length === 0 && !initialError);
+  const [error, setError] = useState(initialError ? copy.unavailable : "");
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const categoryScrollRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -759,12 +765,17 @@ export function PublicOffersPage() {
   }
 
   useEffect(() => {
+    if (initialServices.length > 0) {
+      return;
+    }
+
     let isActive = true;
 
     fetchCatalogProducts(60)
       .then((catalogServices) => {
         if (!isActive) return;
         setServices(catalogServices);
+        setError("");
       })
       .catch((err) => {
         console.error("Failed to load public offers:", err);
@@ -777,6 +788,7 @@ export function PublicOffersPage() {
     return () => {
       isActive = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [copy.unavailable]);
 
   const categories = useMemo(

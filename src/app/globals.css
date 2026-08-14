@@ -620,11 +620,6 @@ input {
   max-width: 100vw;
 }
 
-.dashboard-header-controls > div > button {
-  height: 2rem;
-  width: 2rem;
-}
-
 .dashboard-desktop-nav {
   display: none;
 }
