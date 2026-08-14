@@ -144,23 +144,30 @@ export default function SingleServicePage({ params }: { params: Promise<{ id: st
 
         <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth -mt-8 relative z-10 bg-white rounded-t-[32px] pb-28">
           <div className="p-6">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-lg text-xs font-bold uppercase tracking-wider">{service.category}</span>
-              <span className="px-2.5 py-1 bg-[#5b13ec]/10 text-[#5b13ec] rounded-lg text-xs font-bold uppercase tracking-wider">
-                {service.optionCount > 1
-                  ? t("serviceDetail.formulasCount", {
-                      count: service.optionCount,
-                      plural: getPlural(locale, service.optionCount),
-                    })
-                  : service.billingSummary}
-              </span>
-            </div>
-            
+            <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-gray-400 mb-2">{service.category}</p>
+
             <h1 className="text-3xl font-extrabold text-[#131118] mb-4 tracking-tight">{service.title}</h1>
-            
-            {service.options.length > 1 && (
-              <div className="mb-6">
-                <h3 className="text-sm font-bold text-gray-700 mb-3">{t("serviceDetail.choosePlan")}</h3>
+
+            <div className="flex items-baseline gap-3 mb-6 pb-6 border-b border-gray-100">
+              <div>
+                <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400">{t("serviceDetail.from")}</span>
+                <div className="text-3xl font-black text-[#131118] transition-all">{selectedOption?.priceFormatted ?? service.currentPriceFormatted}</div>
+              </div>
+              {(selectedOption?.originalPriceFormatted ?? service.originalPriceFormatted) && (
+                <span className="ml-auto text-sm text-red-500 font-bold line-through transition-all">
+                  {selectedOption?.originalPriceFormatted ?? service.originalPriceFormatted}
+                </span>
+              )}
+            </div>
+
+            {service.options.length > 0 && (
+              <div className="mb-6 rounded-3xl border border-gray-100 bg-[#f8f8fb] p-5">
+                <h3 className="text-xs font-black uppercase tracking-[0.18em] text-gray-400 mb-4">
+                  {t("serviceDetail.formulasTitle")}
+                  {service.optionCount > 1
+                    ? ` · ${t("serviceDetail.formulasCount", { count: service.optionCount, plural: getPlural(locale, service.optionCount) })}`
+                    : ""}
+                </h3>
                 <div className="flex flex-col gap-2">
                   {service.options.map((option) => {
                     const isSelected = selectedOption?.id === option.id;
@@ -168,16 +175,18 @@ export default function SingleServicePage({ params }: { params: Promise<{ id: st
                       <button
                         key={option.id}
                         onClick={() => setSelectedOptionId(option.id)}
-                        className={`flex items-center justify-between p-4 rounded-2xl border-2 transition-all ${
-                          isSelected 
-                            ? "border-[#5b13ec] bg-[#5b13ec]/5 shadow-sm shadow-[#5b13ec]/10" 
-                            : "border-gray-100 bg-white hover:border-gray-200"
+                        className={`flex items-center justify-between p-4 rounded-2xl border-2 bg-white transition-all ${
+                          isSelected
+                            ? "border-[#5b13ec] shadow-sm shadow-[#5b13ec]/10"
+                            : "border-gray-100 hover:border-gray-200"
                         }`}
                       >
                         <div className="flex items-center gap-3">
-                          <div className={`size-5 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-[#5b13ec]' : 'border-gray-300'}`}>
-                            {isSelected && <div className="size-2.5 rounded-full bg-[#5b13ec]" />}
-                          </div>
+                          {service.optionCount > 1 && (
+                            <div className={`size-5 shrink-0 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-[#5b13ec]' : 'border-gray-300'}`}>
+                              {isSelected && <div className="size-2.5 rounded-full bg-[#5b13ec]" />}
+                            </div>
+                          )}
                           <div className="flex flex-col items-start">
                             <span className={`font-bold ${isSelected ? 'text-[#131118]' : 'text-gray-500'}`}>{option.name}</span>
                             <span className="text-xs text-gray-400">{option.billingSummary}</span>
@@ -194,7 +203,7 @@ export default function SingleServicePage({ params }: { params: Promise<{ id: st
                             )}
                           </div>
                         </div>
-                        <span className={`font-bold ${isSelected ? 'text-[#5b13ec]' : 'text-[#131118]'}`}>
+                        <span className={`font-bold shrink-0 ${isSelected ? 'text-[#5b13ec]' : 'text-[#131118]'}`}>
                           {option.priceFormatted}
                         </span>
                       </button>
@@ -203,19 +212,9 @@ export default function SingleServicePage({ params }: { params: Promise<{ id: st
                 </div>
               </div>
             )}
-            
-            <div className="flex items-baseline gap-3 mb-8 pb-8 border-b border-gray-100">
-              <span className="text-4xl font-black text-[#131118] transition-all">{selectedOption?.priceFormatted ?? service.currentPriceFormatted}</span>
-              <span className="text-gray-400 font-medium">{selectedOption?.billingSummary ?? service.billingSummary}</span>
-              {(selectedOption?.originalPriceFormatted ?? service.originalPriceFormatted) && (
-                <span className="ml-auto text-sm text-red-500 font-bold line-through transition-all">
-                  {selectedOption?.originalPriceFormatted ?? service.originalPriceFormatted}
-                </span>
-              )}
-            </div>
 
             {selectedRequiresKyc && (
-              <div className="mb-6 -mt-4 rounded-2xl border border-white/10 bg-[#131118] px-4 py-3 text-white">
+              <div className="mb-6 rounded-2xl border border-white/10 bg-[#131118] px-4 py-3 text-white">
                 <div className="flex items-start gap-3">
                   <span className="material-symbols-outlined text-[20px] text-[#dbb723]">school</span>
                   <div>
@@ -240,23 +239,11 @@ export default function SingleServicePage({ params }: { params: Promise<{ id: st
               {t("serviceDetail.walletFlow")}
             </p>
 
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <div className="bg-[#f8f8fb] text-[#131118] p-4 rounded-2xl flex items-start gap-3">
-                <span className="material-symbols-outlined mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
-                <div className="flex flex-col">
-                  <span className="font-bold">{t("serviceDetail.securePurchase")}</span>
-                  <span className="text-xs mt-1 text-gray-500">{t("serviceDetail.securePurchaseText")}</span>
-                </div>
-              </div>
-
-              <div className="bg-[#f7f3ff] text-[#5b13ec] p-4 rounded-2xl flex items-start gap-3">
-                <span className="material-symbols-outlined mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>bolt</span>
-                <div className="flex flex-col">
-                  <span className="font-bold">{t("serviceDetail.selectedPlan")}</span>
-                  <span className="text-xs mt-1 text-[#5b13ec]/80">
-                    {selectedOption?.name ?? service.defaultOption?.name ?? t("serviceDetail.standardPlan")} • {selectedOption?.billingSummary ?? service.billingSummary}
-                  </span>
-                </div>
+            <div className="bg-[#f0fdf9] text-emerald-700 p-4 rounded-2xl flex items-start gap-3">
+              <span className="material-symbols-outlined mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+              <div className="flex flex-col">
+                <span className="font-bold">{t("serviceDetail.securePurchase")}</span>
+                <span className="text-xs mt-1 text-emerald-700/80">{t("serviceDetail.securePurchaseText")}</span>
               </div>
             </div>
           </div>
