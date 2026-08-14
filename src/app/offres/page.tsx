@@ -3,8 +3,8 @@ import { PublicOffersPage } from "@/components/marketing/public-pages";
 import { fetchCatalogProducts, type CatalogProduct } from "@/lib/catalog";
 
 export const metadata: Metadata = {
-  title: "Nos offres",
-  description: "Découvrez le catalogue Aureus Prime et ses abonnements digitaux premium.",
+  title: "Nos offres premium",
+  description: "Tous nos services premium aux prix affichés en direct. Payez directement depuis votre wallet Auri, sans carte bancaire.",
 };
 
 export default async function OffersPage() {

@@ -40,7 +40,7 @@ const shellCopy = {
     navOffers: "Nos offres",
     navBenefits: "Avantages",
     login: "Se connecter",
-    footerText: "Aureus Prime centralise vos abonnements digitaux, votre wallet Auri et la livraison de vos accès.",
+    footerText: "La marketplace pour accéder à vos abonnements premium sans carte bancaire, à prix réduit, partout en Afrique francophone.",
     footerNavigation: "Navigation",
     footerSupport: "Support",
     footerContact: "Support WhatsApp",
@@ -87,9 +87,9 @@ const staticPages: Record<"fr" | "en", Record<PublicPageId, StaticPageCopy>> = {
   fr: {
     about: {
       eyebrow: "Plateforme",
-      title: "À propos d'Aureus Prime",
+      title: "L'accès premium sans les contraintes",
       subtitle:
-        "Aureus Prime rend les services premium plus accessibles en réunissant catalogue, wallet, abonnements et suivi des accès dans une seule expérience.",
+        "Aureus Prime réunit catalogue, wallet et suivi des accès dans un seul espace — pensé pour un paiement local, sans carte bancaire.",
       highlights: [
         { icon: "subscriptions", label: "Catalogue", value: "Streaming, musique, cloud, IA" },
         { icon: "account_balance_wallet", label: "Wallet", value: "Paiement rapide en Auri" },
@@ -97,7 +97,7 @@ const staticPages: Record<"fr" | "en", Record<PublicPageId, StaticPageCopy>> = {
       ],
       sections: [
         {
-          title: "Ce que nous faisons",
+          title: "Notre métier",
           body: "Nous simplifions l'achat d'abonnements digitaux en proposant des formules claires, des prix accessibles et un suivi après achat.",
           points: ["Catalogue groupé par service", "Paiement par wallet Auri", "Historique des commandes et abonnements", "Support pour les accès livrés"],
         },
@@ -115,7 +115,7 @@ const staticPages: Record<"fr" | "en", Record<PublicPageId, StaticPageCopy>> = {
       eyebrow: "Support",
       title: "Centre d'aide",
       subtitle:
-        "Les réponses essentielles pour acheter, suivre une souscription, gérer votre wallet Auri et retrouver vos accès.",
+        "Tout ce qu'il faut savoir pour acheter, suivre une commande, gérer votre wallet Auri et retrouver vos accès.",
       highlights: [
         { icon: "shopping_bag", label: "Commandes", value: "Suivi depuis le dashboard" },
         { icon: "key", label: "Accès", value: "Identifiants visibles après livraison" },
@@ -138,17 +138,17 @@ const staticPages: Record<"fr" | "en", Record<PublicPageId, StaticPageCopy>> = {
           points: ["Commande payée sans accès", "Réassignation nécessaire", "Justificatif étudiant à vérifier"],
         },
       ],
-      ctaTitle: "Besoin d'aide sur une commande ?",
-      ctaText: "Connectez-vous pour retrouver vos commandes et préparer les informations utiles au support.",
+      ctaTitle: "Toujours bloqué ?",
+      ctaText: "Connectez-vous pour retrouver votre commande et contacter le support avec les bonnes informations directement prêtes.",
       ctaLabel: "Ouvrir mon espace",
     },
   },
   en: {
     about: {
       eyebrow: "Platform",
-      title: "About Aureus Prime",
+      title: "Premium access without the hassle",
       subtitle:
-        "Aureus Prime makes premium services more accessible by bringing catalog, wallet, subscriptions and access tracking into one experience.",
+        "Aureus Prime brings catalog, wallet and access tracking into one space — built for local payment, no bank card required.",
       highlights: [
         { icon: "subscriptions", label: "Catalog", value: "Streaming, music, cloud, AI" },
         { icon: "account_balance_wallet", label: "Wallet", value: "Fast Auri payments" },
@@ -156,7 +156,7 @@ const staticPages: Record<"fr" | "en", Record<PublicPageId, StaticPageCopy>> = {
       ],
       sections: [
         {
-          title: "What we do",
+          title: "Our craft",
           body: "We simplify digital subscription purchases with clear plans, accessible prices and post-purchase tracking.",
           points: ["Catalog grouped by service", "Auri wallet payment", "Order and subscription history", "Support for delivered access"],
         },
@@ -173,7 +173,7 @@ const staticPages: Record<"fr" | "en", Record<PublicPageId, StaticPageCopy>> = {
     help: {
       eyebrow: "Support",
       title: "Help center",
-      subtitle: "Essential answers for buying, tracking a subscription, managing your Auri wallet and finding your access.",
+      subtitle: "Everything you need to buy, track an order, manage your Auri wallet and find your access.",
       highlights: [
         { icon: "shopping_bag", label: "Orders", value: "Tracked from the dashboard" },
         { icon: "key", label: "Access", value: "Credentials after delivery" },
@@ -196,8 +196,8 @@ const staticPages: Record<"fr" | "en", Record<PublicPageId, StaticPageCopy>> = {
           points: ["Paid order without access", "Reassignment needed", "Student document to verify"],
         },
       ],
-      ctaTitle: "Need help with an order?",
-      ctaText: "Sign in to find your orders and prepare the useful support details.",
+      ctaTitle: "Still stuck?",
+      ctaText: "Sign in to find your order and contact support with the right details ready to go.",
       ctaLabel: "Open my space",
     },
   },
@@ -206,8 +206,8 @@ const staticPages: Record<"fr" | "en", Record<PublicPageId, StaticPageCopy>> = {
 const blogCopy = {
   fr: {
     eyebrow: "Guides",
-    title: "Blog Aureus Prime",
-    subtitle: "Des guides courts pour mieux choisir vos offres, utiliser votre wallet et suivre vos accès.",
+    title: "Guides Aureus Prime",
+    subtitle: "Choisir la bonne offre, utiliser votre wallet, suivre vos accès — en quelques minutes de lecture.",
     read: "Lire le guide",
     articles: [
       {
@@ -234,8 +234,8 @@ const blogCopy = {
   },
   en: {
     eyebrow: "Guides",
-    title: "Aureus Prime Blog",
-    subtitle: "Short guides to choose offers, use your wallet and track your access.",
+    title: "Aureus Prime Guides",
+    subtitle: "Choose the right offer, use your wallet, track your access — a few minutes of reading.",
     read: "Read guide",
     articles: [
       {
@@ -266,7 +266,7 @@ const offersCopy = {
   fr: {
     eyebrow: "Catalogue",
     title: "Nos offres premium",
-    subtitle: "Le catalogue public reprend les services disponibles sur Aureus Prime, avec les prix et formules issus de la plateforme.",
+    subtitle: "Tous nos services premium, aux prix affichés en direct. Payez directement depuis votre wallet Auri.",
     search: "Rechercher Netflix, Spotify, Canva...",
     allCategories: "Toutes les catégories",
     result: "{count} service{plural}",
@@ -280,14 +280,14 @@ const offersCopy = {
     empty: "Aucune offre visible pour le moment.",
     noResult: "Aucune offre ne correspond à votre recherche.",
     reset: "Réinitialiser",
-    start: "Créer un compte",
+    start: "Créer mon compte gratuitement",
     auriRate: "1 Auri = 1 XAF",
-    walletHint: "Prix synchronisés avec le catalogue client et paiement depuis le wallet Auri.",
+    walletHint: "Ces prix sont ceux appliqués au moment de l'achat. Paiement instantané depuis votre wallet Auri.",
   },
   en: {
     eyebrow: "Catalog",
     title: "Premium offers",
-    subtitle: "The public catalog uses the services available on Aureus Prime, including platform prices and plans.",
+    subtitle: "All our premium services, at prices shown live. Pay directly from your Auri wallet.",
     search: "Search Netflix, Spotify, Canva...",
     allCategories: "All categories",
     result: "{count} service{plural}",
@@ -301,21 +301,21 @@ const offersCopy = {
     empty: "No visible offer right now.",
     noResult: "No offer matches your search.",
     reset: "Reset",
-    start: "Create account",
+    start: "Create my account for free",
     auriRate: "1 Auri = 1 XAF",
-    walletHint: "Prices synced with the customer catalog and paid through the Auri wallet.",
+    walletHint: "These prices are the ones applied at purchase. Instant payment from your Auri wallet.",
   },
 } as const;
 
 const contactCopy = {
   fr: {
     eyebrow: "Support",
-    title: "Contactez Aureus Prime",
+    title: "Besoin d'aide ?",
     subtitle:
-      "Une question sur une commande, un accès, une recharge ou un KYC ? Préparez l'email de votre compte et le service concerné pour accélérer le traitement.",
+      "Commande, accès, recharge ou KYC — préparez l'email de votre compte pour un traitement plus rapide.",
     hoursTitle: "Disponibilité",
     hoursText: "Support prioritaire pour les commandes payées, les accès bloqués et les assignations manuelles.",
-    hours: ["Lundi - Vendredi : 8h - 20h", "Samedi : 9h - 18h", "Dimanche : urgences commandes"],
+    hours: ["Disponible 24h/24, 7j/7 — réponse plus rapide en journée (8h-20h)"],
     serviceTitle: "Ce que le support peut traiter",
     serviceText:
       "Aureus Prime fonctionne autour du wallet Auri, de la livraison d'accès et du suivi des souscriptions. Les demandes sont plus rapides quand elles contiennent le service, l'email du compte et le contexte.",
@@ -348,19 +348,19 @@ const contactCopy = {
         title: "Wallet Auri",
         description: "Recharge, correction de solde ou remboursement en Auri.",
         value: "1 Auri = 1 XAF",
-        cta: "Créer un compte",
+        cta: "Créer mon compte gratuitement",
         href: "/register",
       },
     ] satisfies readonly ContactChannel[],
   },
   en: {
     eyebrow: "Support",
-    title: "Contact Aureus Prime",
+    title: "Need help?",
     subtitle:
-      "Question about an order, access, top-up or KYC? Prepare your account email and the related service to speed up handling.",
+      "Order, access, top-up or KYC — prepare your account email for faster handling.",
     hoursTitle: "Availability",
     hoursText: "Priority support for paid orders, blocked access and manual assignments.",
-    hours: ["Monday - Friday: 8am - 8pm", "Saturday: 9am - 6pm", "Sunday: order emergencies"],
+    hours: ["Available 24/7 — faster replies during the day (8am-8pm)"],
     serviceTitle: "What support can handle",
     serviceText:
       "Aureus Prime revolves around the Auri wallet, access delivery and subscription tracking. Requests are faster when they include service, account email and context.",
@@ -393,7 +393,7 @@ const contactCopy = {
         title: "Auri wallet",
         description: "Top-up, balance correction or Auri refund.",
         value: "1 Auri = 1 XAF",
-        cta: "Create account",
+        cta: "Create my account for free",
         href: "/register",
       },
     ] satisfies readonly ContactChannel[],

@@ -3,7 +3,7 @@ import { PublicContentPage } from "@/components/marketing/public-pages";
 
 export const metadata: Metadata = {
   title: "Centre d'aide",
-  description: "Aide Aureus Prime pour les commandes, le wallet Auri, les accès et le KYC étudiant.",
+  description: "Tout savoir pour acheter, suivre une commande, gérer votre wallet Auri et retrouver vos accès.",
 };
 
 export default function HelpPage() {

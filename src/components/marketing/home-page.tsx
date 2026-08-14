@@ -94,14 +94,14 @@ function selectFeaturedCatalogServices(products: CatalogProduct[], limit = 8): C
 
 const processCopy = {
   fr: {
-    eyebrow: "Simple comme bonjour",
+    eyebrow: "3 étapes, aucune carte bancaire",
     title: "Comment ça marche ?",
     cta: "Commencer maintenant",
     steps: [
       {
         icon: "account_balance_wallet",
         title: "Rechargez",
-        description: "Utilisez votre Mobile Money, Wave ou PayPal pour créditer votre wallet Aureus Prime.",
+        description: "Utilisez votre Mobile Money (MTN, Orange, Moov, Wave) pour créditer votre wallet Aureus Prime.",
       },
       {
         icon: "apps",
@@ -116,36 +116,36 @@ const processCopy = {
     ],
     points: [
       {
-        title: "Pas de carte bancaire. Pas de stress.",
-        description: "Votre numéro de téléphone suffit pour recharger et payer depuis votre wallet.",
+        title: "Zéro carte bancaire.",
+        description: "Votre numéro de téléphone suffit pour recharger et payer.",
         tone: "soft",
       },
       {
-        title: "Gérez votre budget au franc près.",
-        description: "1 Auri = 1 XAF. Rechargez 1000F, dépensez 1000F, sans découvert.",
+        title: "Zéro découvert possible.",
+        description: "Vous ne pouvez jamais dépenser plus que ce que vous avez rechargé.",
         tone: "cool",
       },
       {
-        title: "Des services officiels.",
-        description: "Aureus Prime travaille avec des accès suivis et une livraison contrôlée.",
+        title: "Accès suivis, pas de comptes piratés.",
+        description: "Chaque service est livré via un accès contrôlé et traçable dans votre dashboard.",
         tone: "soft",
       },
       {
-        title: "Assistance locale, réponse rapide.",
-        description: "Notre équipe vous accompagne par WhatsApp et email en cas de blocage.",
+        title: "Support humain, réponse rapide.",
+        description: "Une équipe joignable par WhatsApp et email en cas de blocage.",
         tone: "cool",
       },
     ],
   },
   en: {
-    eyebrow: "As simple as it gets",
+    eyebrow: "3 steps, no bank card",
     title: "How does it work?",
     cta: "Start now",
     steps: [
       {
         icon: "account_balance_wallet",
         title: "Top up",
-        description: "Use Mobile Money, Wave or PayPal to credit your Aureus Prime wallet.",
+        description: "Use Mobile Money (MTN, Orange, Moov, Wave) to credit your Aureus Prime wallet.",
       },
       {
         icon: "apps",
@@ -160,23 +160,23 @@ const processCopy = {
     ],
     points: [
       {
-        title: "No bank card. No stress.",
-        description: "Your phone number is enough to top up and pay from your wallet.",
+        title: "Zero bank card.",
+        description: "Your phone number is all you need to top up and pay.",
         tone: "soft",
       },
       {
-        title: "Control your budget precisely.",
-        description: "1 Auri = 1 XAF. Top up 1000F, spend 1000F, no overdraft.",
+        title: "Zero overdraft possible.",
+        description: "You can never spend more than what you've topped up.",
         tone: "cool",
       },
       {
-        title: "Official services.",
-        description: "Aureus Prime works with tracked access and controlled delivery.",
+        title: "Tracked access, no hacked accounts.",
+        description: "Every service is delivered through a controlled, traceable access in your dashboard.",
         tone: "soft",
       },
       {
-        title: "Local assistance, fast replies.",
-        description: "Our team supports you by WhatsApp and email when something is blocked.",
+        title: "Human support, fast replies.",
+        description: "A team reachable by WhatsApp and email whenever you're stuck.",
         tone: "cool",
       },
     ],
@@ -186,13 +186,13 @@ const processCopy = {
 const referralCopy = {
   fr: {
     title: "Qui t'a dit que ton réseau ne valait rien ?",
-    description: "Chaque 6 amis parrainés, c'est environ 2 000 Auri qui glissent directement dans ton wallet.",
-    cta: "Découvrir le parrainage",
+    description: "Partagez votre lien. Chaque filleul qui valide un achat vous rapporte 333 Auri, selon les conditions du programme.",
+    cta: "Obtenir mon lien de parrainage",
   },
   en: {
     title: "Who said your network was worth nothing?",
-    description: "Every 6 referred friends can bring about 2,000 Auri directly into your wallet.",
-    cta: "Explore referrals",
+    description: "Share your link. Every referred friend who completes a purchase earns you 333 Auri, subject to the program's terms.",
+    cta: "Get my referral link",
   },
 } as const;
 
@@ -202,7 +202,7 @@ const faqCopy = {
     items: [
       {
         question: "Est-ce vraiment sans carte bancaire ?",
-        answer: "Oui. Vous rechargez votre wallet avec Mobile Money, Wave ou PayPal, puis vous payez vos services avec votre solde Auri.",
+        answer: "Oui. Vous rechargez votre wallet en Mobile Money (MTN, Orange, Moov, Wave), puis vous payez vos services avec votre solde Auri.",
       },
       {
         question: "Les abonnements sont-ils officiels ?",
@@ -210,11 +210,11 @@ const faqCopy = {
       },
       {
         question: "Les abonnements partagés sont-ils autorisés ?",
-        answer: "Certains services fonctionnent avec des slots partagés, d'autres avec des clés ou liens dédiés. Le type d'accès est géré côté plateforme.",
+        answer: "Oui. Certains services utilisent des accès partagés, d'autres des clés ou liens individuels — le type d'accès est indiqué sur chaque fiche produit avant l'achat.",
       },
       {
         question: "Puis-je annuler à tout moment ?",
-        answer: "Vous gardez le contrôle de vos achats. Les annulations, réassignations ou remboursements en Auri dépendent du statut de la commande et du service livré.",
+        answer: "Vous n'avez aucun engagement récurrent : chaque achat est ponctuel. Remboursement en Auri ou réassignation possible selon le statut de votre commande — les détails sont dans notre politique de remboursement.",
       },
     ],
   },
@@ -223,7 +223,7 @@ const faqCopy = {
     items: [
       {
         question: "Is it really bank-card free?",
-        answer: "Yes. Top up your wallet with Mobile Money, Wave or PayPal, then pay for services with your Auri balance.",
+        answer: "Yes. Top up your wallet with Mobile Money (MTN, Orange, Moov, Wave), then pay for services with your Auri balance.",
       },
       {
         question: "Are the subscriptions official?",
@@ -231,11 +231,11 @@ const faqCopy = {
       },
       {
         question: "Are shared subscriptions allowed?",
-        answer: "Some services use shared slots, others use dedicated keys or links. The access type is handled by the platform.",
+        answer: "Yes. Some services use shared access, others use individual keys or links — the access type is shown on each product page before purchase.",
       },
       {
         question: "Can I cancel anytime?",
-        answer: "You stay in control of your purchases. Cancellations, reassignments or Auri refunds depend on order status and delivered service.",
+        answer: "There's no recurring commitment: every purchase is one-off. Auri refund or reassignment is possible depending on your order's status — details are in our refund policy.",
       },
     ],
   },
