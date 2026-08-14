@@ -78,7 +78,7 @@ export default function SingleServicePage({ params }: { params: Promise<{ id: st
     return (
       <div className="dashboard-mode bg-[#f6f6f8] text-[#131118] min-h-screen flex justify-center sm:items-center sm:p-4">
         <div className="w-full sm:max-w-[420px] sm:h-[90vh] sm:max-h-[850px] bg-white sm:rounded-[40px] overflow-hidden relative shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] flex flex-col mx-auto h-[100dvh] sm:h-auto">
-          <div className="absolute top-4 left-4 right-4 z-50 flex items-center justify-between gap-3">
+          <div className="absolute left-4 right-4 z-50 flex items-center justify-between gap-3 top-[calc(1rem+env(safe-area-inset-top))]">
             <Link href="/dashboard/services" className="flex items-center justify-center size-10 shrink-0 rounded-full bg-black/30 backdrop-blur-xl text-white hover:bg-black/50 transition-colors">
               <span className="material-symbols-outlined">arrow_back</span>
             </Link>
@@ -102,7 +102,7 @@ export default function SingleServicePage({ params }: { params: Promise<{ id: st
     return (
       <div className="dashboard-mode bg-[#f6f6f8] text-[#131118] min-h-screen flex justify-center sm:items-center sm:p-4">
         <div className="w-full sm:max-w-[420px] sm:h-[90vh] sm:max-h-[850px] bg-white sm:rounded-[40px] overflow-hidden relative shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] flex flex-col mx-auto h-[100dvh] sm:h-auto items-center justify-center p-6 text-center">
-          <div className="absolute top-4 left-4 right-4 z-50 flex items-center justify-between gap-3">
+          <div className="absolute left-4 right-4 z-50 flex items-center justify-between gap-3 top-[calc(1rem+env(safe-area-inset-top))]">
             <Link href="/dashboard/services" className="flex items-center justify-center size-10 shrink-0 rounded-full bg-white border border-gray-100 text-[#131118] hover:bg-gray-50 transition-colors">
               <span className="material-symbols-outlined">arrow_back</span>
             </Link>
@@ -127,7 +127,7 @@ export default function SingleServicePage({ params }: { params: Promise<{ id: st
     <div className="dashboard-mode bg-[#f6f6f8] text-[#131118] min-h-screen flex justify-center sm:items-center sm:p-4">
       <div className="w-full sm:max-w-[420px] sm:h-[90vh] sm:max-h-[850px] bg-white sm:rounded-[40px] overflow-hidden relative shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] flex flex-col mx-auto h-[100dvh] sm:h-auto">
         
-        <div className="absolute top-4 left-4 right-4 z-50 flex items-center justify-between gap-3">
+        <div className="absolute left-4 right-4 z-50 flex items-center justify-between gap-3 top-[calc(1rem+env(safe-area-inset-top))]">
           <Link href="/dashboard/services" className="flex items-center justify-center size-10 shrink-0 rounded-full bg-black/30 backdrop-blur-xl text-white hover:bg-black/50 transition-colors">
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
@@ -151,7 +151,7 @@ export default function SingleServicePage({ params }: { params: Promise<{ id: st
             <div className="flex items-baseline gap-3 mb-6 pb-6 border-b border-gray-100">
               <div>
                 <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400">{t("serviceDetail.from")}</span>
-                <div className="text-3xl font-black text-[#131118] transition-all">{selectedOption?.priceFormatted ?? service.currentPriceFormatted}</div>
+                <div className="text-3xl font-black text-[#dbb723] transition-all">{selectedOption?.priceFormatted ?? service.currentPriceFormatted}</div>
               </div>
               {(selectedOption?.originalPriceFormatted ?? service.originalPriceFormatted) && (
                 <span className="ml-auto text-sm text-red-500 font-bold line-through transition-all">
