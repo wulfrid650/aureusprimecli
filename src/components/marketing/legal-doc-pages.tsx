@@ -31,7 +31,7 @@ const legalDocs: Record<LegalPageId, LegalDocument> = {
   usage: {
     title: "Conditions Générales d'Utilisation (CGU)",
     subtitle: "aureusprime.com - Règles d'utilisation de la plateforme",
-    effectiveDate: "24 mai 2026",
+    effectiveDate: "14 août 2026",
     intro: [
       "Les présentes Conditions Générales d'Utilisation définissent les règles d'accès et d'utilisation du site, du dashboard, du wallet Auri et des applications Aureus Prime.",
       "Toute création de compte, connexion ou utilisation de la plateforme vaut acceptation pleine et entière des présentes CGU, des CGV et de la Politique de Confidentialité en vigueur.",
@@ -118,7 +118,7 @@ const legalDocs: Record<LegalPageId, LegalDocument> = {
         title: "6. Contact",
         blocks: [
           { type: "paragraph", text: "Pour toute question relative aux présentes CGU :" },
-          { type: "list", items: ["contact@aureusprime.com", "+237 676 025 127", "aureusprime.com"] },
+          { type: "list", items: ["support@aureusprime.com", "+237 676 025 127", "aureusprime.com"] },
         ],
       },
     ],
@@ -127,7 +127,7 @@ const legalDocs: Record<LegalPageId, LegalDocument> = {
   terms: {
     title: "Conditions Générales de Vente (CGV)",
     subtitle: "aureusprime.com - Plateforme d'abonnements digitaux",
-    effectiveDate: "24 mai 2026",
+    effectiveDate: "14 août 2026",
     intro: [
       "Les présentes Conditions Générales de Vente régissent les relations contractuelles entre Aureus Prime, ci-après « Aureus Prime » ou « Nous », et toute personne physique ou morale utilisant les services proposés via le site et les applications associées.",
       "L'accès et l'utilisation des services impliquent l'acceptation pleine et entière des présentes CGV. Si vous n'acceptez pas ces CGV, vous ne devez pas utiliser les services d'Aureus Prime.",
@@ -354,15 +354,11 @@ const legalDocs: Record<LegalPageId, LegalDocument> = {
         blocks: [
           {
             type: "paragraph",
-            text: "Les conditions de remboursement sont définies dans la Politique de Remboursement distincte disponible sur le site.",
+            text: "Les conditions de remboursement, les délais et la procédure sont définis dans la Politique de Remboursement, document distinct disponible sur le site à l'adresse aureusprime.com/remboursement.",
           },
           {
-            type: "list",
-            items: [
-              "Remboursement possible uniquement en cas de non-activation du service dans les 24h suivant le paiement, si la cause est imputable à Aureus Prime.",
-              "Après livraison réussie des Auri ou des identifiants, la compensation applicable est prioritairement interne : réassignation d'un nouvel accès fonctionnel ou recrédit équivalent en Auri.",
-              "Toute demande doit être soumise dans les 7 jours calendaires suivant la transaction.",
-            ],
+            type: "note",
+            text: "En cas de divergence entre les présentes CGV et la Politique de Remboursement, cette dernière prévaut pour tout ce qui concerne les compensations et les remboursements.",
           },
         ],
       },
@@ -401,7 +397,7 @@ const legalDocs: Record<LegalPageId, LegalDocument> = {
         title: "14. Contact",
         blocks: [
           { type: "paragraph", text: "Pour toute question relative aux présentes CGV :" },
-          { type: "list", items: ["contact@aureusprime.com", "+237 676 025 127", "aureusprime.com"] },
+          { type: "list", items: ["support@aureusprime.com", "+237 676 025 127", "aureusprime.com"] },
         ],
       },
     ],
@@ -410,7 +406,7 @@ const legalDocs: Record<LegalPageId, LegalDocument> = {
   privacy: {
     title: "Politique de Confidentialité",
     subtitle: "aureusprime.com - Plateforme d'abonnements digitaux",
-    effectiveDate: "Mai 2026",
+    effectiveDate: "14 août 2026",
     intro: [
       "Chez Aureus Prime, nous considérons la confidentialité comme un pilier fondamental de la confiance. Nous collectons uniquement les données nécessaires au bon fonctionnement de nos services, sans exploitation abusive, sans revente, et sans géolocalisation dissimulée.",
       "Cette Politique de Confidentialité explique comment nous collectons, utilisons, partageons et protégeons vos données lorsque vous utilisez notre site web, nos sous-domaines et nos applications.",
@@ -560,7 +556,7 @@ const legalDocs: Record<LegalPageId, LegalDocument> = {
               "droit d'opposition, notamment aux communications marketing.",
             ],
           },
-          { type: "paragraph", text: "Toute demande peut être adressée à contact@aureusprime.com." },
+          { type: "paragraph", text: "Toute demande peut être adressée à support@aureusprime.com." },
         ],
       },
       {
@@ -607,7 +603,7 @@ const legalDocs: Record<LegalPageId, LegalDocument> = {
         title: "10. Contact",
         blocks: [
           { type: "paragraph", text: "Pour toute question relative à la confidentialité de vos données :" },
-          { type: "list", items: ["contact@aureusprime.com", "+237 676 025 127", "aureusprime.com"] },
+          { type: "list", items: ["support@aureusprime.com", "+237 676 025 127", "aureusprime.com"] },
         ],
       },
     ],
@@ -616,7 +612,7 @@ const legalDocs: Record<LegalPageId, LegalDocument> = {
   refund: {
     title: "Politique de Remboursement",
     subtitle: "aureusprime.com - Plateforme d'abonnements digitaux",
-    effectiveDate: "Mai 2026",
+    effectiveDate: "14 août 2026",
     intro: [
       "Chez Aureus Prime, nous mettons tout en oeuvre pour garantir la satisfaction de nos utilisateurs. La présente Politique de Remboursement définit les conditions dans lesquelles un remboursement peut être accordé pour les abonnements souscrits via notre plateforme.",
       "Nous vous invitons à lire attentivement cette politique avant d'effectuer tout achat.",
@@ -715,7 +711,7 @@ const legalDocs: Record<LegalPageId, LegalDocument> = {
         title: "4. Procédure de demande de remboursement",
         blocks: [
           { type: "subheading", text: "Étape 1 - Contacter le support client Aureus Prime" },
-          { type: "list", items: ["WhatsApp : +237 676 025 127", "E-mail : contact@aureusprime.com"] },
+          { type: "list", items: ["WhatsApp : +237 676 025 127", "E-mail : support@aureusprime.com"] },
           { type: "subheading", text: "Étape 2 - Fournir les informations suivantes" },
           {
             type: "list",
@@ -788,7 +784,7 @@ const legalDocs: Record<LegalPageId, LegalDocument> = {
         title: "8. Contact",
         blocks: [
           { type: "paragraph", text: "Pour toute question relative à cette Politique de Remboursement :" },
-          { type: "list", items: ["contact@aureusprime.com", "WhatsApp : +237 676 025 127", "aureusprime.com"] },
+          { type: "list", items: ["support@aureusprime.com", "WhatsApp : +237 676 025 127", "aureusprime.com"] },
         ],
       },
     ],
@@ -800,7 +796,7 @@ const englishLegalDocs: Record<LegalPageId, LegalDocument> = {
   usage: {
     title: "Terms of Use",
     subtitle: "aureusprime.com - Platform usage rules",
-    effectiveDate: "May 24, 2026",
+    effectiveDate: "August 14, 2026",
     intro: [
       "These Terms of Use define the rules for accessing and using the Aureus Prime website, dashboard, Auri wallet and related applications.",
       "Creating an account, signing in or using the platform means that you accept these Terms of Use, the Terms of Sale and the Privacy Policy in force.",
@@ -887,7 +883,7 @@ const englishLegalDocs: Record<LegalPageId, LegalDocument> = {
         title: "6. Contact",
         blocks: [
           { type: "paragraph", text: "For questions about these Terms of Use:" },
-          { type: "list", items: ["contact@aureusprime.com", "+237 676 025 127", "aureusprime.com"] },
+          { type: "list", items: ["support@aureusprime.com", "+237 676 025 127", "aureusprime.com"] },
         ],
       },
     ],
@@ -896,7 +892,7 @@ const englishLegalDocs: Record<LegalPageId, LegalDocument> = {
   terms: {
     title: "Terms of Sale",
     subtitle: "aureusprime.com - Digital subscription platform",
-    effectiveDate: "May 2026",
+    effectiveDate: "August 14, 2026",
     intro: [
       "These Terms of Sale govern the contractual relationship between Aureus Prime and any person or entity using the services offered through the website and related applications.",
       "Accessing and using the services implies full acceptance of these Terms. If you do not accept them, you must not use Aureus Prime services.",
@@ -1077,7 +1073,11 @@ const englishLegalDocs: Record<LegalPageId, LegalDocument> = {
         blocks: [
           {
             type: "paragraph",
-            text: "Refund conditions are described in the separate Refund Policy available on the website.",
+            text: "Refund conditions, deadlines and process are defined in the separate Refund Policy available at aureusprime.com/remboursement.",
+          },
+          {
+            type: "note",
+            text: "In case of discrepancy between these Terms and the Refund Policy, the Refund Policy prevails for anything related to compensation and refunds.",
           },
         ],
       },
@@ -1112,7 +1112,7 @@ const englishLegalDocs: Record<LegalPageId, LegalDocument> = {
         title: "14. Contact",
         blocks: [
           { type: "paragraph", text: "For questions about these Terms of Sale:" },
-          { type: "list", items: ["contact@aureusprime.com", "+237 676 025 127", "aureusprime.com"] },
+          { type: "list", items: ["support@aureusprime.com", "+237 676 025 127", "aureusprime.com"] },
         ],
       },
     ],
@@ -1121,7 +1121,7 @@ const englishLegalDocs: Record<LegalPageId, LegalDocument> = {
   privacy: {
     title: "Privacy Policy",
     subtitle: "aureusprime.com - Digital subscription platform",
-    effectiveDate: "May 24, 2026",
+    effectiveDate: "August 14, 2026",
     intro: [
       "At Aureus Prime, privacy is a core part of trust. We collect only the data needed to operate our services, without abusive use, resale or hidden geolocation.",
       "This Privacy Policy explains how we collect, use, share and protect data when you use our website, subdomains and applications.",
@@ -1237,7 +1237,7 @@ const englishLegalDocs: Record<LegalPageId, LegalDocument> = {
               "right to object, especially to marketing communications.",
             ],
           },
-          { type: "paragraph", text: "Requests can be sent to contact@aureusprime.com." },
+          { type: "paragraph", text: "Requests can be sent to support@aureusprime.com." },
         ],
       },
       {
@@ -1271,7 +1271,7 @@ const englishLegalDocs: Record<LegalPageId, LegalDocument> = {
         title: "10. Contact",
         blocks: [
           { type: "paragraph", text: "For questions about privacy:" },
-          { type: "list", items: ["contact@aureusprime.com", "+237 676 025 127", "aureusprime.com"] },
+          { type: "list", items: ["support@aureusprime.com", "+237 676 025 127", "aureusprime.com"] },
         ],
       },
     ],
@@ -1280,7 +1280,7 @@ const englishLegalDocs: Record<LegalPageId, LegalDocument> = {
   refund: {
     title: "Refund Policy",
     subtitle: "aureusprime.com - Digital subscription platform",
-    effectiveDate: "May 2026",
+    effectiveDate: "August 14, 2026",
     intro: [
       "Aureus Prime works to ensure user satisfaction. This Refund Policy defines when a refund may be granted for subscriptions purchased through the platform.",
       "Please read this policy carefully before making a purchase.",
@@ -1368,7 +1368,7 @@ const englishLegalDocs: Record<LegalPageId, LegalDocument> = {
         title: "4. Refund request process",
         blocks: [
           { type: "subheading", text: "Step 1 - Contact Aureus Prime support" },
-          { type: "list", items: ["WhatsApp: +237 676 025 127", "Email: contact@aureusprime.com"] },
+          { type: "list", items: ["WhatsApp: +237 676 025 127", "Email: support@aureusprime.com"] },
           { type: "subheading", text: "Step 2 - Provide the following information" },
           {
             type: "list",
@@ -1440,7 +1440,7 @@ const englishLegalDocs: Record<LegalPageId, LegalDocument> = {
         title: "8. Contact",
         blocks: [
           { type: "paragraph", text: "For questions about this Refund Policy:" },
-          { type: "list", items: ["contact@aureusprime.com", "WhatsApp: +237 676 025 127", "aureusprime.com"] },
+          { type: "list", items: ["support@aureusprime.com", "WhatsApp: +237 676 025 127", "aureusprime.com"] },
         ],
       },
     ],
