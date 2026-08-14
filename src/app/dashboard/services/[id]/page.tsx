@@ -146,8 +146,9 @@ export default function SingleServicePage({ params }: { params: Promise<{ id: st
           <div className="p-6">
             <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-gray-400 mb-2">{service.category}</p>
 
-            <div className="flex flex-wrap items-start gap-x-4 gap-y-3 mb-6 pb-6 border-b border-gray-100">
-              <div className="shrink-0">
+            <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-3 mb-6 pb-6 border-b border-gray-100">
+              <h1 className="min-w-[10rem] flex-1 break-words text-3xl font-extrabold text-[#131118] tracking-tight">{service.title}</h1>
+              <div className="shrink-0 text-right">
                 <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400">{t("serviceDetail.from")}</span>
                 <div className="text-3xl font-black text-[#dbb723] transition-all">{selectedOption?.priceFormatted ?? service.currentPriceFormatted}</div>
                 {(selectedOption?.originalPriceFormatted ?? service.originalPriceFormatted) && (
@@ -156,7 +157,6 @@ export default function SingleServicePage({ params }: { params: Promise<{ id: st
                   </span>
                 )}
               </div>
-              <h1 className="min-w-[10rem] flex-1 break-words text-3xl font-extrabold text-[#131118] tracking-tight">{service.title}</h1>
             </div>
 
             {service.options.length > 0 && (

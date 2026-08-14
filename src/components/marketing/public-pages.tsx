@@ -1098,14 +1098,14 @@ export function PublicServicePage({ service }: { service: CatalogProduct }) {
               <p className="mt-3 text-[11px] font-bold uppercase tracking-[0.22em] text-[var(--premium-text-soft)]">{service.category}</p>
               <h1 className="mt-2 text-3xl font-black tracking-tight text-[var(--premium-text)] sm:text-4xl">{service.title}</h1>
 
-              <div className="mt-6 flex items-baseline gap-3 border-b border-[var(--premium-card-border)] pb-6">
-                <div>
+              <div className="mt-6 flex items-baseline justify-end gap-3 border-b border-[var(--premium-card-border)] pb-6">
+                <div className="ml-auto text-right">
                   <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--premium-text-soft)]">{copy.from}</p>
                   <p className="text-3xl font-black text-primary-500">{service.currentPriceFormatted}</p>
+                  {service.originalPriceFormatted ? (
+                    <span className="mt-1 block text-sm font-bold text-red-500 line-through">{service.originalPriceFormatted}</span>
+                  ) : null}
                 </div>
-                {service.originalPriceFormatted ? (
-                  <span className="ml-auto text-sm font-bold text-red-500 line-through">{service.originalPriceFormatted}</span>
-                ) : null}
               </div>
 
               <h2 className="mt-8 text-lg font-black text-[var(--premium-text)]">{copy.descriptionTitle}</h2>
