@@ -146,18 +146,17 @@ export default function SingleServicePage({ params }: { params: Promise<{ id: st
           <div className="p-6">
             <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-gray-400 mb-2">{service.category}</p>
 
-            <h1 className="text-3xl font-extrabold text-[#131118] mb-4 tracking-tight">{service.title}</h1>
-
-            <div className="flex items-baseline gap-3 mb-6 pb-6 border-b border-gray-100">
-              <div>
+            <div className="flex flex-wrap items-start gap-x-4 gap-y-3 mb-6 pb-6 border-b border-gray-100">
+              <div className="shrink-0">
                 <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400">{t("serviceDetail.from")}</span>
                 <div className="text-3xl font-black text-[#dbb723] transition-all">{selectedOption?.priceFormatted ?? service.currentPriceFormatted}</div>
+                {(selectedOption?.originalPriceFormatted ?? service.originalPriceFormatted) && (
+                  <span className="mt-1 block text-sm text-red-500 font-bold line-through transition-all">
+                    {selectedOption?.originalPriceFormatted ?? service.originalPriceFormatted}
+                  </span>
+                )}
               </div>
-              {(selectedOption?.originalPriceFormatted ?? service.originalPriceFormatted) && (
-                <span className="ml-auto text-sm text-red-500 font-bold line-through transition-all">
-                  {selectedOption?.originalPriceFormatted ?? service.originalPriceFormatted}
-                </span>
-              )}
+              <h1 className="min-w-[10rem] flex-1 break-words text-3xl font-extrabold text-[#131118] tracking-tight">{service.title}</h1>
             </div>
 
             {service.options.length > 0 && (
