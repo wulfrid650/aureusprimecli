@@ -2290,4 +2290,9 @@ var qrcode = function() {
 
 }();
 
-export default qrcode;
+// Typed as `any`: this is a vendored plain-JS UMD module whose closures
+// build up the returned object's methods dynamically, so TS's structural
+// inference can't see them. @ts-nocheck above only suppresses in-file
+// errors — it doesn't fix the inferred export type for consumers.
+const qrcodeExport: any = qrcode;
+export default qrcodeExport;

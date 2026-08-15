@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { resolveApiUrl } from "@/lib/fetch";
-import { getApiFieldErrors, getApiMessage, readApiResponse } from "@/lib/api-response";
+import { getApiFieldErrors, readApiResponse } from "@/lib/api-response";
 import { formatAuriAmount } from "@/lib/money";
 
 type GiftPublicInfo = {
