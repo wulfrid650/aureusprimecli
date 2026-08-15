@@ -8,7 +8,7 @@ import { isWaveIllustration, ServiceIllustration } from "@/components/dashboard/
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { PaymentMethodLogos } from "@/components/ui/payment-method-logos";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { fetchCatalogProducts, type CatalogOption, type CatalogProduct } from "@/lib/catalog";
+import { fetchCatalogProducts, resolveOwnershipBadgeIcon, type CatalogOption, type CatalogProduct } from "@/lib/catalog";
 import { useI18n } from "@/lib/i18n";
 
 type PublicPageId = "about" | "help";
@@ -1123,13 +1123,47 @@ export function PublicServicePage({ service }: { service: CatalogProduct }) {
                     {service.options.map((option: CatalogOption) => (
                       <li
                         key={option.id}
-                        className="flex items-center justify-between gap-3 rounded-2xl border border-[var(--premium-card-border)] bg-[var(--premium-card-deep)] px-4 py-3"
+                        className="flex flex-col gap-3 rounded-2xl border border-[var(--premium-card-border)] bg-[var(--premium-card-deep)] px-4 py-3"
                       >
-                        <div className="flex min-w-0 flex-col">
-                          <span className="truncate font-bold text-[var(--premium-text)]">{option.name}</span>
-                          <span className="text-xs text-[var(--premium-text-soft)]">{option.billingSummary}</span>
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="flex min-w-0 flex-col">
+                            <span className="truncate font-bold text-[var(--premium-text)]">{option.name}</span>
+                            <span className="text-xs text-[var(--premium-text-soft)]">{option.billingSummary}</span>
+                          </div>
+                          <div className="flex shrink-0 flex-col items-end gap-1.5">
+                            <span className="font-black text-[var(--premium-text)]">{option.priceFormatted}</span>
+                            {option.ownershipBadge && (
+                              <span className="inline-flex items-center gap-1 rounded-full bg-primary-500/12 px-2 py-0.5 text-[10px] font-bold text-primary-500">
+                                <MaterialIcon
+                                  name={resolveOwnershipBadgeIcon(option.deliveryType)}
+                                  className="text-[12px]"
+                                />
+                                {option.ownershipBadge.label}
+                              </span>
+                            )}
+                          </div>
                         </div>
-                        <span className="shrink-0 font-black text-[var(--premium-text)]">{option.priceFormatted}</span>
+                        {option.constraints.length > 0 && (
+                          <ul className="flex flex-col gap-1.5 border-t border-[var(--premium-card-border)] pt-3">
+                            {option.constraints.map((constraint) => (
+                              <li key={constraint.code} className="flex items-start gap-2">
+                                <MaterialIcon
+                                  name={constraint.severity === "to_accept" ? "gavel" : constraint.severity === "blocking" ? "block" : "info"}
+                                  className={`mt-0.5 shrink-0 text-[13px] ${
+                                    constraint.severity === "to_accept"
+                                      ? "text-amber-500"
+                                      : constraint.severity === "blocking"
+                                        ? "text-red-500"
+                                        : "text-[var(--premium-text-soft)]"
+                                  }`}
+                                />
+                                <span className="text-xs leading-relaxed text-[var(--premium-text-muted)]">
+                                  {constraint.label}
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
                       </li>
                     ))}
                   </ul>

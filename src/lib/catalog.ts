@@ -43,6 +43,19 @@ export type CatalogVariantApi = {
   };
 };
 
+export type CatalogConstraintSeverity = "info" | "to_accept" | "blocking";
+
+export type CatalogConstraintApi = {
+  code: string;
+  label: string;
+  severity: CatalogConstraintSeverity;
+};
+
+export type CatalogOwnershipBadgeApi = {
+  type?: string | null;
+  label: string;
+};
+
 export type CatalogPurchaseOptionApi = {
   kind?: string | null;
   id: number;
@@ -58,6 +71,9 @@ export type CatalogPurchaseOptionApi = {
   is_featured?: boolean;
   is_student_offer?: boolean;
   kyc_required_type?: string | null;
+  delivery_type?: string | null;
+  ownership_badge?: CatalogOwnershipBadgeApi | null;
+  constraints?: CatalogConstraintApi[] | null;
   checkout_payload?: {
     product_id?: number;
     variant_id?: number;
@@ -90,6 +106,10 @@ export type CatalogProductApi = {
     formatted?: string | null;
     original_amount?: number | null;
     original_formatted?: string | null;
+  } | null;
+  starting_price?: {
+    amount?: number | null;
+    formatted?: string | null;
   } | null;
   display_variant?: {
     kind?: string | null;
@@ -136,6 +156,11 @@ export type CatalogOption = {
   isStudentOffer: boolean;
   kycRequiredType: string | null;
   requiresKyc: boolean;
+  deliveryType: string | null;
+  ownershipBadge: { type: string | null; label: string } | null;
+  constraints: CatalogConstraintApi[];
+  constraintsToAccept: CatalogConstraintApi[];
+  hasBlockingConstraints: boolean;
   imageSrc: string;
   checkoutPayload: {
     productId?: number;
@@ -168,6 +193,8 @@ export type CatalogProduct = {
   defaultOption: CatalogOption | null;
   currentPrice: number;
   currentPriceFormatted: string;
+  startingPrice: number | null;
+  startingPriceFormatted: string | null;
   originalPrice: number | null;
   originalPriceFormatted: string | null;
   priceHint: string;
@@ -461,6 +488,32 @@ function formatBillingSummary(
     : interpolate(copy(locale, "cycle"), { cycle: cycleLabel });
 }
 
+/**
+ * Material Symbols icon matched to each ownership badge, so the front never
+ * has to keep its own copy of DeliveryType's label logic — it only needs an
+ * icon for whatever label the backend sends (see DeliveryType::label()).
+ */
+export function resolveOwnershipBadgeIcon(deliveryType?: string | null): string {
+  switch (deliveryType) {
+    case "PROFIL_DEDIE":
+      return "person";
+    case "PLACE_PARTAGEE":
+      return "group";
+    case "INVITATION":
+      return "group_add";
+    case "ACTIVATION_ASSISTEE":
+      return "support_agent";
+    case "CLE_LICENCE":
+      return "vpn_key";
+    case "CADEAU":
+      return "card_giftcard";
+    case "CODE_CARTE":
+      return "qr_code_2";
+    default:
+      return "verified_user";
+  }
+}
+
 export function resolveCatalogImage(imageUrl?: string | null): string {
   if (!imageUrl) return fallbackImage;
 
@@ -537,6 +590,30 @@ function isStudentFlagged(
   source?: { is_student_offer?: boolean; kyc_required_type?: string | null } | null,
 ): boolean {
   return Boolean(source?.is_student_offer) || normalizeKycRequiredType(source?.kyc_required_type) === "student";
+}
+
+function normalizeConstraints(constraints?: CatalogConstraintApi[] | null): CatalogConstraintApi[] {
+  if (!Array.isArray(constraints)) {
+    return [];
+  }
+
+  return constraints
+    .filter((constraint): constraint is CatalogConstraintApi => Boolean(constraint?.code && constraint?.label))
+    .map((constraint) => ({
+      code: constraint.code,
+      label: constraint.label,
+      severity: constraint.severity,
+    }));
+}
+
+function normalizeOwnershipBadge(
+  badge?: CatalogOwnershipBadgeApi | null,
+): { type: string | null; label: string } | null {
+  if (!badge?.label) {
+    return null;
+  }
+
+  return { type: badge.type ?? null, label: badge.label };
 }
 
 function normalizeCatalogOptionKind(kind?: string | null): CatalogOptionKind {
@@ -620,6 +697,9 @@ function buildCatalogOptions(product: CatalogProductApi, locale: CatalogLocale):
       normalizeKycRequiredType(option.kyc_required_type) ??
       normalizeKycRequiredType(variant?.kyc_required_type) ??
       (!hasExplicitOfferType ? normalizeKycRequiredType(product.kyc_required_type) : null);
+    const constraints = normalizeConstraints(option.constraints);
+    const constraintsToAccept = constraints.filter((constraint) => constraint.severity === "to_accept");
+    const hasBlockingConstraints = constraints.some((constraint) => constraint.severity === "blocking");
 
     return {
       id: `${kind}-${option.id}`,
@@ -639,6 +719,11 @@ function buildCatalogOptions(product: CatalogProductApi, locale: CatalogLocale):
       isStudentOffer,
       kycRequiredType,
       requiresKyc: isStudentOffer || kycRequiredType === "student",
+      deliveryType: option.delivery_type ?? null,
+      ownershipBadge: normalizeOwnershipBadge(option.ownership_badge),
+      constraints,
+      constraintsToAccept,
+      hasBlockingConstraints,
       imageSrc: resolveCatalogImage(variant?.image_url ?? product.image_url),
       checkoutPayload: {
         productId: option.checkout_payload?.product_id,
@@ -684,6 +769,11 @@ function buildCatalogOptions(product: CatalogProductApi, locale: CatalogLocale):
         isStudentOffer,
         kycRequiredType,
         requiresKyc: isStudentOffer || kycRequiredType === "student",
+        deliveryType: null,
+        ownershipBadge: null,
+        constraints: [],
+        constraintsToAccept: [],
+        hasBlockingConstraints: false,
         imageSrc: resolveCatalogImage(variant.image_url ?? product.image_url),
         checkoutPayload: {
           productId: variant.checkout_payload?.product_id,
@@ -718,6 +808,11 @@ function buildCatalogOptions(product: CatalogProductApi, locale: CatalogLocale):
       isStudentOffer: productIsStudentOffer,
       kycRequiredType: productKycRequiredType,
       requiresKyc: productIsStudentOffer || productKycRequiredType === "student",
+      deliveryType: null,
+      ownershipBadge: null,
+      constraints: [],
+      constraintsToAccept: [],
+      hasBlockingConstraints: false,
       imageSrc: resolveCatalogImage(product.image_url),
       checkoutPayload: {
         productId: product.id,
@@ -740,11 +835,25 @@ export function normalizeCatalogProduct(product: CatalogProductApi, locale: Cata
   const featuredOption = options.find((option) => option.isFeatured);
   const defaultOption = displayOption ?? featuredOption ?? options[0] ?? null;
   const backendDisplayPrice = product.display_price;
-  const currentPrice = Number(backendDisplayPrice?.amount ?? defaultOption?.price ?? product.sale_price ?? product.price ?? 0);
+  const optionCount = options.length;
+  const backendStartingPrice = product.starting_price;
+  const startingPrice =
+    backendStartingPrice?.amount != null && Number.isFinite(Number(backendStartingPrice.amount))
+      ? Number(backendStartingPrice.amount)
+      : null;
+  const startingPriceFormatted =
+    startingPrice !== null ? (backendStartingPrice?.formatted ?? formatAuriAmount(startingPrice, locale)) : null;
+  // "À partir de X" must reflect the true minimum across formulas
+  // (Product::startingPrice(), computed server-side), not just the
+  // featured/display option's price, which can be higher.
+  const currentPrice = Number(
+    optionCount > 1 && startingPrice !== null
+      ? startingPrice
+      : (backendDisplayPrice?.amount ?? defaultOption?.price ?? product.sale_price ?? product.price ?? 0),
+  );
   const currentPriceFormatted = formatAuriAmount(currentPrice, locale);
   const originalPrice = backendDisplayPrice?.original_amount ?? defaultOption?.originalPrice ?? null;
   const originalPriceFormatted = originalPrice ? formatAuriAmount(originalPrice, locale) : null;
-  const optionCount = options.length;
   const productKycRequiredType = normalizeKycRequiredType(product.kyc_required_type);
   const productIsStudentOffer = isStudentFlagged(product);
   const backendKycRequired = Boolean(product.display_kyc?.required);
@@ -783,6 +892,8 @@ export function normalizeCatalogProduct(product: CatalogProductApi, locale: Cata
     defaultOption,
     currentPrice,
     currentPriceFormatted,
+    startingPrice,
+    startingPriceFormatted,
     originalPrice,
     originalPriceFormatted,
     priceHint: requiresKyc ? copy(locale, "studentPrice") : optionCount > 1 ? copy(locale, "from") : copy(locale, "price"),

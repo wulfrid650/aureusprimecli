@@ -6,9 +6,9 @@ import Link from "next/link";
 import { ServiceIllustration } from "@/components/dashboard/service-illustration";
 import { DashboardHeaderControls } from "@/components/dashboard/header-controls";
 import { getApiMessage, readApiResponse } from "@/lib/api-response";
-import { fetchCatalogProduct, type CatalogOption, type CatalogProduct } from "@/lib/catalog";
+import { fetchCatalogProduct, resolveOwnershipBadgeIcon, type CatalogOption, type CatalogProduct } from "@/lib/catalog";
 import { apiFetch, safeFetch } from "@/lib/fetch";
-import { useI18n } from "@/lib/i18n";
+import { getPlural, useI18n } from "@/lib/i18n";
 import {
   fetchUserSubscriptions,
   findMatchingOngoingSubscription,
@@ -48,6 +48,8 @@ type PaymentSuccessState =
       subscriptionId: number;
     };
 
+const EMPTY_ACCEPTED_CONSTRAINTS: ReadonlySet<string> = new Set();
+
 const subscribeToHydration = () => () => undefined;
 
 function useHasMounted(): boolean {
@@ -72,6 +74,9 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
   const [isPaying, setIsPaying] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState<PaymentSuccessState | null>(null);
   const [error, setError] = useState("");
+  // Keyed by option id so switching formulas never carries an acceptance
+  // over to a different formula's constraints (each has its own set).
+  const [acceptedConstraintsByOption, setAcceptedConstraintsByOption] = useState<Record<string, Set<string>>>({});
   const hasMounted = useHasMounted();
 
   useEffect(() => {
@@ -183,9 +188,35 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
   const isRenewalFlow = matchingSubscription ? isActiveSubscription(matchingSubscription.status) : false;
   const hasBlockingSubscription = Boolean(matchingSubscription && !isRenewalFlow);
   const selectedRequiresKyc = selectedOption?.requiresKyc ?? service?.requiresKyc ?? false;
+  const acceptedConstraints = selectedOption
+    ? (acceptedConstraintsByOption[selectedOption.id] ?? EMPTY_ACCEPTED_CONSTRAINTS)
+    : EMPTY_ACCEPTED_CONSTRAINTS;
+  const constraintsToAccept = selectedOption?.constraintsToAccept ?? [];
+  const remainingConstraintsToAccept = constraintsToAccept.filter(
+    (constraint) => !acceptedConstraints.has(constraint.code),
+  );
+  const hasUnacceptedConstraints = remainingConstraintsToAccept.length > 0;
+  const hasBlockingConstraints = selectedOption?.hasBlockingConstraints ?? false;
+
+  const toggleConstraintAccepted = (code: string) => {
+    if (!selectedOption) return;
+    const optionId = selectedOption.id;
+
+    setAcceptedConstraintsByOption((current) => {
+      const next = new Set(current[optionId] ?? EMPTY_ACCEPTED_CONSTRAINTS);
+      if (next.has(code)) {
+        next.delete(code);
+      } else {
+        next.add(code);
+      }
+      return { ...current, [optionId]: next };
+    });
+  };
 
   const handlePayment = async () => {
     if (!service || isPaying) return;
+
+    if (hasUnacceptedConstraints || hasBlockingConstraints) return;
 
     if (matchingSubscription && hasBlockingSubscription) {
       router.push(getSubscriptionDetailsHref(matchingSubscription.id));
@@ -405,9 +436,76 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
                <div className="text-right">
                  <span className="block text-2xl font-black text-[#5b13ec]">{finalPriceText}</span>
                  <span className="text-xs text-gray-400">{selectedOption?.billingSummary ?? service?.billingSummary}</span>
+                 {selectedOption?.ownershipBadge && (
+                   <span className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-[#5b13ec]/10 px-2 py-0.5 text-[10px] font-bold text-[#5b13ec]">
+                     <span className="material-symbols-outlined text-[12px]">
+                       {resolveOwnershipBadgeIcon(selectedOption.deliveryType)}
+                     </span>
+                     {selectedOption.ownershipBadge.label}
+                   </span>
+                 )}
                </div>
              </div>
           </div>
+
+          {selectedOption && selectedOption.constraints.length > 0 && (
+            <div className="mb-6 rounded-3xl border border-gray-100 bg-white p-5 shadow-sm">
+              <h3 className="text-xs font-black uppercase tracking-[0.18em] text-gray-400 mb-3">
+                {t("checkout.constraintsTitle")}
+              </h3>
+              <ul className="flex flex-col gap-3">
+                {selectedOption.constraints.map((constraint) => {
+                  if (constraint.severity === "to_accept") {
+                    const isAccepted = acceptedConstraints.has(constraint.code);
+                    return (
+                      <li key={constraint.code}>
+                        <label className="flex cursor-pointer items-start gap-3 rounded-2xl border-2 border-amber-200 bg-amber-50 p-3 transition-colors">
+                          <input
+                            type="checkbox"
+                            checked={isAccepted}
+                            onChange={() => toggleConstraintAccepted(constraint.code)}
+                            className="mt-0.5 size-4 shrink-0 accent-[#5b13ec]"
+                          />
+                          <span className="text-sm leading-relaxed text-amber-900">
+                            {constraint.label}
+                          </span>
+                        </label>
+                      </li>
+                    );
+                  }
+
+                  return (
+                    <li key={constraint.code} className="flex items-start gap-2.5">
+                      <span
+                        className={`material-symbols-outlined mt-0.5 text-[16px] shrink-0 ${
+                          constraint.severity === "blocking" ? "text-red-600" : "text-gray-400"
+                        }`}
+                      >
+                        {constraint.severity === "blocking" ? "block" : "info"}
+                      </span>
+                      <span className="text-sm leading-relaxed text-gray-600">{constraint.label}</span>
+                    </li>
+                  );
+                })}
+              </ul>
+
+              {hasUnacceptedConstraints && (
+                <p className="mt-3 text-xs font-bold text-amber-700">
+                  {t("checkout.constraintsAcceptRemaining", {
+                    count: remainingConstraintsToAccept.length,
+                    plural: getPlural(locale, remainingConstraintsToAccept.length),
+                  })}
+                </p>
+              )}
+
+              {hasBlockingConstraints && (
+                <div className="mt-3 rounded-2xl border border-red-200 bg-red-50 px-3 py-2.5">
+                  <p className="text-xs font-bold text-red-700">{t("checkout.constraintsBlockingTitle")}</p>
+                  <p className="mt-1 text-xs leading-relaxed text-red-600">{t("checkout.constraintsBlockingText")}</p>
+                </div>
+              )}
+            </div>
+          )}
 
           {selectedRequiresKyc && (
             <div className="mb-6 rounded-3xl border border-white/10 bg-[#131118] px-4 py-4 text-white">
@@ -485,7 +583,13 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
         <div className="sticky bottom-0 mt-auto w-full bg-white border-t border-[#f2f0f4] p-4 z-50 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] pb-safe">
            <button 
              onClick={handlePayment}
-             disabled={shouldShowLoadingState || !service || (!hasEnoughFunds && !hasBlockingSubscription) || isPaying}
+             disabled={
+               shouldShowLoadingState ||
+               !service ||
+               (!hasEnoughFunds && !hasBlockingSubscription) ||
+               isPaying ||
+               (!hasBlockingSubscription && (hasUnacceptedConstraints || hasBlockingConstraints))
+             }
              className="w-full bg-[#dbb723] hover:bg-[#b79218] text-[#131118] font-bold text-lg py-4 rounded-2xl shadow-xl shadow-[#dbb723]/20 transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
            >
              {isPaying ? (

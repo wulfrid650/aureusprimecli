@@ -395,6 +395,8 @@ const dictionaries = {
       renewSubscription: "Prolonger mon abonnement",
       seeCurrentSubscription: "Voir mon abonnement en cours",
       continueCheckout: "Continuer vers la caisse",
+      constraintsTitle: "Ce qu'il faut savoir sur cette formule",
+      constraintToAccept: "À accepter à la commande",
     },
     checkout: {
       selectedUnavailable: "Le service sélectionné n'est plus disponible.",
@@ -440,6 +442,11 @@ const dictionaries = {
       seeCurrentSubscription: "Voir mon abonnement en cours",
       payAndRenew: "Payer et prolonger {amount}",
       pay: "Payer {amount}",
+      constraintsTitle: "Avant de valider votre commande",
+      constraintsToAcceptHint: "Ces conditions doivent être acceptées pour continuer.",
+      constraintsAcceptRemaining: "Acceptez les {count} condition{plural} ci-dessus pour continuer.",
+      constraintsBlockingTitle: "Cette commande nécessite une information complémentaire",
+      constraintsBlockingText: "Contactez le support avant de commander : cette formule requiert un champ non encore géré ici.",
     },
     subscriptions: {
       title: "Mes abonnements",
@@ -1017,6 +1024,8 @@ const dictionaries = {
       renewSubscription: "Extend my subscription",
       seeCurrentSubscription: "View my current subscription",
       continueCheckout: "Continue to checkout",
+      constraintsTitle: "What to know about this plan",
+      constraintToAccept: "Must be accepted at checkout",
     },
     checkout: {
       selectedUnavailable: "The selected service is no longer available.",
@@ -1062,6 +1071,11 @@ const dictionaries = {
       seeCurrentSubscription: "View my current subscription",
       payAndRenew: "Pay and extend {amount}",
       pay: "Pay {amount}",
+      constraintsTitle: "Before you confirm your order",
+      constraintsToAcceptHint: "These conditions must be accepted to continue.",
+      constraintsAcceptRemaining: "Accept the {count} condition{plural} above to continue.",
+      constraintsBlockingTitle: "This order needs extra information",
+      constraintsBlockingText: "Contact support before ordering: this plan requires a field that isn't handled here yet.",
     },
     subscriptions: {
       title: "My subscriptions",

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { DashboardHeaderControls } from "@/components/dashboard/header-controls";
 import { ServiceIllustration } from "@/components/dashboard/service-illustration";
-import { fetchCatalogProduct, type CatalogOption, type CatalogProduct } from "@/lib/catalog";
+import { fetchCatalogProduct, resolveOwnershipBadgeIcon, type CatalogOption, type CatalogProduct } from "@/lib/catalog";
 import { getPlural, useI18n } from "@/lib/i18n";
 
 export default function SingleServicePage({ params }: { params: Promise<{ id: string }> }) {
@@ -202,13 +202,56 @@ export default function SingleServicePage({ params }: { params: Promise<{ id: st
                             )}
                           </div>
                         </div>
-                        <span className={`font-bold shrink-0 ${isSelected ? 'text-[#5b13ec]' : 'text-[#131118]'}`}>
-                          {option.priceFormatted}
-                        </span>
+                        <div className="flex shrink-0 flex-col items-end gap-1.5">
+                          <span className={`font-bold ${isSelected ? 'text-[#5b13ec]' : 'text-[#131118]'}`}>
+                            {option.priceFormatted}
+                          </span>
+                          {option.ownershipBadge && (
+                            <span className="inline-flex items-center gap-1 rounded-full bg-[#5b13ec]/10 px-2 py-0.5 text-[10px] font-bold text-[#5b13ec]">
+                              <span className="material-symbols-outlined text-[12px]">
+                                {resolveOwnershipBadgeIcon(option.deliveryType)}
+                              </span>
+                              {option.ownershipBadge.label}
+                            </span>
+                          )}
+                        </div>
                       </button>
                     );
                   })}
                 </div>
+              </div>
+            )}
+
+            {selectedOption && selectedOption.constraints.length > 0 && (
+              <div className="mb-6 rounded-3xl border border-gray-100 bg-[#f8f8fb] p-5">
+                <h3 className="text-xs font-black uppercase tracking-[0.18em] text-gray-400 mb-3">
+                  {t("serviceDetail.constraintsTitle")}
+                </h3>
+                <ul className="flex flex-col gap-2.5">
+                  {selectedOption.constraints.map((constraint) => (
+                    <li key={constraint.code} className="flex items-start gap-2.5">
+                      <span
+                        className={`material-symbols-outlined mt-0.5 text-[16px] shrink-0 ${
+                          constraint.severity === "to_accept"
+                            ? "text-amber-600"
+                            : constraint.severity === "blocking"
+                              ? "text-red-600"
+                              : "text-gray-400"
+                        }`}
+                      >
+                        {constraint.severity === "to_accept" ? "gavel" : constraint.severity === "blocking" ? "block" : "info"}
+                      </span>
+                      <div className="flex flex-col">
+                        <span className="text-sm leading-relaxed text-gray-600">{constraint.label}</span>
+                        {constraint.severity === "to_accept" && (
+                          <span className="mt-0.5 text-[10px] font-bold uppercase tracking-[0.14em] text-amber-600">
+                            {t("serviceDetail.constraintToAccept")}
+                          </span>
+                        )}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
 
