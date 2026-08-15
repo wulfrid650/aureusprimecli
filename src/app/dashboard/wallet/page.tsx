@@ -164,13 +164,20 @@ export default function WalletPage() {
               </div>
             </div>
 
-            <div className="relative z-10 flex flex-col">
+            <div className="relative z-10 flex flex-col gap-2">
               <Link
                 href="/dashboard/recharge"
                 className="w-full bg-[#dbb723] hover:bg-[#b79218] text-[#131118] font-bold py-3.5 rounded-2xl flex items-center justify-center gap-2 transition-colors shadow-xl shadow-[#dbb723]/20"
               >
                 <span className="material-symbols-outlined text-[20px]">add_circle</span>
                 {t("wallet.recharge")}
+              </Link>
+              <Link
+                href="/dashboard/wallet/gift"
+                className="w-full bg-white/10 hover:bg-white/15 text-white font-bold py-3.5 rounded-2xl flex items-center justify-center gap-2 transition-colors border border-white/10"
+              >
+                <span className="material-symbols-outlined text-[20px]">qr_code_2</span>
+                Recevoir un cadeau Auri
               </Link>
             </div>
           </section>
