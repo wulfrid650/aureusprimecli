@@ -32,7 +32,7 @@ const viewCopy: Record<Exclude<ViewState, "polling">, { icon: string; tone: "suc
     icon: "error",
     tone: "error",
     title: "Le paiement n'a pas abouti",
-    body: () => "Votre paiement Mobile Money n'a pas pu être confirmé. Vous pouvez retourner sur la page du cadeau pour réessayer.",
+    body: () => "Votre paiement n'a pas pu être confirmé. Vous pouvez retourner sur la page du cadeau pour réessayer.",
   },
   capped: {
     icon: "info",
@@ -134,7 +134,7 @@ export function GiftReturnClient({ token }: { token: string }) {
               <div className="mx-auto size-8 animate-spin rounded-full border-2 border-primary-500 border-t-transparent" />
               <h1 className="mt-5 text-lg font-black text-[var(--premium-text)]">Vérification du paiement…</h1>
               <p className="mt-2 text-sm leading-relaxed text-[var(--premium-text-muted)]">
-                Merci de patienter quelques instants, nous confirmons votre paiement Mobile Money.
+                Merci de patienter quelques instants, nous confirmons votre paiement.
               </p>
             </>
           ) : (

@@ -34,6 +34,27 @@ type CheckoutResponse = {
   subscription_id?: number;
   kyc_required?: boolean;
   redirect_url?: string;
+  requires_confirmation?: boolean;
+  case?: string;
+  preview?: MigrationPreview;
+};
+
+type MigrationPreview = {
+  status: "ok" | "insufficient_balance" | "incompatible_delivery_type" | "same_variation";
+  subscription_id?: number;
+  from_variation_name?: string;
+  to_variation_name?: string;
+  new_price?: number;
+  credit?: number;
+  net_amount?: number;
+  excess_credit?: number;
+  available_balance?: number;
+};
+
+type CheckoutPreviewResponse = {
+  case?: "new_purchase" | "renewal" | "migration";
+  subscription_id?: number;
+  preview?: MigrationPreview;
 };
 
 type PaymentSuccessState =
@@ -77,6 +98,13 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
   // Keyed by option id so switching formulas never carries an acceptance
   // over to a different formula's constraints (each has its own set).
   const [acceptedConstraintsByOption, setAcceptedConstraintsByOption] = useState<Record<string, Set<string>>>({});
+  const [hasExistingAccount, setHasExistingAccount] = useState<boolean | null>(null);
+  const [delegateManagement, setDelegateManagement] = useState<boolean | null>(null);
+  const [existingAccountEmail, setExistingAccountEmail] = useState("");
+  const [existingAccountPassword, setExistingAccountPassword] = useState("");
+  const [newAccountEmail, setNewAccountEmail] = useState("");
+  const [migrationPreview, setMigrationPreview] = useState<MigrationPreview | null>(null);
+  const [migrationConfirmed, setMigrationConfirmed] = useState(false);
   const hasMounted = useHasMounted();
 
   useEffect(() => {
@@ -183,8 +211,17 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
 
   const finalPriceText = selectedOption?.priceFormatted ?? service?.currentPriceFormatted ?? "0 Auri";
   const priceValue = selectedOption?.price ?? service?.currentPrice ?? 0;
+  const isMigrationCase = Boolean(migrationPreview && migrationPreview.status !== "same_variation");
+  // Une migration ne facture que le net après crédit prorata, pas le prix
+  // plein de la nouvelle formule : le solde requis doit refléter ce montant.
+  const effectivePayAmount = isMigrationCase && migrationPreview?.net_amount !== undefined
+    ? migrationPreview.net_amount
+    : priceValue;
+  const effectivePayAmountFormatted = isMigrationCase
+    ? `${effectivePayAmount.toLocaleString(dateLocale)} Auri`
+    : finalPriceText;
   const shouldShowLoadingState = !hasMounted || isLoading;
-  const hasEnoughFunds = hasMounted && balance !== null && balance >= priceValue;
+  const hasEnoughFunds = hasMounted && balance !== null && balance >= effectivePayAmount;
   const isRenewalFlow = matchingSubscription ? isActiveSubscription(matchingSubscription.status) : false;
   const hasBlockingSubscription = Boolean(matchingSubscription && !isRenewalFlow);
   const selectedRequiresKyc = selectedOption?.requiresKyc ?? service?.requiresKyc ?? false;
@@ -195,8 +232,103 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
   const remainingConstraintsToAccept = constraintsToAccept.filter(
     (constraint) => !acceptedConstraints.has(constraint.code),
   );
-  const hasUnacceptedConstraints = remainingConstraintsToAccept.length > 0;
+  // Un renouvellement ne redemande jamais de valider une condition "à
+  // accepter" (ex: appartenance à un groupe familial) : c'est déjà acquis
+  // depuis le premier achat, la reposer à chaque renouvellement n'a pas de
+  // sens.
+  const hasUnacceptedConstraints = !isRenewalFlow && remainingConstraintsToAccept.length > 0;
+  // Un renouvellement n'affiche plus du tout les conditions "à accepter"
+  // (ex: groupe familial) : déjà acquises depuis le premier achat, aucune
+  // information à répéter.
+  const visibleConstraints = (selectedOption?.constraints ?? []).filter(
+    (constraint) => !(constraint.severity === "to_accept" && isRenewalFlow),
+  );
   const hasBlockingConstraints = selectedOption?.hasBlockingConstraints ?? false;
+  // Une prolongation ou une migration réutilisent le compte déjà connu de
+  // l'abonnement existant : inutile de reposer les questions d'activation
+  // assistée (compte, délégation, identifiants), on les a déjà.
+  const requiresAssistedActivationAnswers =
+    selectedOption?.deliveryType === "ACTIVATION_ASSISTEE" && !isRenewalFlow && !isMigrationCase;
+  const assistedActivationIncomplete =
+    requiresAssistedActivationAnswers &&
+    (hasExistingAccount === null ||
+      (hasExistingAccount === false && !newAccountEmail.trim()) ||
+      (hasExistingAccount === true && delegateManagement === null) ||
+      (hasExistingAccount === true && delegateManagement === false && !newAccountEmail.trim()) ||
+      (hasExistingAccount === true &&
+        delegateManagement === true &&
+        (!existingAccountEmail.trim() || !existingAccountPassword.trim())));
+
+  useEffect(() => {
+    setHasExistingAccount(null);
+    setDelegateManagement(null);
+    setExistingAccountEmail("");
+    setExistingAccountPassword("");
+    setNewAccountEmail("");
+  }, [selectedOption?.id]);
+
+  const buildSelectionPayload = (): Record<string, unknown> => {
+    const payload: Record<string, unknown> = {};
+
+    if (selectedOption?.checkoutPayload.variantId) {
+      payload.variant_id = selectedOption.checkoutPayload.variantId;
+    } else if (selectedOption?.checkoutPayload.variationId) {
+      payload.variation_id = selectedOption.checkoutPayload.variationId;
+    } else if (selectedOption?.checkoutPayload.productId) {
+      payload.product_id = selectedOption.checkoutPayload.productId;
+    } else if (service) {
+      payload.product_id = service.productId;
+    }
+
+    if (selectedOption?.checkoutPayload.offerType) {
+      payload.offer_type = selectedOption.checkoutPayload.offerType;
+      payload.student_offer = selectedOption.checkoutPayload.offerType === "student";
+    }
+
+    return payload;
+  };
+
+  // On demande au serveur, avant tout paiement, ce que ferait ce checkout
+  // (nouvel achat, prolongation, ou migration payante d'une formule à une
+  // autre). Si c'est une migration, on affiche le montant exact et on exige
+  // une confirmation explicite avant de facturer quoi que ce soit.
+  useEffect(() => {
+    let isActive = true;
+    setMigrationConfirmed(false);
+    setMigrationPreview(null);
+
+    if (!service || !selectedOption?.checkoutPayload.variationId) {
+      return;
+    }
+
+    async function loadPreview() {
+      try {
+        const res = await apiFetch("/api/v1/checkout/preview", {
+          method: "POST",
+          body: JSON.stringify(buildSelectionPayload()),
+        });
+
+        if (!res.ok) return;
+
+        const data = await readApiResponse<CheckoutPreviewResponse>(res);
+        if (!isActive) return;
+
+        if (data?.data?.case === "migration" && data.data.preview) {
+          setMigrationPreview(data.data.preview);
+        }
+      } catch {
+        // Aperçu non bloquant : si ça échoue, le checkout normal reste
+        // protégé côté serveur (confirmation requise avant facturation).
+      }
+    }
+
+    loadPreview();
+
+    return () => {
+      isActive = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedOption?.id, service?.productId]);
 
   const toggleConstraintAccepted = (code: string) => {
     if (!selectedOption) return;
@@ -222,6 +354,10 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
       router.push(getSubscriptionDetailsHref(matchingSubscription.id));
       return;
     }
+
+    if (!isRenewalFlow && assistedActivationIncomplete) return;
+
+    if (!isRenewalFlow && isMigrationCase && !migrationConfirmed) return;
 
     if (!hasEnoughFunds) return;
 
@@ -252,23 +388,32 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
         return;
       }
 
-      const payload: Record<string, boolean | number | string> = {
+      const payload: Record<string, unknown> = {
         payment_method: "wallet",
+        ...buildSelectionPayload(),
       };
 
-      if (selectedOption?.checkoutPayload.variantId) {
-        payload.variant_id = selectedOption.checkoutPayload.variantId;
-      } else if (selectedOption?.checkoutPayload.variationId) {
-        payload.variation_id = selectedOption.checkoutPayload.variationId;
-      } else if (selectedOption?.checkoutPayload.productId) {
-        payload.product_id = selectedOption.checkoutPayload.productId;
-      } else {
-        payload.product_id = service.productId;
+      if (isMigrationCase && migrationConfirmed) {
+        payload.confirm_migration = true;
       }
 
-      if (selectedOption?.checkoutPayload.offerType) {
-        payload.offer_type = selectedOption.checkoutPayload.offerType;
-        payload.student_offer = selectedOption.checkoutPayload.offerType === "student";
+      if (requiresAssistedActivationAnswers && hasExistingAccount !== null) {
+        payload.has_existing_account = hasExistingAccount;
+
+        if (hasExistingAccount && delegateManagement !== null) {
+          payload.delegate_management = delegateManagement;
+        }
+
+        if (hasExistingAccount === false || (hasExistingAccount === true && delegateManagement === false)) {
+          payload.account_email = newAccountEmail.trim();
+        }
+      }
+
+      if (requiresAssistedActivationAnswers && hasExistingAccount === true && delegateManagement === true) {
+        payload.existing_account_credentials = {
+          email: existingAccountEmail.trim(),
+          password: existingAccountPassword,
+        };
       }
 
       const res = await apiFetch("/api/v1/checkout", {
@@ -280,6 +425,14 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
 
       if (!res.ok) {
         setError(getApiMessage(data, t("checkout.paymentFailed")));
+        return;
+      }
+
+      if (data?.data?.requires_confirmation && data.data.case === "migration" && data.data.preview) {
+        // Filet de sécurité si l'aperçu chargé au montage était périmé : on
+        // affiche la confirmation au lieu de facturer sans preuve visible.
+        setMigrationPreview(data.data.preview);
+        setMigrationConfirmed(false);
         return;
       }
 
@@ -303,7 +456,7 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
       paymentSuccess.mode === "renewal"
         ? getSubscriptionDetailsHref(paymentSuccess.subscriptionId)
         : service?.isGiftCard
-          ? "/dashboard/souscriptions"
+          ? "/dashboard/cartes-cadeaux"
           : paymentSuccess.subscriptionId
             ? getSubscriptionDetailsHref(paymentSuccess.subscriptionId)
             : paymentSuccess.kycRequired
@@ -351,6 +504,13 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
               <>
                 {t("checkout.checkoutSuccessPrefix")} <strong>{paymentSuccess.orderRef || ""}</strong> {t("checkout.checkoutSuccessMiddle")} <strong>{service?.title}</strong>
                 {selectedOption ? ` (${selectedOption.name})` : ""}.
+              </>
+            )}
+            {selectedOption?.deliveryType === "ACTIVATION_ASSISTEE" &&
+              (paymentSuccess.mode === "renewal" || !paymentSuccess.kycRequired) && (
+              <>
+                {" "}
+                <strong>{t("checkout.activeOnYourAccount")}</strong>
               </>
             )}
           </p>
@@ -448,13 +608,13 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
              </div>
           </div>
 
-          {selectedOption && selectedOption.constraints.length > 0 && (
+          {selectedOption && visibleConstraints.length > 0 && (
             <div className="mb-6 rounded-3xl border border-gray-100 bg-white p-5 shadow-sm">
               <h3 className="text-xs font-black uppercase tracking-[0.18em] text-gray-400 mb-3">
                 {t("checkout.constraintsTitle")}
               </h3>
               <ul className="flex flex-col gap-3">
-                {selectedOption.constraints.map((constraint) => {
+                {visibleConstraints.map((constraint) => {
                   if (constraint.severity === "to_accept") {
                     const isAccepted = acceptedConstraints.has(constraint.code);
                     return (
@@ -470,6 +630,23 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
                             {constraint.label}
                           </span>
                         </label>
+                      </li>
+                    );
+                  }
+
+                  // La divulgation complète a déjà été vue sur la fiche
+                  // produit (même donnée, label complet) : au checkout on ne
+                  // répète qu'un lien discret vers celle-ci, pas le
+                  // paragraphe entier — la preuve existe déjà en amont.
+                  if (constraint.short_label && service?.slug) {
+                    return (
+                      <li key={constraint.code}>
+                        <Link
+                          href={`/dashboard/services/${service.slug}`}
+                          className="text-xs font-medium text-gray-400 underline decoration-dotted underline-offset-2 hover:text-gray-600"
+                        >
+                          {constraint.short_label}
+                        </Link>
                       </li>
                     );
                   }
@@ -504,6 +681,193 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
                   <p className="mt-1 text-xs leading-relaxed text-red-600">{t("checkout.constraintsBlockingText")}</p>
                 </div>
               )}
+            </div>
+          )}
+
+          {requiresAssistedActivationAnswers && (
+            <div className="mb-6 rounded-3xl border border-gray-100 bg-white p-5 shadow-sm">
+              <h3 className="text-xs font-black uppercase tracking-[0.18em] text-gray-400 mb-3">
+                {t("checkout.assistedActivationTitle")}
+              </h3>
+
+              <p className="mb-3 text-sm font-bold text-[#131118]">{t("checkout.assistedHasAccountQuestion")}</p>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setHasExistingAccount(true)}
+                  className={`flex-1 rounded-2xl border-2 p-3 text-sm font-bold transition-colors ${
+                    hasExistingAccount === true
+                      ? "border-[#5b13ec] bg-[#5b13ec]/5 text-[#5b13ec]"
+                      : "border-gray-100 text-gray-500 hover:border-gray-200"
+                  }`}
+                >
+                  {t("checkout.assistedYes")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setHasExistingAccount(false)}
+                  className={`flex-1 rounded-2xl border-2 p-3 text-sm font-bold transition-colors ${
+                    hasExistingAccount === false
+                      ? "border-[#5b13ec] bg-[#5b13ec]/5 text-[#5b13ec]"
+                      : "border-gray-100 text-gray-500 hover:border-gray-200"
+                  }`}
+                >
+                  {t("checkout.assistedNo")}
+                </button>
+              </div>
+
+              {hasExistingAccount === false && (
+                <div className="mt-4 flex flex-col gap-2 border-t border-gray-100 pt-4">
+                  <p className="text-xs leading-relaxed text-gray-500">{t("checkout.assistedNoAccountInfo")}</p>
+                  <label className="flex flex-col gap-1">
+                    <span className="text-xs font-bold uppercase tracking-[0.1em] text-gray-400">
+                      {t("checkout.assistedNewAccountEmailLabel")}
+                    </span>
+                    <input
+                      type="email"
+                      value={newAccountEmail}
+                      onChange={(event) => setNewAccountEmail(event.target.value)}
+                      className="rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-[#131118] focus:border-[#5b13ec] focus:outline-none"
+                      autoComplete="off"
+                    />
+                  </label>
+                </div>
+              )}
+
+              {hasExistingAccount === true && (
+                <div className="mt-4 flex flex-col gap-2 border-t border-gray-100 pt-4">
+                  <p className="text-sm font-bold text-[#131118]">{t("checkout.assistedDelegateQuestion")}</p>
+                  <button
+                    type="button"
+                    onClick={() => setDelegateManagement(false)}
+                    className={`rounded-2xl border-2 p-3 text-left text-sm font-bold transition-colors ${
+                      delegateManagement === false
+                        ? "border-[#5b13ec] bg-[#5b13ec]/5 text-[#5b13ec]"
+                        : "border-gray-100 text-gray-500 hover:border-gray-200"
+                    }`}
+                  >
+                    {t("checkout.assistedSelfManage")}
+                    <span className="mt-0.5 block text-xs font-medium opacity-80">{t("checkout.assistedSelfManageHint")}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDelegateManagement(true)}
+                    className={`rounded-2xl border-2 p-3 text-left text-sm font-bold transition-colors ${
+                      delegateManagement === true
+                        ? "border-[#5b13ec] bg-[#5b13ec]/5 text-[#5b13ec]"
+                        : "border-gray-100 text-gray-500 hover:border-gray-200"
+                    }`}
+                  >
+                    {t("checkout.assistedDelegate")}
+                    <span className="mt-0.5 block text-xs font-medium opacity-80">{t("checkout.assistedDelegateHint")}</span>
+                  </button>
+                </div>
+              )}
+
+              {hasExistingAccount === true && delegateManagement === false && (
+                <div className="mt-4 flex flex-col gap-2 border-t border-gray-100 pt-4">
+                  <label className="flex flex-col gap-1">
+                    <span className="text-xs font-bold uppercase tracking-[0.1em] text-gray-400">
+                      {t("checkout.assistedNewAccountEmailLabel")}
+                    </span>
+                    <input
+                      type="email"
+                      value={newAccountEmail}
+                      onChange={(event) => setNewAccountEmail(event.target.value)}
+                      className="rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-[#131118] focus:border-[#5b13ec] focus:outline-none"
+                      autoComplete="off"
+                    />
+                  </label>
+                  <p className="text-xs leading-relaxed text-gray-500">{t("checkout.assistedSelfManageEmailNotice")}</p>
+                </div>
+              )}
+
+              {hasExistingAccount === true && delegateManagement === true && (
+                <div className="mt-4 flex flex-col gap-3 border-t border-gray-100 pt-4">
+                  <label className="flex flex-col gap-1">
+                    <span className="text-xs font-bold uppercase tracking-[0.1em] text-gray-400">
+                      {t("checkout.assistedEmailLabel")}
+                    </span>
+                    <input
+                      type="email"
+                      value={existingAccountEmail}
+                      onChange={(event) => setExistingAccountEmail(event.target.value)}
+                      className="rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-[#131118] focus:border-[#5b13ec] focus:outline-none"
+                      autoComplete="off"
+                    />
+                  </label>
+                  <label className="flex flex-col gap-1">
+                    <span className="text-xs font-bold uppercase tracking-[0.1em] text-gray-400">
+                      {t("checkout.assistedPasswordLabel")}
+                    </span>
+                    <input
+                      type="password"
+                      value={existingAccountPassword}
+                      onChange={(event) => setExistingAccountPassword(event.target.value)}
+                      className="rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-[#131118] focus:border-[#5b13ec] focus:outline-none"
+                      autoComplete="off"
+                    />
+                  </label>
+                  <p className="text-xs leading-relaxed text-gray-500">{t("checkout.assistedCredentialsNotice")}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {isMigrationCase && migrationPreview && (
+            <div className="mb-6 rounded-3xl border-2 border-[#5b13ec]/30 bg-[#5b13ec]/5 p-5">
+              <div className="flex items-start gap-3">
+                <span className="material-symbols-outlined text-[22px] text-[#5b13ec]">sync_alt</span>
+                <div className="flex-1">
+                  <p className="text-sm font-bold text-[#131118]">{t("checkout.migrationTitle")}</p>
+                  <p className="mt-1 text-xs leading-relaxed text-gray-600">
+                    {t("checkout.migrationText", {
+                      from: migrationPreview.from_variation_name ?? "",
+                      to: migrationPreview.to_variation_name ?? "",
+                    })}
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-4 flex flex-col gap-2 rounded-2xl bg-white p-4 border border-[#5b13ec]/15">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-gray-500">{t("checkout.migrationNewPrice")}</span>
+                  <span className="font-bold text-[#131118]">{(migrationPreview.new_price ?? 0).toLocaleString(dateLocale)} Auri</span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-gray-500">{t("checkout.migrationCredit")}</span>
+                  <span className="font-bold text-emerald-600">- {(migrationPreview.credit ?? 0).toLocaleString(dateLocale)} Auri</span>
+                </div>
+                <div className="h-px w-full bg-gray-100 my-1" />
+                <div className="flex items-center justify-between text-sm">
+                  <span className="font-bold text-[#131118]">{t("checkout.migrationNetAmount")}</span>
+                  <span className="font-black text-[#5b13ec]">
+                    {(migrationPreview.net_amount ?? 0).toLocaleString(dateLocale)} Auri
+                  </span>
+                </div>
+              </div>
+
+              {Boolean(migrationPreview.excess_credit) && (
+                <p className="mt-3 text-xs leading-relaxed text-gray-500">
+                  {t("checkout.migrationExcessCredit", {
+                    amount: `${(migrationPreview.excess_credit ?? 0).toLocaleString(dateLocale)} Auri`,
+                  })}
+                </p>
+              )}
+
+              {migrationPreview.status === "insufficient_balance" && (
+                <p className="mt-3 text-xs font-bold text-red-600">{t("checkout.migrationInsufficientBalance")}</p>
+              )}
+
+              <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-2xl border-2 border-[#5b13ec]/20 bg-white p-3 transition-colors">
+                <input
+                  type="checkbox"
+                  checked={migrationConfirmed}
+                  onChange={(event) => setMigrationConfirmed(event.target.checked)}
+                  className="mt-0.5 size-4 shrink-0 accent-[#5b13ec]"
+                />
+                <span className="text-sm font-bold leading-relaxed text-[#131118]">{t("checkout.migrationConfirm")}</span>
+              </label>
             </div>
           )}
 
@@ -588,7 +952,9 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
                !service ||
                (!hasEnoughFunds && !hasBlockingSubscription) ||
                isPaying ||
-               (!hasBlockingSubscription && (hasUnacceptedConstraints || hasBlockingConstraints))
+               (!hasBlockingSubscription && (hasUnacceptedConstraints || hasBlockingConstraints)) ||
+               (!hasBlockingSubscription && !isRenewalFlow && assistedActivationIncomplete) ||
+               (!hasBlockingSubscription && !isRenewalFlow && isMigrationCase && !migrationConfirmed)
              }
              className="w-full bg-[#dbb723] hover:bg-[#b79218] text-[#131118] font-bold text-lg py-4 rounded-2xl shadow-xl shadow-[#dbb723]/20 transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
            >
@@ -601,7 +967,9 @@ function CheckoutContent({ params }: { params: Promise<{ id: string }> }) {
                      ? t("checkout.seeCurrentSubscription")
                      : isRenewalFlow
                        ? t("checkout.payAndRenew", { amount: finalPriceText })
-                       : t("checkout.pay", { amount: finalPriceText })}
+                       : isMigrationCase
+                         ? t("checkout.payAndMigrate", { amount: effectivePayAmountFormatted })
+                         : t("checkout.pay", { amount: finalPriceText })}
                  </span>
                  <span className="material-symbols-outlined">
                    {hasBlockingSubscription ? "subscriptions" : "lock"}

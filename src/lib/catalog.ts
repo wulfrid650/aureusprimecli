@@ -48,6 +48,7 @@ export type CatalogConstraintSeverity = "info" | "to_accept" | "blocking";
 export type CatalogConstraintApi = {
   code: string;
   label: string;
+  short_label?: string | null;
   severity: CatalogConstraintSeverity;
 };
 
@@ -514,6 +515,42 @@ export function resolveOwnershipBadgeIcon(deliveryType?: string | null): string 
   }
 }
 
+export type CatalogOptionGroup = {
+  key: string;
+  deliveryType: string | null;
+  badgeLabel: string | null;
+  options: CatalogOption[];
+};
+
+/**
+ * Groups formulas by their ownership badge so the UI shows the badge/icon
+ * once per group instead of repeating it on every formula row.
+ */
+export function groupCatalogOptionsByBadge(options: CatalogOption[]): CatalogOptionGroup[] {
+  const groups: CatalogOptionGroup[] = [];
+  const indexByKey = new Map<string, number>();
+
+  for (const option of options) {
+    const key = option.ownershipBadge?.label ?? option.deliveryType ?? "__no_badge__";
+
+    let groupIndex = indexByKey.get(key);
+    if (groupIndex === undefined) {
+      groupIndex = groups.length;
+      indexByKey.set(key, groupIndex);
+      groups.push({
+        key,
+        deliveryType: option.deliveryType,
+        badgeLabel: option.ownershipBadge?.label ?? null,
+        options: [],
+      });
+    }
+
+    groups[groupIndex].options.push(option);
+  }
+
+  return groups;
+}
+
 export function resolveCatalogImage(imageUrl?: string | null): string {
   if (!imageUrl) return fallbackImage;
 
@@ -602,6 +639,7 @@ function normalizeConstraints(constraints?: CatalogConstraintApi[] | null): Cata
     .map((constraint) => ({
       code: constraint.code,
       label: constraint.label,
+      short_label: constraint.short_label ?? null,
       severity: constraint.severity,
     }));
 }

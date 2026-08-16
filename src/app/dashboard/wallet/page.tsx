@@ -16,17 +16,6 @@ interface Transaction {
   status: string;
   description: string;
   processed_at: string;
-  meta?: {
-    order_type?: string;
-    product_name?: string;
-    source?: string;
-    admin_action?: boolean;
-  };
-  related_entity?: {
-    type: string;
-    id: number;
-    summary?: string | null;
-  };
 }
 
 type TransactionFilter = "all" | "credits" | "debits" | "pending";
@@ -62,50 +51,16 @@ export default function WalletPage() {
     return d.toLocaleDateString(dateLocale, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
   };
 
+  // Le backend (WalletTransactionResource) construit déjà le libellé final
+  // court ("Achat — Netflix", "Renouv. — Spotify"...) : pas de reformatage
+  // dupliqué ici, juste un filet de sécurité si la description est vide.
   const getTransactionLabel = (tx: Transaction) => {
     const apiLabel = String(tx.description || "").trim();
-    if (/^(Recharge|Mission Prime|Ajustement\s+[+-]|CMD\s|RNV\s|Carte\s|Crédit|Débit)/i.test(apiLabel)) {
+    if (apiLabel) {
       return apiLabel;
     }
 
-    const source = String(tx.meta?.source || "").toLowerCase();
-    const isAdminAdjustment = tx.meta?.admin_action === true || source === "admin_manual_adjustment";
-
-    if (isAdminAdjustment) {
-      return t("wallet.adminAdjustment", { sign: tx.is_credit ? "+" : "-" });
-    }
-
-    if (tx.is_credit && (tx.type === "topup" || tx.type === "deposit" || source.includes("topup"))) {
-      return t("wallet.topupReason");
-    }
-
-    if (tx.is_credit && source === "mission_prime") {
-      return t("wallet.missionPrimeReward");
-    }
-
-    if (!tx.is_credit) {
-      const rawProductName = tx.meta?.product_name || tx.related_entity?.summary || tx.description || "";
-      const isRenewal = tx.meta?.order_type === "renewal" || /^Renouvellement/i.test(rawProductName);
-      const productName = rawProductName
-        .replace(/^Renouvellement\s*[-(:]?\s*/i, "")
-        .replace(/^CMD\s+pour\s+/i, "")
-        .replace(/^(?:CMD|RNV|ORD|RNL)\s+/i, "")
-        .replace(/^Paiement commande\s+[A-Z0-9-]+\s*/i, "")
-        .replace(/[)]$/, "")
-        .trim();
-      const isCard = /robux|carte|gift|cadeau/i.test(productName);
-
-      if (productName) {
-        const cardProductName = productName.replace(/^Carte\s+/i, "").trim();
-        return t(isCard ? "wallet.cardDebit" : isRenewal ? "wallet.renewalDebit" : "wallet.orderDebit", {
-          product: isCard ? cardProductName : productName,
-        });
-      }
-    }
-
-    return tx.is_credit
-      ? t("wallet.creditFallback")
-      : t("wallet.debitFallback");
+    return tx.is_credit ? t("wallet.creditFallback") : t("wallet.debitFallback");
   };
 
   const filteredTransactions = useMemo(() => {

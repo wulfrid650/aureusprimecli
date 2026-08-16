@@ -190,7 +190,7 @@ export default function GiftAuriPage() {
 
         <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth px-5 pb-28 pt-3">
           <p className="mt-2 text-sm leading-relaxed text-gray-500">
-            Partagez ce QR avec un proche pour qu&apos;il vous offre des Auri via Mobile Money, sans avoir besoin
+            Partagez ce QR avec un proche pour qu&apos;il vous offre des Auri, sans avoir besoin
             d&apos;un compte Aureus. Le crédit est appliqué automatiquement à votre wallet dès le paiement confirmé.
           </p>
 

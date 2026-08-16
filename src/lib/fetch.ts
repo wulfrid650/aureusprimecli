@@ -50,15 +50,26 @@ export function resolveApiUrl(url: string): string {
     /^https?:\/\//i.test(configuredApiBase) ? configuredApiBase : defaultApiBase
   ).replace(/\/+$/, "");
 
-  if (!apiBase || !/^https?:\/\//i.test(apiBase)) {
-    return url;
+  if (apiBase && /^https?:\/\//i.test(apiBase)) {
+    if (url.startsWith("/api/v1")) {
+      return `${apiBase}${url.slice("/api/v1".length)}`;
+    }
+
+    return url.startsWith("/") ? `${apiBase}${url}` : `${apiBase}/${url}`;
   }
 
-  if (url.startsWith("/api/v1")) {
-    return `${apiBase}${url.slice("/api/v1".length)}`;
+  // Server-side (Node) fetch cannot resolve relative URLs against a browser
+  // location the way client-side fetch does, so it needs an absolute origin
+  // pointing back at this Next.js app's own API routes (e.g. /api/catalog/*).
+  if (typeof window === "undefined" && url.startsWith("/")) {
+    const selfOrigin =
+      process.env.NEXT_PUBLIC_APP_URL?.trim().replace(/\/+$/, "") ||
+      (process.env.NODE_ENV === "production" ? "https://app.aureusprime.com" : "http://127.0.0.1:3000");
+
+    return `${selfOrigin}${url}`;
   }
 
-  return url.startsWith("/") ? `${apiBase}${url}` : `${apiBase}/${url}`;
+  return url;
 }
 
 export async function apiFetch(url: string, options?: RequestInit): Promise<Response> {

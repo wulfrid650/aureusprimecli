@@ -19,6 +19,8 @@ export type SubscriptionOption = {
   id?: number;
   name?: string | null;
   display_name?: string | null;
+  delivery_type?: string | null;
+  slots_required?: number;
 };
 
 export type SubscriptionAssignedAccount = {
@@ -34,6 +36,7 @@ export type SubscriptionAssignedAccount = {
 export type SubscriptionAssignment = {
   id: number;
   account_id?: number | null;
+  slot_count?: number;
   assigned_at?: string | null;
   revoked_at?: string | null;
   note?: string | null;
@@ -56,6 +59,8 @@ export type Subscription = {
   product_variation_id?: number | null;
   type?: string | null;
   access_mode?: string | null;
+  access_ownership_label?: string | null;
+  slots_required?: number;
   status: string;
   computed_status?: string | null;
   started_at?: string | null;
@@ -303,7 +308,14 @@ export function getVisibleAccountPayload(
 }
 
 export function getActiveAssignmentsCount(subscription: Subscription): number {
-  return subscription.assignments?.filter((assignment) => !assignment.revoked && !assignment.revoked_at).length ?? 0;
+  // Une formule multi-places (ex: Duo) peut consommer plusieurs places en
+  // une seule ligne d'assignation : on somme slot_count, pas le nombre de
+  // lignes, sinon "Duo" afficherait 1 place au lieu de 2.
+  return (
+    subscription.assignments
+      ?.filter((assignment) => !assignment.revoked && !assignment.revoked_at)
+      .reduce((total, assignment) => total + (assignment.slot_count ?? 1), 0) ?? 0
+  );
 }
 
 export type SubscriptionVisibleAccess = {

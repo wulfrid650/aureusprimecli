@@ -330,7 +330,13 @@ export default function SubscriptionDetailsPage({ params }: { params: Promise<{ 
     : t("subscriptions.standardPlan");
   const productName = subscription?.product?.name?.trim() || t("subscriptions.premiumService");
   const serviceHref = subscription?.product?.slug ? `/dashboard/services/${subscription.product.slug}` : "/dashboard/services";
-  const typeLabel = subscription ? getAccessModeLabel(subscription.access_mode ?? subscription.type, t) : t("common.service");
+  // Générique : dérivé du delivery_type de la formule (Commun/Partagé/
+  // Personnel), valable pour n'importe quel produit, pas seulement Netflix/
+  // Prime Video. Repli sur l'ancien access_mode si le delivery_type n'est
+  // pas encore configuré sur cette formule.
+  const typeLabel = subscription
+    ? subscription.access_ownership_label ?? getAccessModeLabel(subscription.access_mode ?? subscription.type, t)
+    : t("common.service");
   const isActive = subscription ? isActiveSubscription(displayStatus) : false;
   const activeAssignmentsCount = subscription ? getActiveAssignmentsCount(subscription) : 0;
 

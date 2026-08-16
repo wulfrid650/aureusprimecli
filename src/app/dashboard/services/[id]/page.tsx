@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { DashboardHeaderControls } from "@/components/dashboard/header-controls";
 import { ServiceIllustration } from "@/components/dashboard/service-illustration";
-import { fetchCatalogProduct, resolveOwnershipBadgeIcon, type CatalogOption, type CatalogProduct } from "@/lib/catalog";
+import { fetchCatalogProduct, groupCatalogOptionsByBadge, resolveOwnershipBadgeIcon, type CatalogOption, type CatalogProduct } from "@/lib/catalog";
 import { getPlural, useI18n } from "@/lib/i18n";
 
 export default function SingleServicePage({ params }: { params: Promise<{ id: string }> }) {
@@ -15,6 +15,19 @@ export default function SingleServicePage({ params }: { params: Promise<{ id: st
   const [service, setService] = useState<CatalogProduct | null>(null);
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [expandedConstraints, setExpandedConstraints] = useState<Set<string>>(new Set());
+
+  const toggleConstraintExpanded = (code: string) => {
+    setExpandedConstraints((current) => {
+      const next = new Set(current);
+      if (next.has(code)) {
+        next.delete(code);
+      } else {
+        next.add(code);
+      }
+      return next;
+    });
+  };
 
   useEffect(() => {
     let isActive = true;
@@ -167,57 +180,61 @@ export default function SingleServicePage({ params }: { params: Promise<{ id: st
                     ? ` · ${t("serviceDetail.formulasCount", { count: service.optionCount, plural: getPlural(locale, service.optionCount) })}`
                     : ""}
                 </h3>
-                <div className="flex flex-col gap-2">
-                  {service.options.map((option) => {
-                    const isSelected = selectedOption?.id === option.id;
-                    return (
-                      <button
-                        key={option.id}
-                        onClick={() => setSelectedOptionId(option.id)}
-                        className={`flex items-center justify-between p-4 rounded-2xl border-2 bg-white transition-all ${
-                          isSelected
-                            ? "border-[#5b13ec] shadow-sm shadow-[#5b13ec]/10"
-                            : "border-gray-100 hover:border-gray-200"
-                        }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          {service.optionCount > 1 && (
-                            <div className={`size-5 shrink-0 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-[#5b13ec]' : 'border-gray-300'}`}>
-                              {isSelected && <div className="size-2.5 rounded-full bg-[#5b13ec]" />}
-                            </div>
-                          )}
-                          <div className="flex flex-col items-start">
-                            <span className={`font-bold ${isSelected ? 'text-[#131118]' : 'text-gray-500'}`}>{option.name}</span>
-                            <span className="text-xs text-gray-400">{option.billingSummary}</span>
-                            {option.description && (
-                              <span className="mt-1 text-left text-xs leading-relaxed text-gray-500">
-                                {option.description}
-                              </span>
-                            )}
-                            {option.requiresKyc && (
-                              <span className="mt-1 inline-flex w-fit items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
-                                <span className="material-symbols-outlined text-[12px]">school</span>
-                                {t("serviceDetail.kycRequired")}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        <div className="flex shrink-0 flex-col items-end gap-1.5">
-                          <span className={`font-bold ${isSelected ? 'text-[#5b13ec]' : 'text-[#131118]'}`}>
-                            {option.priceFormatted}
+                <div className="flex flex-col gap-4">
+                  {groupCatalogOptionsByBadge(service.options).map((group) => (
+                    <div key={group.key} className="flex flex-col gap-2">
+                      {group.badgeLabel && (
+                        <div className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[#5b13ec]/10 px-2.5 py-1 text-[11px] font-bold text-[#5b13ec]">
+                          <span className="material-symbols-outlined text-[13px]">
+                            {resolveOwnershipBadgeIcon(group.deliveryType)}
                           </span>
-                          {option.ownershipBadge && (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-[#5b13ec]/10 px-2 py-0.5 text-[10px] font-bold text-[#5b13ec]">
-                              <span className="material-symbols-outlined text-[12px]">
-                                {resolveOwnershipBadgeIcon(option.deliveryType)}
-                              </span>
-                              {option.ownershipBadge.label}
-                            </span>
-                          )}
+                          {group.badgeLabel}
                         </div>
-                      </button>
-                    );
-                  })}
+                      )}
+                      <div className="flex flex-col gap-2">
+                        {group.options.map((option: CatalogOption) => {
+                          const isSelected = selectedOption?.id === option.id;
+                          return (
+                            <button
+                              key={option.id}
+                              onClick={() => setSelectedOptionId(option.id)}
+                              className={`flex items-center justify-between p-4 rounded-2xl border-2 bg-white transition-all ${
+                                isSelected
+                                  ? "border-[#5b13ec] shadow-sm shadow-[#5b13ec]/10"
+                                  : "border-gray-100 hover:border-gray-200"
+                              }`}
+                            >
+                              <div className="flex items-center gap-3">
+                                {service.optionCount > 1 && (
+                                  <div className={`size-5 shrink-0 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-[#5b13ec]' : 'border-gray-300'}`}>
+                                    {isSelected && <div className="size-2.5 rounded-full bg-[#5b13ec]" />}
+                                  </div>
+                                )}
+                                <div className="flex flex-col items-start">
+                                  <span className={`font-bold ${isSelected ? 'text-[#131118]' : 'text-gray-500'}`}>{option.name}</span>
+                                  <span className="text-xs text-gray-400">{option.billingSummary}</span>
+                                  {option.description && (
+                                    <span className="mt-1 text-left text-xs leading-relaxed text-gray-500">
+                                      {option.description}
+                                    </span>
+                                  )}
+                                  {option.requiresKyc && (
+                                    <span className="mt-1 inline-flex w-fit items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
+                                      <span className="material-symbols-outlined text-[12px]">school</span>
+                                      {t("serviceDetail.kycRequired")}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                              <span className={`shrink-0 font-bold ${isSelected ? 'text-[#5b13ec]' : 'text-[#131118]'}`}>
+                                {option.priceFormatted}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
@@ -228,7 +245,11 @@ export default function SingleServicePage({ params }: { params: Promise<{ id: st
                   {t("serviceDetail.constraintsTitle")}
                 </h3>
                 <ul className="flex flex-col gap-2.5">
-                  {selectedOption.constraints.map((constraint) => (
+                  {selectedOption.constraints.map((constraint) => {
+                    const hasShortLabel = Boolean(constraint.short_label);
+                    const isExpanded = expandedConstraints.has(constraint.code);
+
+                    return (
                     <li key={constraint.code} className="flex items-start gap-2.5">
                       <span
                         className={`material-symbols-outlined mt-0.5 text-[16px] shrink-0 ${
@@ -242,7 +263,23 @@ export default function SingleServicePage({ params }: { params: Promise<{ id: st
                         {constraint.severity === "to_accept" ? "gavel" : constraint.severity === "blocking" ? "block" : "info"}
                       </span>
                       <div className="flex flex-col">
-                        <span className="text-sm leading-relaxed text-gray-600">{constraint.label}</span>
+                        {hasShortLabel ? (
+                          <button
+                            type="button"
+                            onClick={() => toggleConstraintExpanded(constraint.code)}
+                            className="flex items-center gap-1 text-left text-sm leading-relaxed text-gray-600 underline decoration-dotted underline-offset-2 hover:text-gray-800"
+                          >
+                            {constraint.short_label}
+                            <span className="material-symbols-outlined text-[16px] text-gray-400">
+                              {isExpanded ? "expand_less" : "expand_more"}
+                            </span>
+                          </button>
+                        ) : (
+                          <span className="text-sm leading-relaxed text-gray-600">{constraint.label}</span>
+                        )}
+                        {hasShortLabel && isExpanded && (
+                          <span className="mt-1.5 text-xs leading-relaxed text-gray-500">{constraint.label}</span>
+                        )}
                         {constraint.severity === "to_accept" && (
                           <span className="mt-0.5 text-[10px] font-bold uppercase tracking-[0.14em] text-amber-600">
                             {t("serviceDetail.constraintToAccept")}
@@ -250,7 +287,8 @@ export default function SingleServicePage({ params }: { params: Promise<{ id: st
                         )}
                       </div>
                     </li>
-                  ))}
+                    );
+                  })}
                 </ul>
               </div>
             )}

@@ -35,6 +35,7 @@ type SubscriptionAssignedAccount = {
 
 type SubscriptionAssignment = {
   id: number;
+  slot_count?: number;
   revoked_at?: string | null;
   revoked?: boolean;
   account?: SubscriptionAssignedAccount | null;
@@ -46,6 +47,7 @@ type SubscriptionAssignment = {
 type Subscription = {
   id: number;
   type?: string | null;
+  access_ownership_label?: string | null;
   status: string;
   computed_status?: string | null;
   started_at?: string | null;
@@ -292,6 +294,40 @@ export default function SouscriptionsPage() {
     [subscriptions],
   );
 
+  // L'historique regroupe par service (Netflix, Spotify...) plutôt que
+  // d'empiler une carte pleine par abonnement passé : évite la fatigue
+  // visuelle d'un long historique de tests/renouvellements.
+  const historyGroups = useMemo(() => {
+    const groups = new Map<string, { key: string; product: SubscriptionProduct | null | undefined; items: Subscription[] }>();
+
+    for (const subscription of historySubscriptions) {
+      const key = subscription.product?.slug || subscription.product?.name || `service-${subscription.id}`;
+      const existing = groups.get(key);
+
+      if (existing) {
+        existing.items.push(subscription);
+      } else {
+        groups.set(key, { key, product: subscription.product, items: [subscription] });
+      }
+    }
+
+    return Array.from(groups.values());
+  }, [historySubscriptions]);
+
+  const [expandedHistoryGroups, setExpandedHistoryGroups] = useState<Set<string>>(new Set());
+
+  const toggleHistoryGroup = useCallback((key: string) => {
+    setExpandedHistoryGroups((current) => {
+      const next = new Set(current);
+      if (next.has(key)) {
+        next.delete(key);
+      } else {
+        next.add(key);
+      }
+      return next;
+    });
+  }, []);
+
   const expiringSoonCount = useMemo(
     () =>
       activeSubscriptions.filter((subscription) => {
@@ -394,6 +430,17 @@ export default function SouscriptionsPage() {
             </div>
           </section>
 
+          <Link
+            href="/dashboard/cartes-cadeaux"
+            className="mb-4 flex items-center gap-3 rounded-[24px] border border-gray-100 bg-white px-4 py-3.5 shadow-sm transition-colors hover:bg-[#f8f8fb]"
+          >
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-[#f7f3ff] text-[#5b13ec]">
+              <span className="material-symbols-outlined text-[20px]">card_giftcard</span>
+            </div>
+            <span className="flex-1 text-sm font-bold text-[#131118]">{t("giftCards.title")}</span>
+            <span className="material-symbols-outlined text-[18px] text-gray-300">chevron_right</span>
+          </Link>
+
           <div className="mb-4 flex bg-white/70 p-1 rounded-xl w-full border border-gray-100 shadow-sm">
             <button
               onClick={() => setActiveTab("actifs")}
@@ -455,8 +502,87 @@ export default function SouscriptionsPage() {
                 </div>
               ))}
             </div>
-          ) : filteredSubscriptions.length > 0 ? (
-            <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">
+          ) : activeTab === "historique" && historyGroups.length > 0 ? (
+            <div className="flex flex-col gap-3">
+              {historyGroups.map((group) => {
+                const isExpanded = expandedHistoryGroups.has(group.key);
+                const illustrationService = {
+                  title: group.product?.name?.trim() || "Aureus Prime",
+                  category: group.product?.category?.name?.trim() || t("subscriptions.subscriptionCategory"),
+                  currentPriceFormatted: "",
+                  priceHint: "",
+                  billingSummary: "",
+                  optionCount: 1,
+                };
+
+                return (
+                  <div key={group.key} className="overflow-hidden rounded-[24px] border border-gray-100 bg-white shadow-sm">
+                    <button
+                      type="button"
+                      onClick={() => toggleHistoryGroup(group.key)}
+                      className="flex w-full items-center gap-4 p-4 text-left"
+                    >
+                      <div className="size-12 shrink-0 overflow-hidden rounded-2xl border border-gray-100 bg-[#131118]">
+                        <ServiceIllustration service={illustrationService} variant="thumb" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate font-extrabold text-[#131118]">
+                          {group.product?.name?.trim() || t("subscriptions.premiumService")}
+                        </p>
+                        <p className="text-xs font-medium text-gray-400">
+                          {t("subscriptions.historyCount", {
+                            count: group.items.length,
+                            plural: getPlural(locale, group.items.length),
+                          })}
+                        </p>
+                      </div>
+                      <span
+                        className="material-symbols-outlined shrink-0 text-gray-400 transition-transform"
+                        style={{ transform: isExpanded ? "rotate(180deg)" : undefined }}
+                      >
+                        expand_more
+                      </span>
+                    </button>
+
+                    {isExpanded && (
+                      <div className="border-t border-gray-100">
+                        {group.items.map((subscription) => {
+                          const displayStatus = subscription.computed_status ?? subscription.status;
+                          const statusMeta = getStatusMeta(displayStatus, t);
+                          const optionLabel =
+                            subscription.variant?.name?.trim() ||
+                            subscription.productVariation?.name?.trim() ||
+                            t("subscriptions.standardPlan");
+
+                          return (
+                            <Link
+                              key={subscription.id}
+                              href={getSubscriptionDetailsHref(subscription.id)}
+                              className="flex items-center gap-3 border-b border-gray-50 px-4 py-3 transition-colors last:border-b-0 hover:bg-[#f8f8fb]"
+                            >
+                              <div className="min-w-0 flex-1">
+                                <p className="truncate text-sm font-bold text-[#131118]">{optionLabel}</p>
+                                <p className="text-xs text-gray-400">
+                                  {formatDate(subscription.started_at, dateLocale, t)} – {formatDate(subscription.expires_at, dateLocale, t)}
+                                </p>
+                              </div>
+                              <span
+                                className={`shrink-0 rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.18em] ${statusMeta.chipClassName}`}
+                              >
+                                {statusMeta.label}
+                              </span>
+                              <span className="material-symbols-outlined shrink-0 text-[16px] text-gray-300">chevron_right</span>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          ) : activeTab === "actifs" && filteredSubscriptions.length > 0 ? (
+            <div className="grid grid-cols-1 items-stretch gap-4 md:grid-cols-2">
               {filteredSubscriptions.map((subscription) => {
                 const displayStatus = subscription.computed_status ?? subscription.status;
                 const statusMeta = getStatusMeta(displayStatus, t);
@@ -482,17 +608,22 @@ export default function SouscriptionsPage() {
                   optionCount: 1,
                 };
                 const assignmentCount = getActiveAssignmentsCount(subscription);
+                // Générique : dérivé du delivery_type de la formule (Commun/
+                // Partagé/Personnel), valable pour n'importe quel produit,
+                // pas seulement Netflix/Prime Video. Repli sur l'ancien type
+                // si le delivery_type n'est pas encore configuré.
                 const typeLabel =
-                  subscription.type === "personal"
+                  subscription.access_ownership_label ??
+                  (subscription.type === "personal"
                     ? t("subscriptions.accessPersonal")
                     : subscription.type === "shared"
                       ? t("subscriptions.accessShared")
-                      : t("common.service");
+                      : t("common.service"));
 
                 return (
                   <article
                     key={subscription.id}
-                    className="rounded-[30px] border border-gray-100 bg-white p-5 shadow-sm overflow-hidden"
+                    className="flex h-full flex-col rounded-[30px] border border-gray-100 bg-white p-5 shadow-sm overflow-hidden"
                   >
                     <div className="flex items-start gap-4">
                       <div className="size-[72px] rounded-[24px] overflow-hidden shrink-0 border border-gray-100 bg-[#131118]">
@@ -557,7 +688,7 @@ export default function SouscriptionsPage() {
                       </p>
                     </div>
 
-                    <div className="mt-4 grid grid-cols-2 gap-2">
+                    <div className="mt-auto grid grid-cols-2 gap-2 pt-4">
                       <Link
                         href={getSubscriptionDetailsHref(subscription.id)}
                         className="col-span-2 flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-gray-200 bg-white px-3 py-3 text-center text-sm font-bold text-[#131118] transition-colors hover:bg-[#f8f8fb]"

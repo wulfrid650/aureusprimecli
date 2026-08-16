@@ -128,7 +128,11 @@ export function NotificationButton({ className = "" }: { className?: string }) {
   const [unreadCount, setUnreadCount] = useState(0);
   const [isBusy, setIsBusy] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
-  const isLoggedIn = typeof window !== "undefined" && Boolean(getStoredAuthToken());
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    setIsLoggedIn(Boolean(getStoredAuthToken()));
+  }, []);
 
   const pushState = useMemo(() => {
     if (!clientNotificationsSupported()) return "unsupported";

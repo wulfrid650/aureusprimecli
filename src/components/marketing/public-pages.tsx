@@ -8,7 +8,7 @@ import { isWaveIllustration, ServiceIllustration } from "@/components/dashboard/
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { PaymentMethodLogos } from "@/components/ui/payment-method-logos";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { fetchCatalogProducts, resolveOwnershipBadgeIcon, type CatalogOption, type CatalogProduct } from "@/lib/catalog";
+import { fetchCatalogProducts, groupCatalogOptionsByBadge, resolveOwnershipBadgeIcon, type CatalogOption, type CatalogProduct } from "@/lib/catalog";
 import { useI18n } from "@/lib/i18n";
 
 type PublicPageId = "about" | "help";
@@ -1076,6 +1076,19 @@ const serviceDetailCopy = {
 export function PublicServicePage({ service }: { service: CatalogProduct }) {
   const { locale } = useI18n();
   const copy = serviceDetailCopy[locale];
+  const [expandedConstraints, setExpandedConstraints] = useState<Set<string>>(new Set());
+
+  const toggleConstraintExpanded = (code: string) => {
+    setExpandedConstraints((current) => {
+      const next = new Set(current);
+      if (next.has(code)) {
+        next.delete(code);
+      } else {
+        next.add(code);
+      }
+      return next;
+    });
+  };
 
   return (
     <PublicShell>
@@ -1119,54 +1132,74 @@ export function PublicServicePage({ service }: { service: CatalogProduct }) {
                   <h2 className="text-sm font-black uppercase tracking-[0.18em] text-[var(--premium-text-soft)]">
                     {copy.formulasTitle} · {copy.plansLabel(service.options.length)}
                   </h2>
-                  <ul className="mt-4 flex flex-col gap-3">
-                    {service.options.map((option: CatalogOption) => (
-                      <li
-                        key={option.id}
-                        className="flex flex-col gap-3 rounded-2xl border border-[var(--premium-card-border)] bg-[var(--premium-card-deep)] px-4 py-3"
-                      >
-                        <div className="flex items-center justify-between gap-3">
-                          <div className="flex min-w-0 flex-col">
-                            <span className="truncate font-bold text-[var(--premium-text)]">{option.name}</span>
-                            <span className="text-xs text-[var(--premium-text-soft)]">{option.billingSummary}</span>
+                  <div className="mt-4 flex flex-col gap-5">
+                    {groupCatalogOptionsByBadge(service.options).map((group) => (
+                      <div key={group.key} className="flex flex-col gap-2">
+                        {group.badgeLabel && (
+                          <div className="inline-flex w-fit items-center gap-1.5 rounded-full bg-primary-500/12 px-2.5 py-1 text-[11px] font-bold text-primary-500">
+                            <MaterialIcon name={resolveOwnershipBadgeIcon(group.deliveryType)} className="text-[13px]" />
+                            {group.badgeLabel}
                           </div>
-                          <div className="flex shrink-0 flex-col items-end gap-1.5">
-                            <span className="font-black text-[var(--premium-text)]">{option.priceFormatted}</span>
-                            {option.ownershipBadge && (
-                              <span className="inline-flex items-center gap-1 rounded-full bg-primary-500/12 px-2 py-0.5 text-[10px] font-bold text-primary-500">
-                                <MaterialIcon
-                                  name={resolveOwnershipBadgeIcon(option.deliveryType)}
-                                  className="text-[12px]"
-                                />
-                                {option.ownershipBadge.label}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        {option.constraints.length > 0 && (
-                          <ul className="flex flex-col gap-1.5 border-t border-[var(--premium-card-border)] pt-3">
-                            {option.constraints.map((constraint) => (
-                              <li key={constraint.code} className="flex items-start gap-2">
-                                <MaterialIcon
-                                  name={constraint.severity === "to_accept" ? "gavel" : constraint.severity === "blocking" ? "block" : "info"}
-                                  className={`mt-0.5 shrink-0 text-[13px] ${
-                                    constraint.severity === "to_accept"
-                                      ? "text-amber-500"
-                                      : constraint.severity === "blocking"
-                                        ? "text-red-500"
-                                        : "text-[var(--premium-text-soft)]"
-                                  }`}
-                                />
-                                <span className="text-xs leading-relaxed text-[var(--premium-text-muted)]">
-                                  {constraint.label}
-                                </span>
-                              </li>
-                            ))}
-                          </ul>
                         )}
-                      </li>
+                        <ul className="flex flex-col gap-3">
+                          {group.options.map((option: CatalogOption) => (
+                            <li
+                              key={option.id}
+                              className="flex flex-col gap-3 rounded-2xl border border-[var(--premium-card-border)] bg-[var(--premium-card-deep)] px-4 py-3"
+                            >
+                              <div className="flex items-center justify-between gap-3">
+                                <div className="flex min-w-0 flex-col">
+                                  <span className="truncate font-bold text-[var(--premium-text)]">{option.name}</span>
+                                  <span className="text-xs text-[var(--premium-text-soft)]">{option.billingSummary}</span>
+                                </div>
+                                <span className="shrink-0 font-black text-[var(--premium-text)]">{option.priceFormatted}</span>
+                              </div>
+                              {option.constraints.length > 0 && (
+                                <ul className="flex flex-col gap-1.5 border-t border-[var(--premium-card-border)] pt-3">
+                                  {option.constraints.map((constraint) => {
+                                    const hasShortLabel = Boolean(constraint.short_label);
+                                    const isExpanded = expandedConstraints.has(constraint.code);
+
+                                    return (
+                                    <li key={constraint.code} className="flex items-start gap-2">
+                                      <MaterialIcon
+                                        name={constraint.severity === "to_accept" ? "gavel" : constraint.severity === "blocking" ? "block" : "info"}
+                                        className={`mt-0.5 shrink-0 text-[13px] ${
+                                          constraint.severity === "to_accept"
+                                            ? "text-amber-500"
+                                            : constraint.severity === "blocking"
+                                              ? "text-red-500"
+                                              : "text-[var(--premium-text-soft)]"
+                                        }`}
+                                      />
+                                      <div className="flex flex-col">
+                                        {hasShortLabel ? (
+                                          <button
+                                            type="button"
+                                            onClick={() => toggleConstraintExpanded(constraint.code)}
+                                            className="flex items-center gap-1 text-left text-xs leading-relaxed text-[var(--premium-text-muted)] underline decoration-dotted underline-offset-2 hover:text-[var(--premium-text)]"
+                                          >
+                                            {constraint.short_label}
+                                            <MaterialIcon name={isExpanded ? "expand_less" : "expand_more"} className="text-[14px] text-[var(--premium-text-soft)]" />
+                                          </button>
+                                        ) : (
+                                          <span className="text-xs leading-relaxed text-[var(--premium-text-muted)]">{constraint.label}</span>
+                                        )}
+                                        {hasShortLabel && isExpanded && (
+                                          <span className="mt-1 text-[11px] leading-relaxed text-[var(--premium-text-soft)]">{constraint.label}</span>
+                                        )}
+                                      </div>
+                                    </li>
+                                    );
+                                  })}
+                                </ul>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 </>
               ) : null}
 

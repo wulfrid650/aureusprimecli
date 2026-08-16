@@ -102,7 +102,7 @@ export function GiftPurchaseClient({ token }: { token: string }) {
     }
 
     if (!payerMsisdn.trim()) {
-      setFieldErrors({ payer_msisdn: ["Indiquez votre numéro Mobile Money."] });
+      setFieldErrors({ payer_msisdn: ["Indiquez votre numéro de téléphone."] });
       return;
     }
 
@@ -183,7 +183,7 @@ export function GiftPurchaseClient({ token }: { token: string }) {
               {info.pseudonym ? `${info.pseudonym} vous invite à lui offrir des Auri` : "Offrez un cadeau Auri à un proche"}
             </h1>
             <p className="mt-3 text-sm leading-relaxed text-[var(--premium-text-muted)]">
-              Les Auri sont le crédit utilisé sur Aureus Prime. Payez par Mobile Money, le crédit est appliqué
+              Les Auri sont le crédit utilisé sur Aureus Prime. Payez en quelques instants, le crédit est appliqué
               immédiatement — aucun compte requis de votre côté.
             </p>
 
@@ -194,7 +194,7 @@ export function GiftPurchaseClient({ token }: { token: string }) {
             ) : (
               <>
                 <ol className="mt-6 grid gap-3">
-                  {["Choisissez un montant", "Payez avec votre Mobile Money", "Le crédit est appliqué au compte de votre proche, immédiatement"].map(
+                  {["Choisissez un montant", "Payez en toute sécurité", "Le crédit est appliqué au compte de votre proche, immédiatement"].map(
                     (step, index) => (
                       <li key={step} className="flex items-start gap-3 text-sm text-[var(--premium-text-muted)]">
                         <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary-500/15 text-xs font-black text-primary-500">
@@ -236,7 +236,7 @@ export function GiftPurchaseClient({ token }: { token: string }) {
 
                   <div className="grid gap-1.5">
                     <label htmlFor="payer_msisdn" className="text-sm font-bold text-[var(--premium-text)]">
-                      Votre numéro Mobile Money
+                      Votre numéro de téléphone
                     </label>
                     <input
                       id="payer_msisdn"
@@ -280,7 +280,7 @@ export function GiftPurchaseClient({ token }: { token: string }) {
                   </button>
 
                   <div className="grid gap-2 pt-1">
-                    {["Aucun compte Aureus nécessaire", "Paiement sécurisé par Mobile Money", "Crédit appliqué immédiatement après paiement"].map(
+                    {["Aucun compte Aureus nécessaire", "Paiement sécurisé", "Crédit appliqué immédiatement après paiement"].map(
                       (item) => (
                         <div key={item} className="flex items-center gap-2 text-xs text-[var(--premium-text-muted)]">
                           <span className="material-symbols-outlined text-[15px] text-primary-500">check_circle</span>
