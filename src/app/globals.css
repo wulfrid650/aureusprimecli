@@ -640,6 +640,12 @@ input {
 }
 
 @media (max-width: 639px) {
+  body:has(.dashboard-mode) {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+  }
+
   .dashboard-mode {
     height: var(--app-height, 100dvh);
     min-height: var(--app-height, 100dvh);
