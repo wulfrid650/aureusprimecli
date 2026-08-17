@@ -18,6 +18,8 @@ type GiftToken = {
   monthly_remaining: number;
 };
 
+const MONTHLY_GIFT_CAP = 6500;
+
 function formatAmount(amount: number): string {
   return `${new Intl.NumberFormat("fr-FR").format(Math.round(amount)).replace(/ /g, " ")} Auri`;
 }
@@ -183,7 +185,7 @@ export default function GiftAuriPage() {
             <Link href="/dashboard/wallet" className="flex items-center justify-center size-10 shrink-0 rounded-full bg-white border border-gray-100 text-[#131118] hover:bg-gray-50 transition-colors">
               <span className="material-symbols-outlined text-[20px]">arrow_back</span>
             </Link>
-            <h1 className="truncate text-lg font-bold tracking-tight">Recevoir un cadeau Auri</h1>
+            <h1 className="truncate text-lg font-bold tracking-tight">Cadeau Auri</h1>
           </div>
           <DashboardHeaderControls />
         </header>
@@ -249,11 +251,11 @@ export default function GiftAuriPage() {
 
               <div className="rounded-[30px] border border-gray-100 bg-white p-5 shadow-sm">
                 <label htmlFor="pseudonym" className="text-sm font-bold text-[#131118]">
-                  Pseudonyme affiché au payeur
+                  Nom affiché au payeur
                 </label>
                 <p className="mt-1 text-xs text-gray-500">
-                  C&apos;est ce que verra la personne qui vous offre un cadeau — pas votre vrai nom par défaut.
-                  Laissez vide pour rester anonyme.
+                  C&apos;est le nom qui sera affiché à la personne qui vous offre les Auri. Laissez vide pour rester
+                  anonyme.
                 </p>
                 <input
                   id="pseudonym"
@@ -261,7 +263,7 @@ export default function GiftAuriPage() {
                   maxLength={60}
                   value={pseudonym}
                   onChange={(e) => setPseudonym(e.target.value)}
-                  placeholder="Ex. Cadeau pour Junior"
+                  placeholder="Ex. Junior"
                   className="mt-3 w-full rounded-xl border border-gray-200 bg-[#f9f9fb] px-4 py-3 text-sm text-[#131118] outline-none transition-colors focus:border-[#dbb723]"
                 />
 
@@ -294,11 +296,11 @@ export default function GiftAuriPage() {
           ) : (
             <div className="mt-6 rounded-[30px] border border-gray-100 bg-white p-6 shadow-sm">
               <label htmlFor="pseudonym" className="text-sm font-bold text-[#131118]">
-                Pseudonyme affiché au payeur (facultatif)
+                Nom affiché au payeur (facultatif)
               </label>
               <p className="mt-1 text-xs text-gray-500">
-                C&apos;est ce que verra la personne qui vous offre un cadeau — pas votre vrai nom par défaut.
-                Laissez vide pour rester anonyme.
+                C&apos;est le nom qui sera affiché à la personne qui vous offre les Auri. Laissez vide pour rester
+                anonyme.
               </p>
               <input
                 id="pseudonym"
@@ -306,9 +308,13 @@ export default function GiftAuriPage() {
                 maxLength={60}
                 value={pseudonym}
                 onChange={(e) => setPseudonym(e.target.value)}
-                placeholder="Ex. Cadeau pour Junior"
+                placeholder="Ex. Junior"
                 className="mt-3 w-full rounded-xl border border-gray-200 bg-[#f9f9fb] px-4 py-3 text-sm text-[#131118] outline-none transition-colors focus:border-[#dbb723]"
               />
+
+              <p className="mt-3 text-xs text-gray-400">
+                Jusqu&apos;à {formatAmount(MONTHLY_GIFT_CAP)} peuvent être offerts sur votre compte chaque mois.
+              </p>
 
               {errorMessage ? <p className="mt-3 text-xs font-semibold text-red-500">{errorMessage}</p> : null}
 
