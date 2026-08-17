@@ -229,7 +229,7 @@ export function GiftPurchaseClient({ token }: { token: string }) {
                       <p className="text-xs font-medium text-red-500">{fieldErrors.amount[0]}</p>
                     ) : (
                       <p className="text-xs text-[var(--premium-text-soft)]">
-                        Maximum disponible : {formatAuriAmount(info.max_amount)}
+                        Le bénéficiaire peut encore recevoir {formatAuriAmount(info.max_amount)} ce mois-ci.
                       </p>
                     )}
                   </div>
