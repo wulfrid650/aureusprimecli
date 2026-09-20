@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { safeFetch } from "@/lib/fetch";
+import { safeFetchCached } from "@/lib/fetch";
 import { useI18n } from "@/lib/i18n";
 
 type MissionPrimeSnapshot = {
@@ -188,7 +188,7 @@ function useMissionPrimeAvailability() {
 
   useEffect(() => {
     let active = true;
-    safeFetch<{ data?: MissionPrimeSnapshot }>("/api/v1/me/mission-prime")
+    safeFetchCached<{ data?: MissionPrimeSnapshot }>("/api/v1/me/mission-prime", { ttlMs: 10_000 })
       .then((response) => {
         if (active && response?.data) setSnapshot(response.data);
       })

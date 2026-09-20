@@ -1,6 +1,14 @@
 import { clearStoredAuthToken, getStoredAuthToken } from "@/lib/auth-token";
 import { getClientLocale, getBrowserLocale } from "@/lib/locale";
 
+type CachedResponse = {
+  expiresAt: number;
+  value: unknown;
+};
+
+const responseCache = new Map<string, CachedResponse>();
+const pendingRequests = new Map<string, Promise<unknown>>();
+
 function isFormDataBody(body: BodyInit | null | undefined): body is FormData {
   return typeof FormData !== "undefined" && body instanceof FormData;
 }
@@ -112,4 +120,51 @@ export async function safeFetch<T = unknown>(url: string, options?: RequestInit)
   }
 
   return data;
+}
+
+/**
+ * Deduplicates concurrent GET requests and keeps successful responses briefly in
+ * memory. The auth token and locale are part of the key so data cannot leak
+ * between sessions or languages. Mutations must keep using safeFetch/apiFetch.
+ */
+export function safeFetchCached<T = unknown>(
+  url: string,
+  options: { ttlMs?: number; requestInit?: RequestInit } = {},
+): Promise<T | null> {
+  const method = options.requestInit?.method?.toUpperCase() ?? "GET";
+  if (method !== "GET") {
+    return safeFetch<T>(url, options.requestInit);
+  }
+
+  const token = getStoredAuthToken() ?? "anonymous";
+  const locale = getStoredLocale() ?? "default";
+  const key = `${token}:${locale}:${url}`;
+  const now = Date.now();
+  const cached = responseCache.get(key);
+
+  if (cached && cached.expiresAt > now) {
+    return Promise.resolve(cached.value as T);
+  }
+
+  const pending = pendingRequests.get(key);
+  if (pending) {
+    return pending as Promise<T | null>;
+  }
+
+  const request = safeFetch<T>(url, options.requestInit)
+    .then((value) => {
+      if (value !== null) {
+        responseCache.set(key, {
+          expiresAt: Date.now() + (options.ttlMs ?? 30_000),
+          value,
+        });
+      }
+      return value;
+    })
+    .finally(() => {
+      pendingRequests.delete(key);
+    });
+
+  pendingRequests.set(key, request);
+  return request;
 }

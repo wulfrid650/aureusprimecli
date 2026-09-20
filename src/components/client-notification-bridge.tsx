@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 import { getStoredAuthToken } from "@/lib/auth-token";
 import {
   canShowPushPrompt,
@@ -16,7 +15,6 @@ import {
 } from "@/lib/client-notifications";
 
 export function ClientNotificationBridge() {
-  const pathname = usePathname();
   const [showPrompt, setShowPrompt] = useState(false);
   const [isBusy, setIsBusy] = useState(false);
   const [message, setMessage] = useState("");
@@ -66,7 +64,7 @@ export function ClientNotificationBridge() {
       pollClientNotificationFallback().catch(() => undefined);
     };
 
-    poll();
+    const initialPollId = window.setTimeout(poll, 1_500);
     const intervalId = window.setInterval(poll, 60_000);
 
     return () => {
@@ -75,9 +73,10 @@ export function ClientNotificationBridge() {
       if (timeoutId !== null) {
         window.clearTimeout(timeoutId);
       }
+      window.clearTimeout(initialPollId);
       window.clearInterval(intervalId);
     };
-  }, [pathname]);
+  }, []);
 
   const enablePush = async () => {
     setIsBusy(true);

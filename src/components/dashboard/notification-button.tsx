@@ -158,7 +158,8 @@ export function NotificationButton({ className = "" }: { className?: string }) {
       return;
     }
 
-    const timeoutId = window.setTimeout(() => refresh().catch(() => undefined), 0);
+    // Let the wallet and catalog load first; notifications are secondary data.
+    const timeoutId = window.setTimeout(() => refresh().catch(() => undefined), 800);
 
     const handleNotification = () => {
       refresh().catch(() => undefined);
@@ -170,13 +171,10 @@ export function NotificationButton({ className = "" }: { className?: string }) {
 
     window.addEventListener("ap-client-notification", handleNotification);
     window.addEventListener("ap-client-notification-permission-changed", handlePermissionChange);
-    const intervalId = window.setInterval(() => refresh().catch(() => undefined), 60_000);
-
     return () => {
       window.removeEventListener("ap-client-notification", handleNotification);
       window.removeEventListener("ap-client-notification-permission-changed", handlePermissionChange);
       window.clearTimeout(timeoutId);
-      window.clearInterval(intervalId);
     };
   }, [isLoggedIn]);
 
