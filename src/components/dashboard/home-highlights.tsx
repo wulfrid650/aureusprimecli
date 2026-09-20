@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { safeFetch } from "@/lib/fetch";
+import { safeFetchCached } from "@/lib/fetch";
 import { useI18n } from "@/lib/i18n";
 
 type HomeHighlight = {
@@ -25,8 +25,6 @@ type HighlightResponse = {
   promotion?: HomeHighlight | null;
   tip?: HomeHighlight | null;
 };
-
-let highlightsRequest: Promise<{ data?: HighlightResponse } | null> | null = null;
 
 export function HomePromotionCard() {
   const { promotion } = useHomeHighlights();
@@ -108,7 +106,9 @@ function useHomeHighlights() {
 
   useEffect(() => {
     let active = true;
-    const request = highlightsRequest ??= safeFetch<{ data?: HighlightResponse }>("/api/v1/home-highlights");
+    const request = safeFetchCached<{ data?: HighlightResponse }>("/api/v1/home-highlights", {
+      ttlMs: 60_000,
+    });
     request
       .then((response) => {
         if (active && response?.data) setData(response.data);

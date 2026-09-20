@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { DashboardBottomNav } from "@/components/dashboard/bottom-nav";
 import { DashboardHeaderControls } from "@/components/dashboard/header-controls";
-import { safeFetch } from "@/lib/fetch";
+import { safeFetchCached } from "@/lib/fetch";
 import { getPlural, useI18n } from "@/lib/i18n";
 
 interface Transaction {
@@ -28,7 +28,9 @@ export default function WalletPage() {
   const [activeFilter, setActiveFilter] = useState<TransactionFilter>("all");
 
   useEffect(() => {
-    safeFetch<{ data?: { wallet?: { available_balance?: number }; transactions?: { data?: Transaction[] } } }>("/api/v1/me/wallet?per_page=100")
+    safeFetchCached<{ data?: { wallet?: { available_balance?: number }; transactions?: { data?: Transaction[] } } }>("/api/v1/me/wallet?per_page=100", {
+      ttlMs: 3_000,
+    })
       .then((data) => {
         const walletData = data?.data?.wallet;
         const txData = data?.data?.transactions?.data || [];

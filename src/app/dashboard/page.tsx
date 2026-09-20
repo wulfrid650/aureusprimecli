@@ -10,7 +10,7 @@ import { MissionPrimeHomeCard } from "@/components/dashboard/mission-prime-card"
 import { HomePromotionCard } from "@/components/dashboard/home-highlights";
 import { TipStories } from "@/components/dashboard/tip-stories";
 import { fetchCatalogProducts, type CatalogProduct } from "@/lib/catalog";
-import { safeFetch } from "@/lib/fetch";
+import { safeFetchCached } from "@/lib/fetch";
 import { useI18n } from "@/lib/i18n";
 
 export default function Dashboard() {
@@ -22,7 +22,9 @@ export default function Dashboard() {
   const [servicesError, setServicesError] = useState("");
 
   useEffect(() => {
-    safeFetch<{ data?: { wallet?: { available_balance?: number | string } } }>("/api/v1/me/wallet")
+    safeFetchCached<{ data?: { wallet?: { available_balance?: number | string } } }>("/api/v1/me/wallet", {
+      ttlMs: 3_000,
+    })
       .then((data) => {
         const val = data?.data?.wallet?.available_balance;
         const num = parseFloat(String(val ?? 0));

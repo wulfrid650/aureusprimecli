@@ -1,4 +1,4 @@
-import { safeFetch } from "@/lib/fetch";
+import { safeFetchCached } from "@/lib/fetch";
 import { resolveClientLocale } from "@/lib/locale";
 import { formatAuriAmount } from "@/lib/money";
 
@@ -583,7 +583,10 @@ function buildCatalogListQuery(perPage: number, page = 1, locale: CatalogLocale 
 }
 
 async function cachedCatalogFetch<T>(url: string): Promise<ApiEnvelope<T> | null> {
-  return safeFetch<ApiEnvelope<T>>(url, { cache: "no-store" });
+  return safeFetchCached<ApiEnvelope<T>>(url, {
+    ttlMs: 60_000,
+    requestInit: { cache: "no-store" },
+  });
 }
 
 function resolveBadgeClassName(category: string): string {

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { createPortal } from "react-dom";
 import { useEffect, useRef, useState } from "react";
-import { safeFetch } from "@/lib/fetch";
+import { safeFetch, safeFetchCached } from "@/lib/fetch";
 import { useI18n } from "@/lib/i18n";
 
 type TipPage = {
@@ -85,24 +85,28 @@ export function TipStories() {
 
   useEffect(() => {
     let active = true;
-    safeFetch<TipsResponse>("/api/v1/me/tips")
-      .then((response) => {
-        if (!active) return;
-        const items = response?.data?.items ?? [];
-        setTips(items);
-        setUpcoming(response?.data?.upcoming ?? []);
+    const timeoutId = window.setTimeout(() => {
+      safeFetchCached<TipsResponse>("/api/v1/me/tips", { ttlMs: 60_000 })
+        .then((response) => {
+          if (!active) return;
+          const items = response?.data?.items ?? [];
+          setTips(items);
+          setUpcoming(response?.data?.upcoming ?? []);
 
-        const requestedTip = new URLSearchParams(window.location.search).get("tip");
-        if (requestedTip) {
-          const index = items.findIndex((tip) => String(tip.id) === requestedTip);
-          if (index >= 0) setActiveTipIndex(index);
-        }
-      })
-      .finally(() => {
-        if (active) setLoading(false);
-      });
+          const requestedTip = new URLSearchParams(window.location.search).get("tip");
+          if (requestedTip) {
+            const index = items.findIndex((tip) => String(tip.id) === requestedTip);
+            if (index >= 0) setActiveTipIndex(index);
+          }
+        })
+        .finally(() => {
+          if (active) setLoading(false);
+        });
+    }, 600);
+
     return () => {
       active = false;
+      window.clearTimeout(timeoutId);
     };
   }, []);
 
